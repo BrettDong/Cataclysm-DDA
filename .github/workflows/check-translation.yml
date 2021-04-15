@@ -1,0 +1,21 @@
+name: Check printf format string in translations
+
+on:
+  pull_request:
+    paths:
+      - 'lang/po/*.po'
+      - 'tools/check_po_printf_format.sh'
+      - 'tools/postprocess_pofilter_check.py'
+
+jobs:
+  check-po-printf:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "Install dependencies"
+        run: |
+          sudo apt-get update
+          sudo apt-get install translate-toolkit python3
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: "Check printf format string in translations"
+        run: ./tools/check_po_printf_format.sh
