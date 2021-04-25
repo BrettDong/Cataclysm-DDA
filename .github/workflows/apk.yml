@@ -1,0 +1,44 @@
+name: PushRelease
+on:
+    push:
+        branches:
+            - apk
+jobs:
+    PushRelease:
+        name: PushRelease
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                ref: apk
+            - name: Read VERSION file
+              id: get_version
+              run: echo "::set-output name=version::$(cat VERSION)"
+            - name: Install android sdk
+              run: sudo bash install_sdk.sh
+              working-directory: ./android
+            - name: Get Date
+              id: get-date
+              run: |
+                echo "::set-output name=date::$(/bin/date -u "+%Y%m%d%H%M")"
+              shell: bash
+            - name: ccache cache files (Android)
+              uses: actions/cache@v2
+              with:
+                path: ~/.ccache
+                key: ccache-android-${{ steps.get-date.outputs.date }}
+                restore-keys: |
+                  ccache-android-
+            - name: Build
+              run: bash build.sh ${{ steps.get_version.outputs.version }}
+              working-directory: ./android
+            - name: Upload
+              uses: svenstaro/upload-release-action@v2
+              with:
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
+                  file: ./android/cdda-${{ steps.get_version.outputs.version }}-arm64.apk
+                  asset_name: cdda-${{ steps.get_version.outputs.version }}-arm64.apk
+                  tag: ${{ steps.get_version.outputs.version }}
+                  overwrite: true
+                  prerelease: true
