@@ -48,8 +48,8 @@ if [ -n "${CODE_COVERAGE}" ]; then
 fi
 
 if [ -n "$CATA_CLANG_TIDY" ]; then
-    $travis_retry pip install --user wheel --upgrade
-    $travis_retry pip install --user compiledb lit
+    $travis_retry pip3 install --user wheel --upgrade
+    $travis_retry pip3 install --user compiledb lit
 fi
 
 # Influenced by https://github.com/zer0main/battleship/blob/master/build/windows/requirements.sh
