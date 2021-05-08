@@ -49,7 +49,11 @@ fi
 
 if [ -n "$CATA_CLANG_TIDY" ]; then
     $travis_retry pip install --user wheel --upgrade
+<<<<<<< HEAD
     $travis_retry pip install --user compiledb lit
+=======
+    $travis_retry pip install --user compiledb lit==0.11.1
+>>>>>>> 8851d23537 (Install lit 0.11.1 in clang-tidy check)
 fi
 
 # Influenced by https://github.com/zer0main/battleship/blob/master/build/windows/requirements.sh
