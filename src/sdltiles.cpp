@@ -2996,6 +2996,7 @@ void catacurses::init_interface()
 
     get_options().init();
     get_options().load();
+    set_language(); // workaround to #48255, #48945
 
     font_loader fl;
     fl.load();
