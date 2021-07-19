@@ -23,9 +23,8 @@ jobs:
           TOKEN: ${{ secrets.TX_TOKEN }}
         run: |
           export TX_TOKEN=$TOKEN
-          ls -la
-          rm lang/po/*.po
-          until tx pull -a
+          rm lang/po/zh_CN.po
+          until tx pull -l zh_CN
           do
             echo "Retry in 10 seconds..."
             sleep 10
@@ -40,6 +39,9 @@ jobs:
           message: Routine i18n updates
           pull_strategy: 'NO-PULL'
           push: true
+      - name: "Sleep for 30 seconds"
+        run: sleep 30s
+        shell: bash
       - name: "Create pull request"
         uses: devops-infra/action-pull-request@v0.4
         with:
