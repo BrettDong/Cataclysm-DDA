@@ -18,6 +18,8 @@ jobs:
           sudo pip3 install transifex-client
       - name: "Checkout"
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 25
       - name: "Pull translations"
         env:
           TOKEN: ${{ secrets.TX_TOKEN }}
@@ -39,8 +41,8 @@ jobs:
           message: Routine i18n updates
           pull_strategy: 'NO-PULL'
           push: true
-      - name: "Sleep for 30 seconds"
-        run: sleep 30s
+      - name: "Sleep for 10 seconds"
+        run: sleep 10s
         shell: bash
       - name: "Create pull request"
         uses: devops-infra/action-pull-request@v0.4
