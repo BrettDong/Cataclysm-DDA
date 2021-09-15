@@ -62,7 +62,7 @@ TranslationDocument::TranslationDocument( const std::string &path )
 {
     DebugLog( D_INFO, DC_ALL ) << "[i18n] Loading MO file: " << path;
     this->path = path;
-    cata::ifstream fin( fs::u8path( path ) );
+    cata::ifstream fin( fs::u8path( path ), std::ios::binary );
     if( !fin ) {
         throw std::runtime_error( string_format( "Cannot load %s", path ) );
     }
