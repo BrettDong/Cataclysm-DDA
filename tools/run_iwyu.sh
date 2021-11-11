@@ -36,8 +36,13 @@ function run_iwyu {
         ( fix_includes.py --nosafe_headers --reorder || true; )
 }
 
+clang_tidy_flags=
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    clang_tidy_flags="-clang-tidy-binary $(brew --prefix llvm)/bin/clang-tidy -clang-apply-replacements-binary $(brew --prefix llvm)/bin/clang-apply-replacements"
+fi
+
 function run_clang_tidy {
-    run-clang-tidy.py -j "$jobs" -fix -checks='-*,modernize-deprecated-headers'
+    run-clang-tidy.py -j "$jobs" -p "$tools_dir/../build" -fix -checks='-*,modernize-deprecated-headers' $clang_tidy_flags
 }
 
 # First IWYU pass
