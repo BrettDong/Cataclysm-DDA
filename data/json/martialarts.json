@@ -2,7 +2,7 @@
   {
     "type": "martial_art",
     "id": "style_none",
-    "name": { "str": "Nofxp style" },
+    "name": { "str": "Nofxp style yes" },
     "description": "Not a martial art, this is just plain old punching and kicking.",
     "initiate": [ "You decide to not use any martial arts.", "%s enters a generic combat stance." ],
     "arm_block": 1,
