@@ -192,6 +192,12 @@ bool map::build_transparency_cache( const int zlev )
 
 bool map::build_vision_transparency_cache( const int zlev )
 {
+    if( p.x < 0 || p.x >= LIGHTMAP_CACHE_X ) {
+        return false;
+    }
+    if( p.y < 0 || p.y >= LIGHTMAP_CACHE_Y ) {
+        return false;
+    }
     auto &map_cache = get_cache( zlev );
     auto &transparency_cache = map_cache.transparency_cache;
     auto &vision_transparency_cache = map_cache.vision_transparency_cache;
