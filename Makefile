@@ -588,8 +588,10 @@ endif
 ifneq (,$(findstring mingw32,$(CROSS)))
   DEFINES += -DCROSS_LINUX
   TARGETSYSTEM=WINDOWS
-  CXXFLAGS += -fPIC
-  LDFLAGS += -Wl,--dynamicbase -Wl,--high-entropy-va -Wl,--nxcompat -Wl,--disable-auto-image-base -Wl,--pic-executable
+  LDFLAGS += -Wl,--dynamicbase -Wl,--nxcompat
+  ifneq (,$(findstring x86_64,$(CROSS)))
+    LDFLAGS += -Wl,--high-entropy-va
+  endif
 endif
 
 ifneq ($(TARGETSYSTEM),WINDOWS)
