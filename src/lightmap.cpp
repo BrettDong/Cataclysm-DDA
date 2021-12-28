@@ -192,12 +192,6 @@ bool map::build_transparency_cache( const int zlev )
 
 bool map::build_vision_transparency_cache( const int zlev )
 {
-    if( p.x < 0 || p.x >= LIGHTMAP_CACHE_X ) {
-        return false;
-    }
-    if( p.y < 0 || p.y >= LIGHTMAP_CACHE_Y ) {
-        return false;
-    }
     auto &map_cache = get_cache( zlev );
     auto &transparency_cache = map_cache.transparency_cache;
     auto &vision_transparency_cache = map_cache.vision_transparency_cache;
@@ -993,6 +987,10 @@ void map::build_seen_cache( const tripoint &origin, const int target_z )
             }
 
             if( z == target_z ) {
+                if( origin.x < 0 || origin.x >= MAPSIZE_X || origin.y < 0 || origin.y >= MAPSIZE_Y ) {
+                    debugmsg( "map::build_seen_cache() origin out of bound!" );
+                    return;
+                }
                 seen_cache[origin.x][origin.y] = VISIBILITY_FULL;
                 castLightAll<float, float, sight_calc, sight_check, update_light, accumulate_transparency>(
                     seen_cache, transparency_cache, origin.xy(), 0 );
