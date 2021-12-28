@@ -524,7 +524,7 @@ int main( int argc, const char *argv[] )
 {
 #endif
     init_crash_handlers();
-    reset_floating_point_mode();
+    // reset_floating_point_mode();
 
 #if defined(__ANDROID__)
     // Start the standard output logging redirector
