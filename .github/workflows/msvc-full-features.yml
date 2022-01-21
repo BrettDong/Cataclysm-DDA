@@ -101,11 +101,13 @@ jobs:
             }
         }
 
-    - name: Compile .mo files for localization
-      run: |
-          & "C:\msys64\mingw64\bin\mingw32-make" -C lang -j2
-          mkdir -p ./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES -ErrorAction SilentlyContinue
-          msgfmt -f -o ./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo ./data/mods/TEST_DATA/lang/po/ru.po
+    - name: Compile translations
+        uses: BrettDong/compile-po2mo-action@latest
+        with:
+          input-path: 'lang/po/<lang>.po'
+          output-path: 'lang/mo/<lang>/LC_MESSAGES/cataclysm-dda.mo'
+    - run: |
+        ms  gfmt -f -o ./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo ./data/mods/TEST_DATA/lang/po/ru.po
 
     - name: Enable GitHub Actions problem matchers
       run: |
