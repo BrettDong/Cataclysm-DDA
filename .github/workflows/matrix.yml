@@ -265,12 +265,11 @@ jobs:
         restore-keys: |
           ccache-master-${{ runner.os }}-${{ matrix.compiler }}--
     - uses: ammaraskar/gcc-problem-matcher@master
-    - name: compile translations (Linux)
-      if: runner.os == 'Linux'
-      run: make localization -j$((`nproc`+0))
-    - name: compile translations (macOS)
-      if: runner.os == 'macOS'
-      run: make localization -j$((`sysctl -n hw.logicalcpu`+0))
+    - name: Compile translations
+      uses: BrettDong/compile-po2mo-action@v1
+      with:
+        input-path: 'lang/po/<lang>.po'
+        output-path: 'lang/mo/<lang>/LC_MESSAGES/cataclysm-dda.mo'
     - name: build
       if: ${{ env.SKIP == 'false' }}
       run: bash ./build-scripts/gha_compile_only.sh
