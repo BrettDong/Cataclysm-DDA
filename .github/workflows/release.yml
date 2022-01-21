@@ -212,14 +212,11 @@ jobs:
           commit sha: ${{ github.sha }}
           commit url: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
           EOL
-      - name: Compile translations (windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: |
-          lang/compile_mo.sh all
-      - name: Compile translations (UNIX)
-        if: runner.os != 'Windows'
-        run: make localization -j$((`nproc`+0))
+      - name: Compile translations
+        uses: BrettDong/compile-po2mo-action@v1
+        with:
+          input-path: 'lang/po/<lang>.po'
+          output-path: 'lang/mo/<lang>/LC_MESSAGES/cataclysm-dda.mo'
       - name: Build CDDA (linux)
         if: runner.os == 'Linux' && matrix.mxe == 'none' && matrix.android == 'none'
         run: |
