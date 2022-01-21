@@ -217,6 +217,9 @@ jobs:
         shell: bash
         run: |
           lang/compile_mo.sh all
+      - name: Compile translations (UNIX)
+        if: runner.os != 'Windows'
+        run: make localization -j$((`nproc`+0))
       - name: Build CDDA (linux)
         if: runner.os == 'Linux' && matrix.mxe == 'none' && matrix.android == 'none'
         run: |
