@@ -1,0 +1,38 @@
+name: AArch64 Hardware Address Sanitizer CI
+
+on:
+  push:
+    branches:
+    - aarch64-ci
+  pull_request:
+    paths:
+    - 'src/*.cpp'
+    - 'src/*.h'
+    - 'tests/*.cpp'
+    - 'tests/*.h'
+
+jobs:
+  aarch64-ci:
+    name: AArch64 Hardware Address Sanitizer Test
+    runs-on: [self-hosted, linux, ARM64]
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Display compiler identity
+      run: g++ -v
+    - name: Display pre-build ccache stats
+      run: ccache -sv
+    - name: JSON validation
+      run: python3 build-scripts/validate_json.py
+    - name: JSON style check
+      run: make RELEASE=1 style-all-json-parallel
+    - name: Compile translations
+      run: compile-po2mo "lang/po/<lang>.po" "lang/mo/<lang>/LC_MESSAGES/cataclysm-dda.mo"
+    - name: Build
+      run: make CCACHE=1 RELEASE=1 SANITIZE=hwaddress LINTJSON=0
+    - name: Display post-build ccache stats
+      run: ccache -sv
+    - name: Test
+      run: ./tests/cata_test --min-duration 0.5
+    - name: Clean
+      run: make clean
