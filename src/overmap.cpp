@@ -14,13 +14,13 @@
 #include <type_traits>
 #include <unordered_set>
 #include <vector>
+#include <range/v3/view/transform.hpp>
 
 #include "all_enum_values.h"
 #include "assign.h"
 #include "cached_options.h"
 #include "cata_assert.h"
 #include "cata_utility.h"
-#include "cata_views.h"
 #include "catacharset.h"
 #include "character_id.h"
 #include "coordinates.h"
@@ -1723,27 +1723,26 @@ struct mutable_overmap_placement_rule_remainder {
         --max;
     }
 
-    std::vector<tripoint_rel_omt> positions( om_direction::type rot ) const {
-        std::vector<tripoint_rel_omt> result;
-        for( const mutable_overmap_placement_rule_piece &piece : parent->pieces ) {
-            result.push_back( rotate( piece.pos, rot ) );
-        }
-        return result;
+    auto positions( om_direction::type rot ) const {
+        return parent->pieces | ranges::views::transform(
+        [rot]( const mutable_overmap_placement_rule_piece & piece ) {
+            return rotate( piece.pos, rot );
+        } );
     }
+
     auto pieces( const tripoint_om_omt &origin, om_direction::type rot ) const {
-        using orig_t = mutable_overmap_placement_rule_piece;
-        using dest_t = mutable_overmap_piece_candidate;
-        return cata::views::transform < decltype( parent->pieces ), dest_t > ( parent->pieces,
-        [origin, rot]( const orig_t &piece ) -> dest_t {
+        return parent->pieces | ranges::views::transform(
+                   [origin, rot]( const mutable_overmap_placement_rule_piece & piece ) ->
+        mutable_overmap_piece_candidate {
             tripoint_rel_omt rotated_offset = rotate( piece.pos, rot );
             return { piece.overmap, origin + rotated_offset, add( rot, piece.rot ) };
         } );
     }
+
     auto outward_joins( const tripoint_om_omt &origin, om_direction::type rot ) const {
-        using orig_t = std::pair<rel_pos_dir, const mutable_overmap_terrain_join *>;
-        using dest_t = std::pair<om_pos_dir, const mutable_overmap_terrain_join *>;
-        return cata::views::transform < decltype( parent->outward_joins ), dest_t > ( parent->outward_joins,
-        [origin, rot]( const orig_t &p ) -> dest_t {
+        return parent->outward_joins | ranges::views::transform(
+                   [origin, rot]( const std::pair<rel_pos_dir, const mutable_overmap_terrain_join *> &p )
+        -> std::pair<om_pos_dir, const mutable_overmap_terrain_join *> {
             tripoint_rel_omt rotated_offset = rotate( p.first.p, rot );
             om_pos_dir p_d{ origin + rotated_offset, p.first.dir + rot };
             return { p_d, p.second };
@@ -2123,7 +2122,7 @@ struct mutable_overmap_phase_remainder {
     ) const {
         int context_mandatory_joins_shortfall = 0;
 
-        for( const mutable_overmap_piece_candidate piece : rule.pieces( origin, dir ) ) {
+        for( const mutable_overmap_piece_candidate &piece : rule.pieces( origin, dir ) ) {
             if( !overmap::inbounds( piece.pos ) ) {
                 return cata::nullopt;
             }
