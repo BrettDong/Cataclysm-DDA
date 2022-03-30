@@ -466,7 +466,7 @@ ifeq ($(PCH), 1)
   endif
 endif
 
-CPPFLAGS += -isystem ${SRC_DIR}/third-party
+CPPFLAGS += -isystem ${SRC_DIR}/third-party -isystem ${SRC_DIR}/third-party/range-v3
 CXXFLAGS += $(WARNINGS) $(DEBUG) $(DEBUGSYMS) $(PROFILE) $(OTHERS) -MMD -MP
 TOOL_CXXFLAGS = -DCATA_IN_TOOL
 
