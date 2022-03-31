@@ -14,6 +14,8 @@
 #include <sstream>
 #include <type_traits>
 
+#include <range/v3/algorithm/any_of.hpp>
+
 #include "action.h"
 #include "activity_actor_definitions.h"
 #include "activity_handlers.h"
@@ -2603,8 +2605,8 @@ cata::optional<int> holster_actor::use( Character &you, item &it, bool, const tr
     std::string prompt = holster_prompt.empty() ? _( "Holster item" ) : holster_prompt.translated();
     opts.push_back( prompt );
     pos = -1;
-    std::list<item *> all_items = it.all_items_top(
-                                      item_pocket::pocket_type::CONTAINER );
+    std::list<item *> all_items = it.all_items_top( item_pocket::pocket_type::CONTAINER ) |
+                                  ranges::to<std::list>;
     std::transform( all_items.begin(), all_items.end(), std::back_inserter( opts ),
     []( const item * elem ) {
         return string_format( _( "Draw %s" ), elem->display_name() );
@@ -4067,9 +4069,7 @@ ret_val<bool> saw_barrel_actor::can_use_on( const Character &, const item &,
         return ret_val<bool>::make_failure( _( "The barrel is already sawn-off." ) );
     }
 
-    const auto gunmods = target.gunmods();
-    const bool modified_barrel = std::any_of( gunmods.begin(), gunmods.end(),
-    []( const item * mod ) {
+    const bool modified_barrel = ranges::any_of( target.gunmods(), []( const item * mod ) {
         return mod->type->gunmod->location == gunmod_location( "barrel" );
     } );
 
@@ -4238,8 +4238,8 @@ cata::optional<int> detach_gunmods_actor::use( Character &p, item &it, bool,
     };
 
     item gun_copy = item( it );
-    std::vector<item *> mods = it.gunmods();
-    std::vector<item *> mods_copy = gun_copy.gunmods();
+    std::vector<item *> mods = it.gunmods() | ranges::to<std::vector>;
+    std::vector<item *> mods_copy = gun_copy.gunmods() | ranges::to<std::vector>;
 
     filter_irremovable( mods );
     filter_irremovable( mods_copy );
@@ -4273,7 +4273,7 @@ cata::optional<int> detach_gunmods_actor::use( Character &p, item &it, bool,
 ret_val<bool> detach_gunmods_actor::can_use( const Character &p, const item &it, bool,
         const tripoint & ) const
 {
-    const auto mods = it.gunmods();
+    const auto mods = it.gunmods() | ranges::to<std::vector>;
 
     if( mods.empty() ) {
         return ret_val<bool>::make_failure( _( "Doesn't appear to be modded." ) );
@@ -4344,7 +4344,7 @@ ret_val<bool> modify_gunmods_actor::can_use( const Character &p, const item &it,
     if( !p.is_wielding( it ) ) {
         return ret_val<bool>::make_failure( _( "Need to be wielding." ) );
     }
-    const auto mods = it.gunmods();
+    const auto mods = it.gunmods() | ranges::to<std::vector>;
 
     if( mods.empty() ) {
         return ret_val<bool>::make_failure( _( "Doesn't appear to be modded." ) );

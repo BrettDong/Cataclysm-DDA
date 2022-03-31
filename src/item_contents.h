@@ -91,27 +91,28 @@ class item_contents
 
     private:
         /** returns a list of pointers to all top-level items from pockets that match the predicate */
-        std::list<item *> all_items_top( const std::function<bool( item_pocket & )> &filter );
+        ranges::any_view<item *> all_items_top( const std::function<bool( item_pocket & )> &filter );
         /** returns a list of pointers to all top-level items from pockets that match the predicate */
-        std::list<const item *> all_items_top( const std::function<bool( const item_pocket & )> &filter )
+        ranges::any_view<const item *> all_items_top( const std::function<bool( const item_pocket & )>
+                &filter )
         const;
 
     public:
         /** returns a list of pointers to all top-level items */
         /** if unloading is true it ignores items in pockets that are flagged to not unload */
-        std::list<item *> all_items_top( item_pocket::pocket_type pk_type, bool unloading = false );
+        ranges::any_view<item *> all_items_top( item_pocket::pocket_type pk_type, bool unloading = false );
         /** returns a list of pointers to all top-level items */
-        std::list<const item *> all_items_top( item_pocket::pocket_type pk_type ) const;
+        ranges::any_view<const item *> all_items_top( item_pocket::pocket_type pk_type ) const;
 
         /** returns a list of pointers to all top-level items that are not mods */
-        std::list<item *> all_items_top();
+        ranges::any_view<item *> all_items_top();
         /** returns a list of pointers to all top-level items that are not mods */
-        std::list<const item *> all_items_top() const;
+        ranges::any_view<const item *> all_items_top() const;
 
         /** gets all gunmods in the item */
-        std::vector<item *> gunmods();
+        ranges::any_view<item *> gunmods();
         /** gets all gunmods in the item */
-        std::vector<const item *> gunmods() const;
+        ranges::any_view<const item *> gunmods() const;
         // checks the pockets if this speedloader is compatible
         bool allows_speedloader( const itype_id &speedloader_id ) const;
 

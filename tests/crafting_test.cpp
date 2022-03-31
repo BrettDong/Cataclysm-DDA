@@ -15,6 +15,7 @@
 #include "calendar.h"
 #include "cata_utility.h"
 #include "cata_catch.h"
+#include "cata_ranges.h"
 #include "character.h"
 #include "game.h"
 #include "inventory.h"
@@ -1229,7 +1230,7 @@ TEST_CASE( "prompt for liquid containers - crafting 1 makeshift funnel", "[craft
             c.i_add( full_plastic_bottle );
             c.i_add( full_plastic_bottle );
             REQUIRE( m.i_at( c.pos() ).empty() );
-            REQUIRE( c.worn.front().all_items_top().size() == 6 );
+            REQUIRE( cata::ranges::size( c.worn.front().all_items_top() ) == 6 );
             THEN( "no prompt" ) {
                 REQUIRE( c.crafting_inventory().count_item( empty_plastic_bottle.typeId() ) == 6 );
                 craft_command cmd( &*recipe_makeshift_funnel, 1, false, &c, c.pos() );
@@ -1237,7 +1238,7 @@ TEST_CASE( "prompt for liquid containers - crafting 1 makeshift funnel", "[craft
                 item_filter filter = recipe_makeshift_funnel->get_component_filter();
                 CHECK( cmd.continue_prompt_liquids( filter, true ) == true );
                 CHECK( m.i_at( c.pos() ).empty() );
-                CHECK( c.worn.front().all_items_top().size() == 6 );
+                CHECK( cata::ranges::size( c.worn.front().all_items_top() ) == 6 );
             }
         }
 
@@ -1283,7 +1284,7 @@ TEST_CASE( "prompt for liquid containers - crafting 1 makeshift funnel", "[craft
             c.i_add( full_plastic_bottle );
             c.i_add( full_plastic_bottle );
             REQUIRE( m.i_at( c.pos() ).empty() );
-            REQUIRE( c.worn.front().all_items_top().size() == 5 );
+            REQUIRE( cata::ranges::size( c.worn.front().all_items_top() ) == 5 );
             THEN( "player is prompted" ) {
                 REQUIRE( c.crafting_inventory().count_item( empty_plastic_bottle.typeId() ) == 5 );
                 craft_command cmd( &*recipe_makeshift_funnel, 1, false, &c, c.pos() );
@@ -1291,7 +1292,7 @@ TEST_CASE( "prompt for liquid containers - crafting 1 makeshift funnel", "[craft
                 item_filter filter = recipe_makeshift_funnel->get_component_filter();
                 CHECK( cmd.continue_prompt_liquids( filter, true ) == false );
                 CHECK( m.i_at( c.pos() ).empty() );
-                CHECK( c.worn.front().all_items_top().size() == 5 );
+                CHECK( cata::ranges::size( c.worn.front().all_items_top() ) == 5 );
             }
         }
     }
@@ -1451,7 +1452,7 @@ TEST_CASE( "prompt for liquid containers - batch crafting 3 makeshift funnels", 
             c.i_add( full_plastic_bottle );
             c.i_add( full_plastic_bottle );
             REQUIRE( m.i_at( c.pos() ).empty() );
-            REQUIRE( c.worn.front().all_items_top().size() == 13 );
+            REQUIRE( cata::ranges::size( c.worn.front().all_items_top() ) == 13 );
             THEN( "no prompt" ) {
                 REQUIRE( c.crafting_inventory().count_item( empty_plastic_bottle.typeId() ) == 13 );
                 craft_command cmd( &*recipe_makeshift_funnel, 3, false, &c, c.pos() );
@@ -1459,7 +1460,7 @@ TEST_CASE( "prompt for liquid containers - batch crafting 3 makeshift funnels", 
                 item_filter filter = recipe_makeshift_funnel->get_component_filter();
                 CHECK( cmd.continue_prompt_liquids( filter, true ) == true );
                 CHECK( m.i_at( c.pos() ).empty() );
-                CHECK( c.worn.front().all_items_top().size() == 13 );
+                CHECK( cata::ranges::size( c.worn.front().all_items_top() ) == 13 );
             }
         }
 
@@ -1510,7 +1511,7 @@ TEST_CASE( "prompt for liquid containers - batch crafting 3 makeshift funnels", 
             c.i_add( full_plastic_bottle );
             c.i_add( full_plastic_bottle );
             REQUIRE( m.i_at( c.pos() ).empty() );
-            REQUIRE( c.worn.front().all_items_top().size() == 10 );
+            REQUIRE( cata::ranges::size( c.worn.front().all_items_top() ) == 10 );
             THEN( "player is prompted" ) {
                 REQUIRE( c.crafting_inventory().count_item( empty_plastic_bottle.typeId() ) == 10 );
                 craft_command cmd( &*recipe_makeshift_funnel, 3, false, &c, c.pos() );
@@ -1518,7 +1519,7 @@ TEST_CASE( "prompt for liquid containers - batch crafting 3 makeshift funnels", 
                 item_filter filter = recipe_makeshift_funnel->get_component_filter();
                 CHECK( cmd.continue_prompt_liquids( filter, true ) == false );
                 CHECK( m.i_at( c.pos() ).empty() );
-                CHECK( c.worn.front().all_items_top().size() == 10 );
+                CHECK( cata::ranges::size( c.worn.front().all_items_top() ) == 10 );
             }
         }
     }

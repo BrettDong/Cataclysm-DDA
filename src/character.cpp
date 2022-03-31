@@ -8774,7 +8774,8 @@ float Character::speed_rating() const
     return ret;
 }
 
-static item *get_matching_qual_recursive( const std::list<item *> &ilist, const quality_id &qid,
+static item *get_matching_qual_recursive( ranges::any_view<item *> ilist,
+        const quality_id &qid,
         int lvl )
 {
     for( item *it : ilist ) {

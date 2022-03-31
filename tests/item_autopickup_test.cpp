@@ -1,5 +1,6 @@
 #include "avatar.h"
 #include "cata_catch.h"
+#include "cata_ranges.h"
 #include "item.h"
 #include "item_pocket.h"
 #include "map.h"
@@ -162,7 +163,7 @@ static void simulate_auto_pickup( const tripoint &pos, avatar &they )
 static void expect_to_find( const item &in, const std::list<const unique_item *> what )
 {
     CHECK_FALSE( in.is_null() );
-    CHECK( in.all_items_top().size() == what.size() );
+    CHECK( cata::ranges::size( in.all_items_top() ) == what.size() );
 
     // make sure all items on the list have been picked up
     for( const unique_item *entry : what ) {

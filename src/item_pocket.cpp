@@ -6,6 +6,10 @@
 #include <string>
 #include <utility>
 
+#include <range/v3/algorithm/all_of.hpp>
+#include <range/v3/view/filter.hpp>
+#include <range/v3/view/transform.hpp>
+
 #include "ammo.h"
 #include "calendar.h"
 #include "cata_utility.h"
@@ -420,22 +424,18 @@ bool item_pocket::is_restricted() const
     return !data->get_flag_restrictions().empty();
 }
 
-std::list<item *> item_pocket::all_items_top()
+ranges::any_bidirectional_view<item *> item_pocket::all_items_top()
 {
-    std::list<item *> items;
-    for( item &it : contents ) {
-        items.push_back( &it );
-    }
-    return items;
+    return contents | ranges::views::transform( []( item & it ) {
+        return &it;
+    } );
 }
 
-std::list<const item *> item_pocket::all_items_top() const
+ranges::any_bidirectional_view<const item *> item_pocket::all_items_top() const
 {
-    std::list<const item *> items;
-    for( const item &it : contents ) {
-        items.push_back( &it );
-    }
-    return items;
+    return contents | ranges::views::transform( []( const item & it ) {
+        return &it;
+    } );
 }
 
 std::list<item *> item_pocket::all_items_ptr( item_pocket::pocket_type pk_type )
@@ -443,7 +443,7 @@ std::list<item *> item_pocket::all_items_ptr( item_pocket::pocket_type pk_type )
     if( !is_type( pk_type ) ) {
         return std::list<item *>();
     }
-    std::list<item *> all_items_top_level{ all_items_top() };
+    std::list<item *> all_items_top_level = all_items_top() | ranges::to<std::list>;
     for( item *it : all_items_top_level ) {
         std::list<item *> all_items_internal{ it->all_items_ptr( pk_type ) };
         all_items_top_level.insert( all_items_top_level.end(), all_items_internal.begin(),
@@ -457,7 +457,7 @@ std::list<const item *> item_pocket::all_items_ptr( item_pocket::pocket_type pk_
     if( !is_type( pk_type ) ) {
         return std::list<const item *>();
     }
-    std::list<const item *> all_items_top_level{ all_items_top() };
+    std::list<const item *> all_items_top_level = all_items_top() | ranges::to<std::list>;
     for( const item *it : all_items_top_level ) {
         std::list<const item *> all_items_internal{ it->all_items_ptr( pk_type ) };
         all_items_top_level.insert( all_items_top_level.end(), all_items_internal.begin(),
@@ -606,26 +606,26 @@ int item_pocket::moves() const
     }
 }
 
-std::vector<item *> item_pocket::gunmods()
+ranges::any_view<item *, ranges::category::bidirectional> item_pocket::gunmods()
 {
-    std::vector<item *> mods;
-    for( item &it : contents ) {
-        if( it.is_gunmod() ) {
-            mods.push_back( &it );
-        }
-    }
-    return mods;
+    return contents
+    | ranges::views::filter( []( item & it ) {
+        return it.is_gunmod();
+    } )
+    | ranges::views::transform( []( item & it ) {
+        return &it;
+    } );
 }
 
-std::vector<const item *> item_pocket::gunmods() const
+ranges::any_view<const item *, ranges::category::bidirectional> item_pocket::gunmods() const
 {
-    std::vector<const item *> mods;
-    for( const item &it : contents ) {
-        if( it.is_gunmod() ) {
-            mods.push_back( &it );
-        }
-    }
-    return mods;
+    return contents
+    | ranges::views::filter( []( const item & it ) {
+        return it.is_gunmod();
+    } )
+    | ranges::views::transform( []( const item & it ) {
+        return &it;
+    } );
 }
 
 cata::flat_set<itype_id> item_pocket::item_type_restrictions() const
@@ -2147,8 +2147,7 @@ bool item_pocket::favorite_settings::accepts_item( const item &it ) const
     // when the item is container then we are actually checking if pocket accepts
     // container content and not the container itself unless container is blacklisted
     if( it.is_container() && !it.empty_container() ) {
-        const std::list<const item *> items = it.all_items_top();
-        return std::all_of( items.begin(), items.end(), [this]( const item * it ) {
+        return ranges::all_of( it.all_items_top(), [this]( const item * it ) {
             return accepts_item( *it );
         } );
     }

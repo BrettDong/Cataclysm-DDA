@@ -9,6 +9,7 @@
 
 #include "avatar.h"
 #include "calendar.h"
+#include "cata_ranges.h"
 #include "enums.h"
 #include "flag.h"
 #include "game.h"
@@ -533,7 +534,7 @@ TEST_CASE( "water affect items while swimming check", "[item][water][swimming]" 
 
             THEN( "should get wet from water" ) {
                 g->water_affect_items( guy );
-                const item *test_item = guy.get_wielded_item().all_items_top().front();
+                const item *test_item = cata::ranges::front( guy.get_wielded_item().all_items_top() );
                 REQUIRE( test_item->typeId() == itype_test_mp3 );
                 CHECK( test_item->wetness > 0 );
             }
@@ -552,7 +553,7 @@ TEST_CASE( "water affect items while swimming check", "[item][water][swimming]" 
 
             THEN( "should not be broken by water" ) {
                 g->water_affect_items( guy );
-                const item *test_item = guy.get_wielded_item().all_items_top().front();
+                const item *test_item = cata::ranges::front( guy.get_wielded_item().all_items_top() );
                 REQUIRE( test_item->typeId() == itype_test_mp3 );
                 CHECK( test_item->wetness == 0 );
             }
@@ -573,7 +574,8 @@ TEST_CASE( "water affect items while swimming check", "[item][water][swimming]" 
 
             THEN( "should get wet from water" ) {
                 g->water_affect_items( guy );
-                const item *test_item = guy.get_wielded_item().all_items_top().front()->all_items_top().front();
+                const item *test_item = cata::ranges::front( cata::ranges::front(
+                                            guy.get_wielded_item().all_items_top() )->all_items_top() );
                 REQUIRE( test_item->typeId() == itype_test_mp3 );
                 CHECK( test_item->wetness > 0 );
             }
@@ -594,7 +596,8 @@ TEST_CASE( "water affect items while swimming check", "[item][water][swimming]" 
 
             THEN( "should not be broken by water" ) {
                 g->water_affect_items( guy );
-                const item *test_item = guy.get_wielded_item().all_items_top().front()->all_items_top().front();
+                const item *test_item = cata::ranges::front( cata::ranges::front(
+                                            guy.get_wielded_item().all_items_top() )->all_items_top() );
                 REQUIRE( test_item->typeId() == itype_test_mp3 );
                 CHECK( test_item->wetness == 0 );
             }

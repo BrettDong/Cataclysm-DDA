@@ -1,5 +1,6 @@
 #include "avatar.h"
 #include "cata_catch.h"
+#include "cata_ranges.h"
 #include "itype.h"
 #include "player_helpers.h"
 #include "type_id.h"
@@ -181,11 +182,11 @@ TEST_CASE( "battery-powered tool qualities", "[tool][battery][quality]" )
 
             WHEN( "UPS battery mod is installed into the drill" ) {
                 // Ensure drill currently has no mods
-                REQUIRE( drill.toolmods().empty() );
+                REQUIRE( cata::ranges::empty( drill.toolmods() ) );
                 REQUIRE( drill.tname() == "test cordless drill" );
                 // Install the UPS mod and ensure it worked
                 drill.put_in( ups_mod, item_pocket::pocket_type::MOD );
-                REQUIRE_FALSE( drill.toolmods().empty() );
+                REQUIRE_FALSE( cata::ranges::empty( drill.toolmods() ) );
                 REQUIRE( drill.tname() == "test cordless drill+1 (UPS)" );
                 // Ensure avatar actually has the drill and UPS in possession
                 CHECK( they.has_item( drill ) );

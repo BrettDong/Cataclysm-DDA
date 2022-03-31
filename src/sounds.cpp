@@ -8,6 +8,8 @@
 #include <type_traits>
 #include <unordered_map>
 
+#include <range/v3/algorithm/any_of.hpp>
+
 #include "activity_type.h"
 #include "cached_options.h" // IWYU pragma: keep
 #include "calendar.h"
@@ -1241,10 +1243,7 @@ void sfx::generate_gun_sound( const Character &source_arg, const item &firing )
     // this does not mean p == avatar (it could be a vehicle turret)
     if( player_character.pos() == source ) {
         selected_sound = "fire_gun";
-
-        const auto mods = firing.gunmods();
-        if( std::any_of( mods.begin(), mods.end(),
-        []( const item * e ) {
+        if( ranges::any_of( firing.gunmods(), []( const item * e ) {
         return e->type->gunmod->loudness < 0;
     } ) ) {
             weapon_id = itype_weapon_fire_suppressed;

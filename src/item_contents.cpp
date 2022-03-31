@@ -6,6 +6,10 @@
 #include <string>
 #include <type_traits>
 
+#include <range/v3/view/filter.hpp>
+#include <range/v3/view/join.hpp>
+#include <range/v3/view/transform.hpp>
+
 #include "character.h"
 #include "color.h"
 #include "cursesdef.h"
@@ -1210,19 +1214,17 @@ void item_contents::remove_items_if( const std::function<bool( item & )> &filter
     }
 }
 
-std::list<item *> item_contents::all_items_top( const std::function<bool( item_pocket & )> &filter )
+ranges::any_view<item *> item_contents::all_items_top( const std::function<bool( item_pocket & )>
+        &filter )
 {
-    std::list<item *> all_items_internal;
-    for( item_pocket &pocket : contents ) {
-        if( filter( pocket ) ) {
-            std::list<item *> contained_items = pocket.all_items_top();
-            all_items_internal.splice( all_items_internal.end(), std::move( contained_items ) );
-        }
-    }
-    return all_items_internal;
+    return contents | ranges::views::filter( filter )
+    | ranges::views::transform( []( item_pocket & pocket ) {
+        return pocket.all_items_top();
+    } )
+    | ranges::views::join;
 }
 
-std::list<item *> item_contents::all_items_top( item_pocket::pocket_type pk_type,
+ranges::any_view<item *> item_contents::all_items_top( item_pocket::pocket_type pk_type,
         bool unloading )
 {
     if( unloading ) {
@@ -1236,34 +1238,32 @@ std::list<item *> item_contents::all_items_top( item_pocket::pocket_type pk_type
 
 }
 
-std::list<const item *> item_contents::all_items_top( const
+ranges::any_view<const item *> item_contents::all_items_top( const
         std::function<bool( const item_pocket & )> &filter ) const
 {
-    std::list<const item *> all_items_internal;
-    for( const item_pocket &pocket : contents ) {
-        if( filter( pocket ) ) {
-            std::list<const item *> contained_items = pocket.all_items_top();
-            all_items_internal.splice( all_items_internal.end(), std::move( contained_items ) );
-        }
-    }
-    return all_items_internal;
+    return contents | ranges::views::filter( filter )
+    | ranges::views::transform( []( const item_pocket & pocket ) {
+        return pocket.all_items_top();
+    } )
+    | ranges::views::join;
 }
 
-std::list<const item *> item_contents::all_items_top( item_pocket::pocket_type pk_type ) const
+ranges::any_view<const item *> item_contents::all_items_top( item_pocket::pocket_type pk_type )
+const
 {
     return all_items_top( [pk_type]( const item_pocket & pocket ) {
         return pocket.is_type( pk_type );
     } );
 }
 
-std::list<item *> item_contents::all_items_top()
+ranges::any_view<item *> item_contents::all_items_top()
 {
     return all_items_top( []( const item_pocket & pocket ) {
         return pocket.is_standard_type();
     } );
 }
 
-std::list<const item *> item_contents::all_items_top() const
+ranges::any_view<const item *> item_contents::all_items_top() const
 {
     return all_items_top( []( const item_pocket & pocket ) {
         return pocket.is_standard_type();
@@ -1276,7 +1276,7 @@ item &item_contents::legacy_front()
         debugmsg( "naively asked for first content item and will get a nullptr" );
         return null_item_reference();
     }
-    return *all_items_top().front();
+    return *( all_items_top() | ranges::to<std::list> ).front();
 }
 
 const item &item_contents::legacy_front() const
@@ -1285,31 +1285,31 @@ const item &item_contents::legacy_front() const
         debugmsg( "naively asked for first content item and will get a nullptr" );
         return null_item_reference();
     }
-    return *all_items_top().front();
+    return **all_items_top().begin();
 }
 
-std::vector<item *> item_contents::gunmods()
+ranges::any_view<item *> item_contents::gunmods()
 {
-    std::vector<item *> mods;
-    for( item_pocket &pocket : contents ) {
-        if( pocket.is_type( item_pocket::pocket_type::MOD ) ) {
-            std::vector<item *> internal_mods{ pocket.gunmods() };
-            mods.insert( mods.end(), internal_mods.begin(), internal_mods.end() );
-        }
-    }
-    return mods;
+    return contents
+    | ranges::views::filter( []( item_pocket & pocket ) {
+        return pocket.is_type( item_pocket::pocket_type::MOD );
+    } )
+    | ranges::views::transform( []( item_pocket & pocket ) {
+        return pocket.gunmods();
+    } )
+    | ranges::views::join;
 }
 
-std::vector<const item *> item_contents::gunmods() const
+ranges::any_view<const item *> item_contents::gunmods() const
 {
-    std::vector<const item *> mods;
-    for( const item_pocket &pocket : contents ) {
-        if( pocket.is_type( item_pocket::pocket_type::MOD ) ) {
-            std::vector<const item *> internal_mods{ pocket.gunmods() };
-            mods.insert( mods.end(), internal_mods.begin(), internal_mods.end() );
-        }
-    }
-    return mods;
+    return contents
+    | ranges::views::filter( []( const item_pocket & pocket ) {
+        return pocket.is_type( item_pocket::pocket_type::MOD );
+    } )
+    | ranges::views::transform( []( const item_pocket & pocket ) {
+        return pocket.gunmods();
+    } )
+    | ranges::views::join;
 }
 
 bool item_contents::allows_speedloader( const itype_id &speedloader_id ) const

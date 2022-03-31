@@ -95,7 +95,8 @@ static rule_state get_autopickup_rule( const item *pickup_item )
 static void empty_autopickup_target( item *what, tripoint where )
 {
     bool is_rigid = what->all_pockets_rigid();
-    for( item *entry : what->all_items_top() ) {
+    std::list<item *> all_items = what->all_items_top() | ranges::to<std::list>;
+    for( item *entry : all_items ) {
         const rule_state ap_rule = get_autopickup_rule( entry );
         // rigid containers want to keep as much items as possible so drop only blacklisted items
         // non-rigid containers want to drop as much items as possible so keep only whitelisted items
@@ -148,7 +149,7 @@ static std::vector<item_location> get_autopickup_items( item_location &from )
         container_item->is_owned_by( get_player_character() ) ) {
         return result;
     }
-    std::list<item *> contents = container_item->all_items_top();
+    std::list<item *> contents = container_item->all_items_top() | ranges::to<std::list>;
     result.reserve( contents.size() );
 
     bool any_whitelisted = false;

@@ -221,7 +221,7 @@ void Character::gunmod_add( item &gun, item &mod )
 
 bool Character::gunmod_remove( item &gun, item &mod )
 {
-    std::vector<item *> mods = gun.gunmods();
+    std::vector<item *> mods = gun.gunmods() | ranges::to<std::vector>;
     size_t gunmod_idx = mods.size();
     for( size_t i = 0; i < mods.size(); i++ ) {
         if( mods[i] == &mod ) {

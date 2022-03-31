@@ -786,7 +786,7 @@ void item_location::deserialize( const JsonObject &obj )
             ptr.reset( new impl::item_on_map( map_cursor( pos ), idx ) ); // drop on ground
             return;
         }
-        const std::list<item *> parent_contents = parent->all_items_top();
+        const std::list<item *> parent_contents = parent->all_items_top() | ranges::to<std::list>;;
         if( idx > -1 && idx < static_cast<int>( parent_contents.size() ) ) {
             auto iter = parent_contents.begin();
             std::advance( iter, idx );

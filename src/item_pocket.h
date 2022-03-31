@@ -12,6 +12,8 @@
 #include <type_traits>
 #include <vector>
 
+#include <range/v3/view.hpp>
+
 #include "enums.h"
 #include "flat_set.h"
 #include "optional.h"
@@ -163,8 +165,8 @@ class item_pocket
 
         const pocket_data *get_pocket_data() const;
 
-        std::list<item *> all_items_top();
-        std::list<const item *> all_items_top() const;
+        ranges::any_bidirectional_view<item *> all_items_top();
+        ranges::any_bidirectional_view<const item *> all_items_top() const;
         std::list<item *> all_items_ptr( pocket_type pk_type );
         std::list<const item *> all_items_ptr( pocket_type pk_type ) const;
 
@@ -237,9 +239,9 @@ class item_pocket
         // heats up contents
         void heat_up();
         // returns a list of pointers of all gunmods in the pocket
-        std::vector<item *> gunmods();
+        ranges::any_view<item *, ranges::category::bidirectional> gunmods();
         // returns a list of pointers of all gunmods in the pocket
-        std::vector<const item *> gunmods() const;
+        ranges::any_view<const item *, ranges::category::bidirectional> gunmods() const;
         cata::flat_set<itype_id> item_type_restrictions() const;
         item *magazine_current();
         // returns the default magazine if MAGAZINE_WELL, otherwise NULL_ID

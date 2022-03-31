@@ -133,9 +133,10 @@ std::vector<advanced_inv_listitem> outfit::get_AIM_inventory( size_t &item_index
         if( worn_item.empty() || worn_item.has_flag( flag_NO_UNLOAD ) ) {
             continue;
         }
+        std::list<item *> all_items = worn_item.all_items_top( item_pocket::pocket_type::CONTAINER ) |
+                                      ranges::to<std::list>;
         for( const std::vector<item_location> &it_stack : item_list_to_stack(
-                 item_location( you, &worn_item ),
-                 worn_item.all_items_top( item_pocket::pocket_type::CONTAINER ) ) ) {
+                 item_location( you, &worn_item ), all_items ) ) {
             advanced_inv_listitem adv_it( it_stack, item_index++, square.id, false );
             if( !pane.is_filtered( *adv_it.items.front() ) ) {
                 square.volume += adv_it.volume;
@@ -157,9 +158,10 @@ std::vector<advanced_inv_listitem> avatar::get_AIM_inventory( const advanced_inv
 
     item &weapon = get_wielded_item();
     if( weapon.is_container() ) {
+        std::list<item *> all_items = weapon.all_items_top( item_pocket::pocket_type::CONTAINER ) |
+                                      ranges::to<std::list>;
         for( const std::vector<item_location> &it_stack : item_list_to_stack(
-                 item_location( *this, &weapon ),
-                 weapon.all_items_top( item_pocket::pocket_type::CONTAINER ) ) ) {
+                 item_location( *this, &weapon ), all_items ) ) {
             advanced_inv_listitem adv_it( it_stack, item_index++, square.id, false );
             if( !pane.is_filtered( *adv_it.items.front() ) ) {
                 square.volume += adv_it.volume;

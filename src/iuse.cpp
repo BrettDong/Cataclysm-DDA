@@ -5929,7 +5929,7 @@ cata::optional<int> iuse::toolmod_attach( Character *p, item *it, bool, const tr
         }
 
         // can't mod non-tool, or a tool with existing mods, or a battery currently installed
-        if( !e.is_tool() || !e.toolmods().empty() || e.magazine_current() ) {
+        if( !e.is_tool() || e.has_toolmods() || e.magazine_current() ) {
             return false;
         }
 

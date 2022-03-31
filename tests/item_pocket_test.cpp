@@ -10,6 +10,7 @@
 #include "activity_actor_definitions.h"
 #include "calendar.h"
 #include "cata_catch.h"
+#include "cata_ranges.h"
 #include "character.h"
 #include "debug.h"
 #include "enums.h"
@@ -1745,15 +1746,15 @@ static void test_pickup_autoinsert_results( Character &u, bool wear, const item_
     CHECK( m.i_at( u.pos() ).size() == on_ground );
     if( !wear ) {
         CHECK( !u.get_wielded_item().is_null() );
-        CHECK( u.get_wielded_item().all_items_top().size() == in_top );
+        CHECK( cata::ranges::size( u.get_wielded_item().all_items_top() ) == in_top );
         CHECK( u.top_items_loc().empty() );
     } else {
         CHECK( u.get_wielded_item().is_null() );
         CHECK( u.top_items_loc().size() == 1 );
-        CHECK( u.top_items_loc().front()->all_items_top().size() == in_top );
+        CHECK( cata::ranges::size( u.top_items_loc().front()->all_items_top() ) == in_top );
     }
     if( !!nested ) {
-        CHECK( nested->all_items_top().size() == in_nested );
+        CHECK( cata::ranges::size( nested->all_items_top() ) == in_nested );
         item *top_it = wear ? &u.worn.front() : &u.get_wielded_item();
         // top-level container still contains nested container
         CHECK( !!top_it->contained_where( *nested.get_item() ) );
@@ -1798,14 +1799,14 @@ static void test_pickup_autoinsert_sub( bool autopickup, bool wear )
         REQUIRE( m.i_at( u.pos() ).size() == 4 );
         REQUIRE( u.get_wielded_item().is_null() );
         REQUIRE( u.top_items_loc().size() == 1 );
-        REQUIRE( u.top_items_loc().front()->all_items_top().empty() );
+        REQUIRE( cata::ranges::empty( u.top_items_loc().front()->all_items_top() ) );
     } else {
         u.wield( cont_top_soft );
         pack = item_location( u, &u.get_wielded_item() );
         REQUIRE( pack.get_item() != nullptr );
         REQUIRE( m.i_at( u.pos() ).size() == 4 );
         REQUIRE( !u.get_wielded_item().is_null() );
-        REQUIRE( u.get_wielded_item().all_items_top().empty() );
+        REQUIRE( cata::ranges::empty( u.get_wielded_item().all_items_top() ) );
         REQUIRE( u.top_items_loc().empty() );
     }
 
@@ -2169,22 +2170,23 @@ TEST_CASE( "multipocket liquid transfer test", "[pocket][item][liquid]" )
 
         WHEN( "unloading liquid from a full container into worn container" ) {
             jug_w_water->fill_with( water );
-            REQUIRE( jug_w_water->all_items_top().size() == 1 );
-            REQUIRE( jug_w_water->all_items_top().front()->charges == 15 );
+            REQUIRE( cata::ranges::size( jug_w_water->all_items_top() ) == 1 );
+            REQUIRE( cata::ranges::front( jug_w_water->all_items_top() )->charges == 15 );
             struct liquid_dest_opt liquid_target;
             liquid_target.pos = jug_w_water.position();
             liquid_target.dest_opt = LD_ITEM;
             liquid_target.item_loc = suit;
             u.moves = 100;
-            liquid_handler::perform_liquid_transfer( *jug_w_water->all_items_top().front(), nullptr,
+            liquid_handler::perform_liquid_transfer( *cata::ranges::front( jug_w_water->all_items_top() ),
+                    nullptr,
                     nullptr, -1, nullptr, liquid_target );
             THEN( "liquid fills the worn container's pockets, some left over" ) {
                 CHECK( u.moves == 0 );
                 CHECK( !jug_w_water->only_item().is_null() );
                 CHECK( jug_w_water->only_item().charges == 3 );
-                CHECK( suit->all_items_top().size() == 2 );
+                CHECK( cata::ranges::size( suit->all_items_top() ) == 2 );
                 int total = 0;
-                for( auto &it : suit->all_items_top() ) {
+                for( auto *it : suit->all_items_top() ) {
                     CHECK( it->charges == 6 );
                     total += it->charges;
                 }
@@ -2197,22 +2199,23 @@ TEST_CASE( "multipocket liquid transfer test", "[pocket][item][liquid]" )
             suit->fill_with( water, 4 );
             jug_w_water->fill_with( water );
             REQUIRE( suit->only_item().charges == 4 );
-            REQUIRE( jug_w_water->all_items_top().size() == 1 );
-            REQUIRE( jug_w_water->all_items_top().front()->charges == 15 );
+            REQUIRE( cata::ranges::size( jug_w_water->all_items_top() ) == 1 );
+            REQUIRE( cata::ranges::front( jug_w_water->all_items_top() )->charges == 15 );
             struct liquid_dest_opt liquid_target;
             liquid_target.pos = jug_w_water.position();
             liquid_target.dest_opt = LD_ITEM;
             liquid_target.item_loc = suit;
             u.moves = 100;
-            liquid_handler::perform_liquid_transfer( *jug_w_water->all_items_top().front(), nullptr,
+            liquid_handler::perform_liquid_transfer( *cata::ranges::front( jug_w_water->all_items_top() ),
+                    nullptr,
                     nullptr, -1, nullptr, liquid_target );
             THEN( "liquid fills the worn container's pockets, some left over" ) {
                 CHECK( u.moves == 0 );
                 CHECK( !jug_w_water->only_item().is_null() );
                 CHECK( jug_w_water->only_item().charges == 7 );
-                CHECK( suit->all_items_top().size() == 2 );
+                CHECK( cata::ranges::size( suit->all_items_top() ) == 2 );
                 int total = 0;
-                for( auto &it : suit->all_items_top() ) {
+                for( auto *it : suit->all_items_top() ) {
                     CHECK( it->charges == 6 );
                     total += it->charges;
                 }
@@ -2223,14 +2226,15 @@ TEST_CASE( "multipocket liquid transfer test", "[pocket][item][liquid]" )
 
         WHEN( "unloading liquid from an almost empty container into worn container" ) {
             jug_w_water->fill_with( water, 2 );
-            REQUIRE( jug_w_water->all_items_top().size() == 1 );
-            REQUIRE( jug_w_water->all_items_top().front()->charges == 2 );
+            REQUIRE( cata::ranges::size( jug_w_water->all_items_top() ) == 1 );
+            REQUIRE( cata::ranges::front( jug_w_water->all_items_top() )->charges == 2 );
             struct liquid_dest_opt liquid_target;
             liquid_target.pos = jug_w_water.position();
             liquid_target.dest_opt = LD_ITEM;
             liquid_target.item_loc = suit;
             u.moves = 100;
-            liquid_handler::perform_liquid_transfer( *jug_w_water->all_items_top().front(), nullptr,
+            liquid_handler::perform_liquid_transfer( *cata::ranges::front( jug_w_water->all_items_top() ),
+                    nullptr,
                     nullptr, -1, nullptr, liquid_target );
             m.make_active( jug_w_water );
             CHECK( jug_w_water->only_item().charges == 0 );
@@ -2238,8 +2242,8 @@ TEST_CASE( "multipocket liquid transfer test", "[pocket][item][liquid]" )
             THEN( "liquid fills one of the worn container's pockets, none left over" ) {
                 CHECK( u.moves == 0 );
                 CHECK( jug_w_water->is_container_empty() );
-                CHECK( suit->all_items_top().size() == 1 );
-                CHECK( suit->all_items_top().front()->charges == 2 );
+                CHECK( cata::ranges::size( suit->all_items_top() ) == 1 );
+                CHECK( cata::ranges::front( suit->all_items_top() )->charges == 2 );
             }
         }
 
@@ -2247,14 +2251,15 @@ TEST_CASE( "multipocket liquid transfer test", "[pocket][item][liquid]" )
             suit->fill_with( water, 5 );
             jug_w_water->fill_with( water, 2 );
             REQUIRE( suit->only_item().charges == 5 );
-            REQUIRE( jug_w_water->all_items_top().size() == 1 );
-            REQUIRE( jug_w_water->all_items_top().front()->charges == 2 );
+            REQUIRE( cata::ranges::size( jug_w_water->all_items_top() ) == 1 );
+            REQUIRE( cata::ranges::front( jug_w_water->all_items_top() )->charges == 2 );
             struct liquid_dest_opt liquid_target;
             liquid_target.pos = jug_w_water.position();
             liquid_target.dest_opt = LD_ITEM;
             liquid_target.item_loc = suit;
             u.moves = 100;
-            liquid_handler::perform_liquid_transfer( *jug_w_water->all_items_top().front(), nullptr,
+            liquid_handler::perform_liquid_transfer( *cata::ranges::front( jug_w_water->all_items_top() ),
+                    nullptr,
                     nullptr, -1, nullptr, liquid_target );
             m.make_active( jug_w_water );
             CHECK( jug_w_water->only_item().charges == 0 );
@@ -2262,9 +2267,9 @@ TEST_CASE( "multipocket liquid transfer test", "[pocket][item][liquid]" )
             THEN( "liquid fills one of the worn container's pockets, none left over" ) {
                 CHECK( u.moves == 0 );
                 CHECK( jug_w_water->is_container_empty() );
-                CHECK( suit->all_items_top().size() == 2 );
+                CHECK( cata::ranges::size( suit->all_items_top() ) == 2 );
                 int total = 0;
-                for( auto &it : suit->all_items_top() ) {
+                for( auto *it : suit->all_items_top() ) {
                     total += it->charges;
                     CHECK( it->charges > 0 );
                     CHECK( it->charges <= 6 );
@@ -2276,12 +2281,13 @@ TEST_CASE( "multipocket liquid transfer test", "[pocket][item][liquid]" )
         WHEN( "unloading liquid from worn container into empty container" ) {
             REQUIRE( jug_w_water->is_container_empty() );
             suit->fill_with( water );
-            REQUIRE( suit->all_items_top().size() == 2 );
+            REQUIRE( cata::ranges::size( suit->all_items_top() ) == 2 );
             struct liquid_dest_opt liquid_target;
             liquid_target.pos = suit.position();
             liquid_target.dest_opt = LD_ITEM;
             liquid_target.item_loc = jug_w_water;
-            for( auto &it : suit->all_items_top() ) {
+            std::list<item *> items = suit->all_items_top() | ranges::to<std::list>;
+            for( item *it : items ) {
                 u.moves = 100;
                 REQUIRE( it->charges == 6 );
                 liquid_handler::perform_liquid_transfer( *it, nullptr, nullptr, -1, nullptr, liquid_target );
@@ -2300,13 +2306,14 @@ TEST_CASE( "multipocket liquid transfer test", "[pocket][item][liquid]" )
         WHEN( "unloading liquid from worn container into partly filled container" ) {
             suit->fill_with( water );
             jug_w_water->fill_with( water, 8 );
-            REQUIRE( suit->all_items_top().size() == 2 );
+            REQUIRE( cata::ranges::size( suit->all_items_top() ) == 2 );
             REQUIRE( jug_w_water->only_item().charges == 8 );
             struct liquid_dest_opt liquid_target;
             liquid_target.pos = suit.position();
             liquid_target.dest_opt = LD_ITEM;
             liquid_target.item_loc = jug_w_water;
-            for( auto &it : suit->all_items_top() ) {
+            std::list<item *> items = suit->all_items_top() | ranges::to<std::list>;
+            for( item *it : items ) {
                 u.moves = 100;
                 REQUIRE( it->charges == 6 );
                 liquid_handler::perform_liquid_transfer( *it, nullptr, nullptr, -1, nullptr, liquid_target );
@@ -2316,8 +2323,8 @@ TEST_CASE( "multipocket liquid transfer test", "[pocket][item][liquid]" )
             }
             THEN( "liquid fills the container, some left over" ) {
                 CHECK( jug_w_water->only_item().charges == 15 );
-                CHECK( suit->all_items_top().size() == 1 );
-                CHECK( suit->all_items_top().front()->charges == 5 );
+                CHECK( cata::ranges::size( suit->all_items_top() ) == 1 );
+                CHECK( cata::ranges::front( suit->all_items_top() )->charges == 5 );
             }
         }
     }

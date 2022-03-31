@@ -2139,8 +2139,9 @@ class item : public visitable
         /*@}*/
 
         /** Returns all toolmods currently attached to this item (always empty if item not a tool) */
-        std::vector<item *> toolmods();
-        std::vector<const item *> toolmods() const;
+        ranges::any_view<item *> toolmods();
+        ranges::any_view<const item *> toolmods() const;
+        bool has_toolmods() const;
 
         /**
          * @name Gun and gunmod functions
@@ -2301,8 +2302,9 @@ class item : public visitable
         const item *magazine_current() const;
 
         /** Returns all gunmods currently attached to this item (always empty if item not a gun) */
-        std::vector<item *> gunmods();
-        std::vector<const item *> gunmods() const;
+        ranges::any_view<item *> gunmods();
+        ranges::any_view<const item *> gunmods() const;
+        bool has_gunmods() const;
 
         std::vector<const item *> mods() const;
 
@@ -2625,15 +2627,15 @@ class item : public visitable
                                            int count = INT_MAX ) override;
 
         /** returns a list of pointers to all top-level items that are not mods */
-        std::list<const item *> all_items_top() const;
+        ranges::any_view<const item *> all_items_top() const;
         /** returns a list of pointers to all top-level items that are not mods */
-        std::list<item *> all_items_top();
+        ranges::any_view<item *> all_items_top();
         /** returns a list of pointers to all top-level items */
-        std::list<const item *> all_items_top( item_pocket::pocket_type pk_type ) const;
+        ranges::any_view<const item *> all_items_top( item_pocket::pocket_type pk_type ) const;
         /** returns a list of pointers to all top-level items
          *  if unloading is true it ignores items in pockets that are flagged to not unload
          */
-        std::list<item *> all_items_top( item_pocket::pocket_type pk_type, bool unloading = false );
+        ranges::any_view<item *> all_items_top( item_pocket::pocket_type pk_type, bool unloading = false );
 
         /**
          * returns a list of pointers to all items inside recursively

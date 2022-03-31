@@ -17,6 +17,9 @@
 #include <tuple>
 #include <unordered_set>
 
+#include <range/v3/view/concat.hpp>
+#include <range/v3/view/single.hpp>
+
 #include "ammo.h"
 #include "ascii_art.h"
 #include "avatar.h"
@@ -4870,7 +4873,7 @@ void item::melee_combat_info( std::vector<iteminfo> &info, const iteminfo_query 
 void item::contents_info( std::vector<iteminfo> &info, const iteminfo_query *parts, int batch,
                           bool /*debug*/ ) const
 {
-    if( ( toolmods().empty() && gunmods().empty() && contents.empty() ) ||
+    if( ( !has_toolmods() && !has_gunmods() && contents.empty() ) ||
         !parts->test( iteminfo_parts::DESCRIPTION_CONTENTS ) ) {
         return;
     }
@@ -6478,13 +6481,12 @@ units::length item::length() const
             length_adjusted = type->longest_side - reduce_by;
         }
 
-        std::vector<const item *> mods = gunmods();
         // only the longest thing sticking off the gun matters for length adjustment
         // TODO: Differentiate from back end mods like stocks vs front end like bayonets and muzzle devices
         units::length max_length = 0_mm;
         units::length stock_length = 0_mm;
         units::length stock_accessory_length = 0_mm;
-        for( const item *mod : mods ) {
+        for( const item *mod : gunmods() ) {
             // stocks and accessories for stocks are added with whatever the longest thing on the front is
             if( mod->type->gunmod->location.str() == "stock" ) {
                 stock_length = mod->integral_length();
@@ -6949,30 +6951,32 @@ void item::add_technique( const matec_id &tech )
     techniques.insert( tech );
 }
 
-std::vector<item *> item::toolmods()
+ranges::any_view<item *> item::toolmods()
 {
-    std::vector<item *> res;
     if( is_tool() ) {
-        for( item *e : contents.all_items_top( item_pocket::pocket_type::MOD ) ) {
-            if( e->is_toolmod() ) {
-                res.push_back( e );
-            }
-        }
+        return contents.all_items_top( item_pocket::pocket_type::MOD )
+        | ranges::views::filter( []( item * e ) {
+            return e->is_toolmod();
+        } );
     }
-    return res;
+    return ranges::views::empty<item *>;
 }
 
-std::vector<const item *> item::toolmods() const
+ranges::any_view<const item *> item::toolmods() const
 {
-    std::vector<const item *> res;
     if( is_tool() ) {
-        for( const item *e : contents.all_items_top( item_pocket::pocket_type::MOD ) ) {
-            if( e->is_toolmod() ) {
-                res.push_back( e );
-            }
-        }
+        return contents.all_items_top( item_pocket::pocket_type::MOD )
+        | ranges::views::filter( []( const item * e ) {
+            return e->is_toolmod();
+        } );
     }
-    return res;
+    return ranges::views::empty<const item *>;
+}
+
+bool item::has_toolmods() const
+{
+    auto t = toolmods();
+    return t.begin() != t.end();
 }
 
 std::set<matec_id> item::get_techniques() const
@@ -10229,8 +10233,7 @@ const item &item::loaded_ammo() const
 std::set<ammotype> item::ammo_types( bool conversion ) const
 {
     if( conversion ) {
-        const std::vector<const item *> &mods = is_gun() ? gunmods() : toolmods();
-        for( const item *e : mods ) {
+        for( const item *e : is_gun() ? gunmods() : toolmods() ) {
             if( !e->type->mod->ammo_modifier.empty() ) {
                 return e->type->mod->ammo_modifier;
             }
@@ -10355,14 +10358,20 @@ const item *item::magazine_current() const
     return const_cast<item *>( this )->magazine_current();
 }
 
-std::vector<item *> item::gunmods()
+ranges::any_view<item *> item::gunmods()
 {
     return contents.gunmods();
 }
 
-std::vector<const item *> item::gunmods() const
+ranges::any_view<const item *> item::gunmods() const
 {
     return contents.gunmods();
+}
+
+bool item::has_gunmods() const
+{
+    auto t = gunmods();
+    return t.begin() != t.end();
 }
 
 std::vector<const item *> item::mods() const
@@ -10382,11 +10391,12 @@ std::vector<const item *> item::ebooks() const
 
 item *item::gunmod_find( const itype_id &mod )
 {
-    std::vector<item *> mods = gunmods();
-    auto it = std::find_if( mods.begin(), mods.end(), [&mod]( item * e ) {
-        return e->typeId() == mod;
-    } );
-    return it != mods.end() ? *it : nullptr;
+    for( item *it : gunmods() ) {
+        if( it->typeId() == mod ) {
+            return it;
+        }
+    }
+    return nullptr;
 }
 
 const item *item::gunmod_find( const itype_id &mod ) const
@@ -10396,11 +10406,12 @@ const item *item::gunmod_find( const itype_id &mod ) const
 
 item *item::gunmod_find_by_flag( const flag_id &flag )
 {
-    std::vector<item *> mods = gunmods();
-    auto it = std::find_if( mods.begin(), mods.end(), [&flag]( item * e ) {
-        return e->has_flag( flag );
-    } );
-    return it != mods.end() ? *it : nullptr;
+    for( item *it : gunmods() ) {
+        if( it->has_flag( flag ) ) {
+            return it;
+        }
+    }
+    return nullptr;
 }
 
 ret_val<bool> item::is_gunmod_compatible( const item &mod ) const
@@ -10483,11 +10494,13 @@ std::map<gun_mode_id, gun_mode> item::gun_all_modes() const
         return res;
     }
 
-    std::vector<const item *> opts = gunmods();
-    opts.push_back( this );
+    // Iterate over the item itself and its gunmods
+    // Should do a concat of two views here, but because of a possible bug in range-v3
+    // Create an intermediate nested view and flatten them as a workaround
+    // https://github.com/ericniebler/range-v3/issues/1674
+    std::array<ranges::any_view<const item *>, 2> mods_with_self{ gunmods(), ranges::views::single( this ) };
 
-    for( const item *e : opts ) {
-
+    for( const item *e : mods_with_self | ranges::views::join ) {
         // handle base item plus any auxiliary gunmods
         if( e->is_gun() ) {
             for( const std::pair<const gun_mode_id, gun_modifier_data> &m : e->type->gun->modes ) {
@@ -10654,7 +10667,8 @@ void item::reload_option::qty( int val )
     bool ammo_in_liquid_container = ammo->is_watertight_container();
     item &ammo_obj = ( ammo_in_container || ammo_in_liquid_container ) ?
                      // this is probably not the right way to do this. there is no guarantee whatsoever that ammo_obj will be an ammo
-                     *ammo->contents.all_items_top( item_pocket::pocket_type::CONTAINER ).front() : *ammo;
+                     *( ammo->contents.all_items_top( item_pocket::pocket_type::CONTAINER ) |
+                        ranges::to<std::list> ).front() : *ammo;
 
     if( ( ammo_in_container && !ammo_obj.is_ammo() ) ||
         ( ammo_in_liquid_container && !ammo_obj.made_of( phase_id::LIQUID ) ) ) {
@@ -13309,22 +13323,22 @@ void item::remove_internal( const std::function<bool( item & )> &filter,
     contents.remove_internal( filter, count, res );
 }
 
-std::list<const item *> item::all_items_top() const
+ranges::any_view<const item *> item::all_items_top() const
 {
     return contents.all_items_top();
 }
 
-std::list<item *> item::all_items_top()
+ranges::any_view<item *> item::all_items_top()
 {
     return contents.all_items_top();
 }
 
-std::list<const item *> item::all_items_top( item_pocket::pocket_type pk_type ) const
+ranges::any_view<const item *> item::all_items_top( item_pocket::pocket_type pk_type ) const
 {
     return contents.all_items_top( pk_type );
 }
 
-std::list<item *> item::all_items_top( item_pocket::pocket_type pk_type, bool unloading )
+ranges::any_view<item *> item::all_items_top( item_pocket::pocket_type pk_type, bool unloading )
 {
     return contents.all_items_top( pk_type, unloading );
 }
@@ -13353,7 +13367,7 @@ std::list<item *> item::all_items_ptr( item_pocket::pocket_type pk_type )
 std::list<const item *> item::all_items_top_recursive( item_pocket::pocket_type pk_type )
 const
 {
-    std::list<const item *> contained = contents.all_items_top( pk_type );
+    std::list<const item *> contained = contents.all_items_top( pk_type ) | ranges::to<std::list>;
     std::list<const item *> all_items_internal{ contained };
     for( const item *it : contained ) {
         std::list<const item *> recursion_items = it->all_items_top_recursive( pk_type );
@@ -13366,7 +13380,7 @@ const
 
 std::list<item *> item::all_items_top_recursive( item_pocket::pocket_type pk_type )
 {
-    std::list<item *> contained = contents.all_items_top( pk_type );
+    std::list<item *> contained = contents.all_items_top( pk_type ) | ranges::to<std::list>;
     std::list<item *> all_items_internal{ contained };
     for( item *it : contained ) {
         std::list<item *> recursion_items = it->all_items_top_recursive( pk_type );

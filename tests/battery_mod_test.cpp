@@ -8,6 +8,7 @@
 
 #include "avatar.h"
 #include "cata_catch.h"
+#include "cata_ranges.h"
 #include "debug.h"
 #include "item.h"
 #include "item_pocket.h"
@@ -87,7 +88,7 @@ TEST_CASE( "battery tool mod test", "[battery][mod]" )
         CHECK( med_mod.ammo_types().empty() );
 
         // No tool mods
-        CHECK( med_mod.toolmods().empty() );
+        CHECK( cata::ranges::empty( med_mod.toolmods() ) );
 
         // Mods are not directly compatible with magazines, nor reloadable
         CHECK( med_mod.magazine_compatible().empty() );
@@ -105,7 +106,7 @@ TEST_CASE( "battery tool mod test", "[battery][mod]" )
 
         // Flashlight must be free of battery or existing mods
         REQUIRE_FALSE( flashlight.magazine_current() );
-        REQUIRE( flashlight.toolmods().empty() );
+        REQUIRE( cata::ranges::empty( flashlight.toolmods() ) );
         // Needs a MOD pocket to allow modding
         REQUIRE( flashlight.has_pocket_type( item_pocket::pocket_type::MOD ) );
 
@@ -114,7 +115,7 @@ TEST_CASE( "battery tool mod test", "[battery][mod]" )
             flashlight.put_in( med_mod, item_pocket::pocket_type::MOD );
 
             THEN( "tool modification is successful" ) {
-                CHECK_FALSE( flashlight.toolmods().empty() );
+                CHECK_FALSE( cata::ranges::empty( flashlight.toolmods() ) );
                 CHECK_FALSE( flashlight.get_contents().magazine_flag_restrictions().empty() );
 
                 CHECK( flashlight.tname() == "flashlight (off)+1" );
@@ -188,7 +189,7 @@ TEST_CASE( "battery tool mod test", "[battery][mod]" )
 
                     // Regression tests for #42764 / #42854
                     THEN( "mod remains installed" ) {
-                        CHECK_FALSE( flashlight.toolmods().empty() );
+                        CHECK_FALSE( cata::ranges::empty( flashlight.toolmods() ) );
                         CHECK_FALSE( flashlight.get_contents().magazine_flag_restrictions().empty() );
                     }
                     THEN( "battery remains installed" ) {

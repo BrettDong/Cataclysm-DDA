@@ -616,17 +616,7 @@ void mission::get_all_item_group_matches( std::vector<item *> &items,
 
         //recursively check item contents for target
         if( itm->is_container() && !itm->is_container_empty() ) {
-            std::list<item *> content_list = itm->all_items_top();
-            std::vector<item *> content = std::vector<item *>();
-
-            //list of item into list item*
-            std::transform(
-                content_list.begin(), content_list.end(),
-                std::back_inserter( content ),
-            []( item * p ) {
-                return p;
-            } );
-
+            std::vector<item *> content = itm->all_items_top() | ranges::to<std::vector>;
             get_all_item_group_matches(
                 content, grp_type, matches,
                 required_container, itm->typeId(), specific_container_required );

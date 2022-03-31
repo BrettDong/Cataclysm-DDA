@@ -284,7 +284,8 @@ void match( item_location loc, const final_result &result )
     INFO( "match: id = " << result.id.str() );
     REQUIRE( loc->typeId() == result.id );
     CHECK( result.sealed == loc->any_pockets_sealed() );
-    match( loc, loc->all_items_top( item_pocket::pocket_type::CONTAINER ), result.contents );
+    match( loc, loc->all_items_top( item_pocket::pocket_type::CONTAINER ) | ranges::to<std::list>,
+           result.contents );
 }
 
 void test_scenario::run()
