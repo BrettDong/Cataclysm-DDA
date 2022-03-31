@@ -109,7 +109,9 @@ WARNINGS = \
   -Wsuggest-override \
   -Wunused-macros \
   -Wzero-as-null-pointer-constant \
-  -Wno-unknown-warning-option
+  -Wno-unknown-warning-option \
+  -Wno-old-style-cast \
+  -Wno-suggest-override
 # Uncomment below to disable warnings
 #WARNINGS = -w
 DEBUGSYMS = -g
