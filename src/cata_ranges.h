@@ -16,6 +16,7 @@ size_t size( ::ranges::any_view<T> &&view )
 {
     size_t count = 0;
     for( auto it : view ) {
+        (void)it;
         ++count;
     }
     return count;
