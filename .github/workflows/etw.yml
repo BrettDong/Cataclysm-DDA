@@ -1,0 +1,25 @@
+name: Event Trace on Windows
+
+on:
+  push:
+    branches:
+    - etw
+
+
+jobs:
+  etw:
+    name: ETW
+    runs-on: windows-2019
+
+    steps:
+    - name: Download WPT
+      run: |
+        Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2026036" -OutFile "C:\adksetup.exe"
+    
+    - name: Install WPT
+      run: |
+        C:\adksetup.exe /q /norestart /features OptionId.WindowsPerformanceToolkit
+    
+    - name: Run xperf
+      run: |
+        xperf -providers k
