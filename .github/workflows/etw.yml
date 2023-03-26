@@ -20,6 +20,20 @@ jobs:
       run: |
         C:\adksetup.exe /q /norestart /features OptionId.WindowsPerformanceToolkit
     
-    - name: Run xperf
+    - name: Start ETW Session
       run: |
-        xperf -providers k
+        xperf -on DiagEasy
+    
+    - name: Run checkout action
+      uses: BrettDong/checkout@octokit
+      with:
+        fetch-depth: 1
+    
+    - name: Stop ETW Session
+      run: |
+        xperf -d C:\perf.etl
+    
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ETW
+        path: C:\perf.etl
