@@ -5,13 +5,15 @@
 #include <string>
 #include <vector>
 
-#include "avatar.h"
 #include "enum_traits.h"
 #include "generic_factory.h"
 #include "panels.h"
 #include "string_id.h"
 #include "translations.h"
 #include "type_id.h"
+
+class avatar;
+struct dialogue;
 
 // These are the supported data variables for widgets, defined as enum widget_var.
 // widget_var names may be given as the "var" field in widget JSON.

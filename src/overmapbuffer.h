@@ -16,7 +16,6 @@
 
 #include "coordinates.h"
 #include "enums.h"
-#include "json.h"
 #include "memory_fast.h"
 #include "omdata.h"
 #include "overmap_types.h"
@@ -25,6 +24,8 @@
 class basecamp;
 class character_id;
 enum class cube_direction : int;
+class JsonOut;
+class JsonValue;
 class map_extra;
 class monster;
 class npc;

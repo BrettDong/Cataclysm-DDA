@@ -8,6 +8,7 @@
 
 #include "action.h"
 #include "addiction.h"
+#include "avatar.h"
 #include "avatar_action.h"
 #include "creature.h"
 #include "character.h"
@@ -16,6 +17,7 @@
 #include "effect.h"
 #include "flag.h"
 #include "game.h"
+#include "input.h"
 #include "output.h"
 #include "ui_manager.h"
 #include "vitamin.h"

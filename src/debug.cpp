@@ -13,6 +13,7 @@
 #include <cstring>
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 #include <iterator>
 #include <map>
 #include <memory>

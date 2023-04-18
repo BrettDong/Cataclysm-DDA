@@ -3,6 +3,7 @@
 
 #include "cuboid_rectangle.h"
 #include "point.h"
+#include "uistate.h"
 
 #if defined(TILES)
 

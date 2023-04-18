@@ -82,6 +82,7 @@
 #include "vpart_position.h"
 #include "vpart_range.h"
 #include "weighted_list.h"
+#include "weighted_list_loader.h"
 #include "creature_tracker.h"
 
 static const furn_str_id furn_f_console( "f_console" );

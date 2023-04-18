@@ -6,6 +6,7 @@
 #include "generic_factory.h"
 #include "input.h"
 #include "make_static.h"
+#include "ui.h"
 #include "ui_manager.h"
 #include "weather.h"
 

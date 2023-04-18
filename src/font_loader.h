@@ -2,16 +2,10 @@
 #ifndef CATA_SRC_FONT_LOADER_H
 #define CATA_SRC_FONT_LOADER_H
 
-#include <algorithm>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
-#include "debug.h"
-#include "filesystem.h"
-#include "json.h"
-#include "path_info.h"
-#include "cata_utility.h"
+class cata_path;
 
 extern void ensure_unifont_loaded( std::vector<std::string> &font_list );
 

@@ -18,6 +18,7 @@
 #include "submap.h"
 #include "trap.h"
 #include "type_id.h"
+#include "weighted_list_loader.h"
 
 struct tripoint;
 template <typename T> struct weighted_int_list;

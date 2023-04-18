@@ -605,6 +605,11 @@ const options_manager::Group &options_manager::find_group( const std::string &id
     return null_group;
 }
 
+std::vector<std::string> options_manager::cOpt::getPrerequisiteSupportedTypes()
+{
+    return { "bool", "string", "string_select", "string_input" };
+}
+
 void options_manager::cOpt::setPrerequisites( const std::string &sOption,
         const std::vector<std::string> &sAllowedValues )
 {
@@ -631,6 +636,12 @@ void options_manager::cOpt::setPrerequisites( const std::string &sOption,
 
     sPrerequisite = sOption;
     sPrerequisiteAllowedValues = sAllowedValues;
+}
+
+void options_manager::cOpt::setPrerequisite( const std::string &sOption,
+        const std::string &sAllowedValue )
+{
+    setPrerequisites( sOption, { sAllowedValue } );
 }
 
 std::string options_manager::cOpt::getPrerequisite() const

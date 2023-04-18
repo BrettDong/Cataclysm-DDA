@@ -5,10 +5,9 @@
 #include <iosfwd>
 #include <vector>
 
-#include "npc.h"
-
 class item;
 class Character;
+class npc;
 struct point;
 
 int get_remaining_charges( const std::string &tool_id );

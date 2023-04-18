@@ -2,7 +2,7 @@
 #ifndef CATA_SRC_DISPLAY_H
 #define CATA_SRC_DISPLAY_H
 
-#include <functional>
+// #include <functional>
 
 #include "widget.h"
 
@@ -18,6 +18,7 @@ enum class bodygraph_var : int {
 
 class avatar;
 class Character;
+class vehicle;
 
 struct disp_overmap_cache {
     private:

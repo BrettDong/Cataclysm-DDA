@@ -2,6 +2,7 @@
 #ifndef CATA_SRC_MOD_TRACKER_H
 #define CATA_SRC_MOD_TRACKER_H
 
+#include <iostream>
 #include <string>
 
 #include "cata_type_traits.h"

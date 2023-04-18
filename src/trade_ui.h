@@ -9,7 +9,6 @@
 #include <utility>
 #include <vector>
 
-#include "character.h"
 #include "cursesdef.h"
 #include "inventory_ui.h"
 #include "item_location.h"
@@ -17,6 +16,7 @@
 #include "translations.h"
 #include "ui_manager.h"
 
+class Character;
 class npc;
 class trade_ui;
 struct point;

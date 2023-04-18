@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "bodypart.h"
+#include "body_part_set.h"
 #include "cata_utility.h"
 #include "catacharset.h"
 #include "character.h"

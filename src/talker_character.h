@@ -9,7 +9,6 @@
 
 #include "character.h"
 #include "coordinates.h"
-#include "npc.h"
 #include "talker.h"
 #include "type_id.h"
 

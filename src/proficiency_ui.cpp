@@ -1,7 +1,9 @@
 #include "character.h"
+#include "input.h"
 #include "output.h"
 #include "proficiency.h"
 #include "string_input_popup.h"
+#include "ui.h"
 #include "ui_manager.h"
 
 // Basic layout:

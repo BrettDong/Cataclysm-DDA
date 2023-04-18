@@ -5,9 +5,10 @@
 #include <vector>
 
 #include "bodypart.h"
-#include "json.h"
 #include "translation.h"
 #include "type_id.h"
+
+class JsonObject;
 
 struct character_modifier {
     public:

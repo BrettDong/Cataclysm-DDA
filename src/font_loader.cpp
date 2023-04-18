@@ -1,5 +1,9 @@
 #include "font_loader.h"
 
+#include <iostream>
+
+#include "cata_path.h"
+#include "json.h"
 #include "json_loader.h"
 
 // Ensure that unifont is always loaded as a fallback font to prevent users from shooting themselves in the foot

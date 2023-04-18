@@ -27,7 +27,6 @@
 #include "addiction.h"
 #include "bodypart.h"
 #include "calendar.h"
-#include "cata_utility.h"
 #include "character_attire.h"
 #include "character_id.h"
 #include "city.h"
@@ -42,7 +41,6 @@
 #include "item.h"
 #include "item_location.h"
 #include "item_pocket.h"
-#include "magic_enchantment.h"
 #include "memory_fast.h"
 #include "pimpl.h"
 #include "player_activity.h"
@@ -67,6 +65,7 @@ class basecamp;
 class bionic_collection;
 class character_martial_arts;
 class dispersion_sources;
+class enchant_cache;
 class effect;
 class effect_source;
 class faction;

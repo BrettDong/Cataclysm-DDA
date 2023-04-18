@@ -12,7 +12,6 @@
 #include "calendar.h"
 #include "color.h"
 #include "damage.h"
-#include "debug.h"
 #include "flat_set.h"
 #include "json.h"
 #include "units.h"

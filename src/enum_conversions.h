@@ -3,6 +3,7 @@
 #define CATA_SRC_ENUM_CONVERSIONS_H
 
 #include <optional>
+#include <stdexcept>
 #include <unordered_map>
 
 #include "debug.h"

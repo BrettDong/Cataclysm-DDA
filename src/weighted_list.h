@@ -2,12 +2,10 @@
 #ifndef CATA_SRC_WEIGHTED_LIST_H
 #define CATA_SRC_WEIGHTED_LIST_H
 
-#include "json.h"
 #include "rng.h"
 
 #include <climits>
 #include <cstdlib>
-#include <functional>
 #include <sstream>
 #include <vector>
 
@@ -76,7 +74,8 @@ template <typename W, typename T> struct weighted_list {
          * This will call the given callback function once for every object in the weighted list.
          * @param func The callback function.
          */
-        void apply( std::function<void( const T & )> func ) const {
+        template <typename F>
+        void apply( F &&func ) const {
             for( auto &itr : objects ) {
                 func( itr.obj );
             }
@@ -87,7 +86,8 @@ template <typename W, typename T> struct weighted_list {
          * This is the non-const version.
          * @param func The callback function.
          */
-        void apply( std::function<void( T & )> func ) {
+        template <typename F>
+        void apply( F &&func ) {
             for( auto &itr : objects ) {
                 func( itr.obj );
             }
@@ -276,21 +276,5 @@ template <typename T> struct weighted_float_list : public weighted_list<double, 
         }
 
 };
-
-template<typename W, typename T>
-void load_weighted_list( const JsonValue &jsv, weighted_list<W, T> &list, W default_weight )
-{
-    for( const JsonValue entry : jsv.get_array() ) {
-        if( entry.test_array() ) {
-            std::pair<T, W> p;
-            entry.read( p, true );
-            list.add( p.first, p.second );
-        } else {
-            T val;
-            entry.read( val );
-            list.add( val, default_weight );
-        }
-    }
-}
 
 #endif // CATA_SRC_WEIGHTED_LIST_H

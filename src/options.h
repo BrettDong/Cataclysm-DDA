@@ -127,14 +127,10 @@ class options_manager
                     return !operator==( rhs );
                 }
 
-                static std::vector<std::string> getPrerequisiteSupportedTypes() {
-                    return { "bool", "string", "string_select", "string_input" };
-                }
+                static std::vector<std::string> getPrerequisiteSupportedTypes();
 
                 void setPrerequisites( const std::string &sOption, const std::vector<std::string> &sAllowedValues );
-                void setPrerequisite( const std::string &sOption, const std::string &sAllowedValue = "true" ) {
-                    setPrerequisites( sOption, { sAllowedValue } );
-                }
+                void setPrerequisite( const std::string &sOption, const std::string &sAllowedValue = "true" );
                 std::string getPrerequisite() const;
                 bool hasPrerequisite() const;
                 bool checkPrerequisite() const;

@@ -68,6 +68,13 @@ std::string enum_to_string<itype_variant_kind>( itype_variant_kind data )
 }
 } // namespace io
 
+itype::itype()
+{
+    melee.fill( 0 );
+}
+
+itype::~itype() = default;
+
 std::string itype::get_item_type_string() const
 {
     if( tool ) {

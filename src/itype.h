@@ -1343,9 +1343,7 @@ struct itype {
     public:
         static constexpr int damage_scale = 1000; /** Damage scale compared to the old float damage value */
 
-        itype() {
-            melee.fill( 0 );
-        }
+        itype();
 
         int damage_max() const {
             return count_by_charges() ? 0 : damage_max_;
@@ -1421,7 +1419,7 @@ struct itype {
                                    const std::string &iuse_name ) const;
         int tick( Character &p, item &it, const tripoint &pos ) const;
 
-        virtual ~itype() = default;
+        virtual ~itype();
 
         // returns true if it is one of the outcomes of cutting
         bool is_basic_component() const;

@@ -8,6 +8,7 @@
 #include "game.h"
 #include "itype.h"
 #include "output.h"
+#include "uistate.h"
 
 static const character_modifier_id character_modifier_reloading_move_mod( "reloading_move_mod" );
 static const itype_id itype_battery( "battery" );

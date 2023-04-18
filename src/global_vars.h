@@ -1,9 +1,12 @@
 #pragma once
 #ifndef CATA_SRC_GLOBAL_VARS_H
 #define CATA_SRC_GLOBAL_VARS_H
+#include <unordered_map>
+#include <string>
 #include <utility>
 
-#include "json.h"
+class JsonObject;
+class JsonOut;
 
 enum class var_type : int {
     u,

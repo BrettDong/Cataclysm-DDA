@@ -29,6 +29,7 @@ class Trait_group;
 class item;
 class nc_color;
 struct dream;
+struct dialogue;
 
 enum game_message_type : int;
 

@@ -1,5 +1,6 @@
 #include "widget.h"
 
+#include "avatar.h"
 #include "character_martial_arts.h"
 #include "color.h"
 #include "condition.h"

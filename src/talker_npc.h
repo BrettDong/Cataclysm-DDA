@@ -6,13 +6,14 @@
 #include <vector>
 
 #include "faction.h"
-#include "npc.h"
 #include "talker_character.h"
 #include "type_id.h"
 
 class Character;
 class item;
 class mission;
+class npc;
+struct npc_opinion;
 class talker;
 
 /*

@@ -40,6 +40,7 @@
 #include "rng.h"
 #include "text_snippets.h"
 #include "translations.h"
+#include "uistate.h"
 #include "units.h"
 
 static const activity_id ACT_PULL_CREATURE( "ACT_PULL_CREATURE" );

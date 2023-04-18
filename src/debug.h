@@ -48,7 +48,7 @@
 #include <functional>
 // Includes                                                         {{{1
 // ---------------------------------------------------------------------
-#include <iostream>
+#include <iosfwd>
 #include <type_traits>
 
 #define STRING2(x) #x
