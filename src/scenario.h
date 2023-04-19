@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "calendar.h"
-#include "effect_on_condition.h"
+#include "ret_val.h"
 #include "translations.h"
 #include "type_id.h"
 
