@@ -7,11 +7,11 @@
 #include <list>
 #include <vector>
 
-#include "character.h"
 #include "coordinates.h"
 #include "talker.h"
 #include "type_id.h"
 
+class Character;
 class character_id;
 class faction;
 class item;
