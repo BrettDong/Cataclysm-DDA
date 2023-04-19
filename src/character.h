@@ -44,6 +44,7 @@
 #include "pimpl.h"
 #include "player_activity.h"
 #include "point.h"
+#include "queued_eoc.h"
 #include "ranged.h"
 #include "ret_val.h"
 #include "stomach.h"
@@ -284,18 +285,6 @@ enum crush_tool_type {
     CRUSH_HAMMER,
     CRUSH_DRILL_OR_HAMMER_AND_SCREW,
     CRUSH_NO_TOOL
-};
-
-struct queued_eoc {
-    public:
-        effect_on_condition_id eoc;
-        time_point time;
-};
-
-struct eoc_compare {
-    bool operator()( const queued_eoc &lhs, const queued_eoc &rhs ) const {
-        return lhs.time > rhs.time;
-    }
 };
 
 struct aim_type {

@@ -18,7 +18,6 @@
 #include <vector>
 
 #include "calendar.h"
-#include "character.h"
 #include "character_id.h"
 #include "coordinates.h"
 #include "creature.h"
@@ -31,6 +30,7 @@
 #include "monster.h"
 #include "pimpl.h"
 #include "point.h"
+#include "queued_eoc.h"
 #include "type_id.h"
 #include "units_fwd.h"
 #include "weather.h"

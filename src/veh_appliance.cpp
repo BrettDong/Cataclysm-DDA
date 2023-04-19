@@ -1,3 +1,4 @@
+#include "character.h"
 #include "game.h"
 #include "handle_liquid.h"
 #include "inventory.h"
