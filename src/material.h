@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 
+#include "enum_traits.h"
 #include "fire.h"
 #include "translations.h"
 #include "type_id.h"

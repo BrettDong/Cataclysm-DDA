@@ -22,6 +22,7 @@
 #include "output.h"
 #include "string_id.h"
 #include "units.h"
+#include "units_serde.h"
 #include "wcwidth.h"
 
 /**

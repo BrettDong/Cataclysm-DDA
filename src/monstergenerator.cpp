@@ -35,6 +35,7 @@
 #include "translations.h"
 #include "type_id.h"
 #include "units.h"
+#include "units_serde.h"
 #include "weakpoint.h"
 
 static const material_id material_flesh( "flesh" );

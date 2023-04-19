@@ -3,6 +3,7 @@
 #include "calendar.h"
 #include "json.h"
 #include "string_formatter.h"
+#include "units_serde.h"
 
 namespace units
 {

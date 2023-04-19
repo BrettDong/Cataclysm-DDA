@@ -22,6 +22,7 @@
 #include "visitable.h"
 
 class Character;
+class JsonArray;
 class JsonObject;
 class JsonOut;
 class item;

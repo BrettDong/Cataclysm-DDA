@@ -119,6 +119,7 @@
 #include "text_snippets.h"
 #include "tileray.h"
 #include "units.h"
+#include "units_serde.h"
 #include "value_ptr.h"
 #include "veh_type.h"
 #include "vehicle.h"

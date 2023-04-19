@@ -17,6 +17,7 @@
 #include "mtype.h"
 #include "translations.h"
 #include "units.h"
+#include "units_serde.h"
 
 namespace io
 {

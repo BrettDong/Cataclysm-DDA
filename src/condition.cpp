@@ -46,6 +46,7 @@
 #include "talker.h"
 #include "type_id.h"
 #include "units.h"
+#include "units_serde.h"
 #include "vehicle.h"
 #include "vpart_position.h"
 #include "widget.h"

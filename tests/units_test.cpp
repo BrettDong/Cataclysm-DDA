@@ -10,6 +10,7 @@
 #include "math_defines.h"
 #include "options_helpers.h"
 #include "units.h"
+#include "units_serde.h"
 #include "units_utility.h"
 
 TEST_CASE( "units_have_correct_ratios", "[units]" )

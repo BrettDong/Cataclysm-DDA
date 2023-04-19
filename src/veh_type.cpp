@@ -31,6 +31,7 @@
 #include "string_formatter.h"
 #include "translations.h"
 #include "units.h"
+#include "units_serde.h"
 #include "units_utility.h"
 #include "value_ptr.h"
 #include "vehicle.h"

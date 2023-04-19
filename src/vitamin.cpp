@@ -8,6 +8,7 @@
 #include "enum_conversions.h"
 #include "json.h"
 #include "units.h"
+#include "units_serde.h"
 
 static std::map<vitamin_id, vitamin> vitamins_all;
 

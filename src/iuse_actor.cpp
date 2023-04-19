@@ -82,6 +82,7 @@
 #include "translations.h"
 #include "trap.h"
 #include "ui.h"
+#include "units_serde.h"
 #include "units_utility.h"
 #include "value_ptr.h"
 #include "vehicle.h"

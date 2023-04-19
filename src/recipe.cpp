@@ -38,6 +38,7 @@
 #include "type_id.h"
 #include "uistate.h"
 #include "units.h"
+#include "units_serde.h"
 #include "value_ptr.h"
 
 static const itype_id itype_atomic_coffeepot( "atomic_coffeepot" );

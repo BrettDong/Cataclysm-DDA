@@ -57,6 +57,7 @@
 #include "try_parse_integer.h"
 #include "ui.h"
 #include "units.h"
+#include "units_serde.h"
 #include "value_ptr.h"
 #include "veh_type.h"
 #include "vitamin.h"

@@ -9,6 +9,7 @@
 #include <string_view>
 #include <vector>
 
+#include "debug.h"
 #include "rng.h"
 
 struct math_func {
