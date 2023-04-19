@@ -13,7 +13,7 @@
 
 #include "dialogue_win.h"
 #include "global_vars.h"
-#include "npc.h"
+#include "npc_opinion.h"
 #include "talker.h"
 #include "translations.h"
 #include "type_id.h"
@@ -22,8 +22,10 @@ class JsonArray;
 class JsonObject;
 class martialart;
 class mission;
+class npc;
 struct dialogue;
 struct input_event;
+struct talk_effect_fun_t;
 
 enum talk_trial_type : unsigned char {
     TALK_TRIAL_NONE, // No challenge here!

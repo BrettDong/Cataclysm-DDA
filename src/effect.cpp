@@ -16,6 +16,7 @@
 #include "flag.h"
 #include "generic_factory.h"
 #include "json.h"
+#include "magic_enchantment.h"
 #include "messages.h"
 #include "output.h"
 #include "rng.h"

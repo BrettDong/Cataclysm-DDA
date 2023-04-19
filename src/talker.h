@@ -4,6 +4,7 @@
 
 #include "coordinates.h"
 #include "effect.h"
+#include "item.h"
 #include "units.h"
 #include "units_fwd.h"
 #include <list>

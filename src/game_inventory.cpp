@@ -39,6 +39,7 @@
 #include "itype.h"
 #include "iuse.h"
 #include "iuse_actor.h"
+#include "npc.h"
 #include "npctrade.h"
 #include "options.h"
 #include "output.h"

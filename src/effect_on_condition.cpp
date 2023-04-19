@@ -6,6 +6,7 @@
 #include "condition.h"
 #include "game.h"
 #include "generic_factory.h"
+#include "npc.h"
 #include "scenario.h"
 #include "talker.h"
 #include "type_id.h"

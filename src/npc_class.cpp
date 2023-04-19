@@ -17,6 +17,7 @@
 #include "itype.h"
 #include "json.h"
 #include "mutation.h"
+#include "npc.h"
 #include "rng.h"
 #include "skill.h"
 #include "trait_group.h"

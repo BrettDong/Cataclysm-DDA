@@ -7,6 +7,7 @@
 #include "item_group.h"
 #include "itype.h"
 #include "json.h"
+#include "npc.h"
 
 namespace
 {

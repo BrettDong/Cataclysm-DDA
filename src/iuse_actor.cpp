@@ -66,6 +66,7 @@
 #include "mtype.h"
 #include "music.h"
 #include "mutation.h"
+#include "npc.h"
 #include "output.h"
 #include "overmapbuffer.h"
 #include "pimpl.h"

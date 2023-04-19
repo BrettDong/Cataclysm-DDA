@@ -2108,29 +2108,6 @@ void npc_personality::serialize( JsonOut &json ) const
     json.end_object();
 }
 
-void npc_opinion::deserialize( const JsonObject &data )
-{
-    data.allow_omitted_members();
-    data.read( "trust", trust );
-    data.read( "fear", fear );
-    data.read( "value", value );
-    data.read( "anger", anger );
-    data.read( "owed", owed );
-    data.read( "sold", sold );
-}
-
-void npc_opinion::serialize( JsonOut &json ) const
-{
-    json.start_object();
-    json.member( "trust", trust );
-    json.member( "fear", fear );
-    json.member( "value", value );
-    json.member( "anger", anger );
-    json.member( "owed", owed );
-    json.member( "sold", sold );
-    json.end_object();
-}
-
 void npc_favor::deserialize( const JsonObject &jo )
 {
     jo.allow_omitted_members();
