@@ -3,6 +3,7 @@
 #include "avatar.h"
 #include "condition.h"
 #include "generic_factory.h"
+#include "item.h"
 #include "item_category.h"
 #include "item_group.h"
 #include "itype.h"

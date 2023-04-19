@@ -8,6 +8,7 @@
 #include "generic_factory.h"
 #include "json.h"
 #include "localized_comparator.h"
+#include "rng.h"
 
 translation::translation( const plural_tag ) : raw_pl( cata::make_value<std::string>() ) {}
 

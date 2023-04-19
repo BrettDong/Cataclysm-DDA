@@ -24,8 +24,8 @@
 #include "cuboid_rectangle.h"
 #include "debug.h"
 #include "enums.h"
-#include "item.h"
 #include "line.h"
+#include "output_item_info.h"
 #include "point.h"
 #include "string_formatter.h"
 #include "translations.h"
@@ -493,54 +493,6 @@ inline void full_screen_popup( const char *mes, Args &&... args )
 /*@}*/
 std::string format_item_info( const std::vector<iteminfo> &vItemDisplay,
                               const std::vector<iteminfo> &vItemCompare );
-
-// the extra data that item_info needs to draw
-struct item_info_data {
-    private:
-        std::string sItemName;
-        std::string sTypeName;
-        std::vector<iteminfo> vItemDisplay;
-        std::vector<iteminfo> vItemCompare;
-        int selected = 0;
-
-    public:
-
-        item_info_data() = default;
-
-        item_info_data( const std::string &sItemName, const std::string &sTypeName,
-                        const std::vector<iteminfo> &vItemDisplay, const std::vector<iteminfo> &vItemCompare )
-            : sItemName( sItemName ), sTypeName( sTypeName ),
-              vItemDisplay( vItemDisplay ), vItemCompare( vItemCompare ) {}
-
-        item_info_data( const std::string &sItemName, const std::string &sTypeName,
-                        const std::vector<iteminfo> &vItemDisplay, const std::vector<iteminfo> &vItemCompare,
-                        int &ptr_selected )
-            : sItemName( sItemName ), sTypeName( sTypeName ),
-              vItemDisplay( vItemDisplay ), vItemCompare( vItemCompare ),
-              ptr_selected( &ptr_selected ) {}
-
-        const std::string &get_item_name() const {
-            return sItemName;
-        }
-        const std::string &get_type_name() const {
-            return sTypeName;
-        }
-        const std::vector<iteminfo> &get_item_display() const {
-            return vItemDisplay;
-        }
-        const std::vector<iteminfo> &get_item_compare() const {
-            return vItemCompare;
-        }
-
-        int *ptr_selected = &selected;
-        bool without_getch = false;
-        bool without_border = false;
-        bool handle_scrolling = false;
-        bool any_input = true;
-        bool scrollbar_left = true;
-        bool use_full_win = false;
-        unsigned int padding = 1;
-};
 
 input_event draw_item_info( const catacurses::window &win, item_info_data &data );
 

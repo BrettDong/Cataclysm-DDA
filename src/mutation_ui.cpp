@@ -13,6 +13,7 @@
 #include "enums.h"
 #include "input.h"
 #include "inventory.h"
+#include "item.h"
 #include "mutation.h"
 #include "output.h"
 #include "popup.h"

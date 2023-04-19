@@ -9,6 +9,7 @@
 #include "debug.h"
 #include "game_constants.h"
 #include "generic_factory.h"
+#include "item.h"
 #include "json.h"
 
 static std::vector<move_mode_id> move_modes_sorted;

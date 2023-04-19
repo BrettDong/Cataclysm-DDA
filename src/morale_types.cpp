@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "generic_factory.h"
+#include "item.h"
 #include "itype.h"
 #include "json.h"
 #include "string_formatter.h"
