@@ -27,7 +27,6 @@
 #include "item_location.h"
 #include "item_pocket.h"
 #include "material.h"
-#include "requirements.h"
 #include "safe_reference.h"
 #include "type_id.h"
 #include "units.h"
@@ -51,6 +50,7 @@ class monster;
 class nc_color;
 class recipe;
 class relic;
+struct requirement_data;
 struct part_material;
 struct armor_portion_data;
 struct itype_variant_data;

@@ -26,6 +26,7 @@ void maptile_soa::swap_soa_tile( const point &p1, const point &p2 )
     std::swap( rad[p1.x][p1.y], rad[p2.x][p2.y] );
 }
 
+submap::submap() = default;
 submap::submap( submap && ) noexcept( map_is_noexcept ) = default;
 submap::~submap() = default;
 

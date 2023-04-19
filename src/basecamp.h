@@ -18,7 +18,6 @@
 #include "memory_fast.h"
 #include "mission_companion.h"
 #include "point.h"
-#include "requirements.h"
 #include "translations.h"
 #include "type_id.h"
 

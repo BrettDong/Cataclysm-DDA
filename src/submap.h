@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "active_item_cache.h"
-#include "basecamp.h"
 #include "calendar.h"
 #include "cata_type_traits.h"
 #include "colony.h"
@@ -31,6 +30,7 @@
 #include "vehicle.h"
 
 class JsonOut;
+class basecamp;
 class map;
 class vehicle;
 struct furn_t;
@@ -69,7 +69,7 @@ struct maptile_soa {
 class submap
 {
     public:
-        submap() = default;
+        submap();
         submap( submap && ) noexcept( map_is_noexcept );
         ~submap();
 

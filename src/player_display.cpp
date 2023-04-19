@@ -27,6 +27,7 @@
 #include "game.h"
 #include "input.h"
 #include "localized_comparator.h"
+#include "magic_enchantment.h"
 #include "mutation.h"
 #include "options.h"
 #include "output.h"

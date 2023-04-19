@@ -25,6 +25,7 @@
 #include "map_iterator.h"
 #include "mapbuffer.h"
 #include "mapdata.h"
+#include "mapgendata.h"
 #include "mapgen_functions.h"
 #include "memorial_logger.h"
 #include "messages.h"

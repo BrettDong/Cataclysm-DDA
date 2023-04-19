@@ -45,6 +45,7 @@
 #include "string_formatter.h"
 #include "text_snippets.h"
 #include "translations.h"
+#include "ui.h"
 #include "ui_manager.h"
 #include "wcwidth.h"
 #include "worldfactory.h"

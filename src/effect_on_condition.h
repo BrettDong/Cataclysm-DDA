@@ -10,6 +10,7 @@
 #include "condition.h"
 #include "dialogue.h"
 #include "event.h"
+#include "event_subscriber.h"
 #include "json.h"
 #include "type_id.h"
 

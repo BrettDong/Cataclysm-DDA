@@ -15,6 +15,7 @@
 #include "character_id.h"
 #include "coordinates.h"
 #include "dialogue.h"
+#include "dialogue_helpers.h"
 #include "enums.h"
 #include "game_constants.h"
 #include "npc_favor.h"

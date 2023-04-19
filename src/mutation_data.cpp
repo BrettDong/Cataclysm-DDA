@@ -18,11 +18,13 @@
 #include "generic_factory.h"
 #include "json.h"
 #include "localized_comparator.h"
+#include "magic_enchantment.h"
 #include "make_static.h"
 #include "memory_fast.h"
 #include "string_formatter.h"
 #include "trait_group.h"
 #include "translations.h"
+#include "ui.h"
 
 static const mutation_category_id mutation_category_ANY( "ANY" );
 

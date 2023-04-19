@@ -16,7 +16,6 @@
 #include <utility>
 #include <vector>
 
-#include "basecamp.h"
 #include "city.h"
 #include "coordinates.h"
 #include "cube_direction.h"
@@ -34,6 +33,7 @@
 class JsonArray;
 class JsonObject;
 class JsonOut;
+class basecamp;
 class cata_path;
 class character_id;
 class npc;

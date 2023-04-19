@@ -1,6 +1,7 @@
 #include "cursesdef.h" // IWYU pragma: associated
 #include "sdltiles.h" // IWYU pragma: associated
 
+#include "basecamp.h"
 #include "cuboid_rectangle.h"
 #include "point.h"
 #include "uistate.h"

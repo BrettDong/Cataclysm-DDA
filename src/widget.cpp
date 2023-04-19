@@ -7,6 +7,7 @@
 #include "display.h"
 #include "generic_factory.h"
 #include "json.h"
+#include "magic.h"
 #include "output.h"
 #include "overmapbuffer.h"
 

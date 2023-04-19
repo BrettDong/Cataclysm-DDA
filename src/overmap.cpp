@@ -18,6 +18,7 @@
 #include "auto_note.h"
 #include "avatar.h"
 #include "assign.h"
+#include "basecamp.h"
 #include "cached_options.h"
 #include "cata_assert.h"
 #include "cata_utility.h"
