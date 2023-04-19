@@ -6,8 +6,6 @@
 #include <list>
 #include <vector>
 
-#include "achievement.h"
-#include "character.h"
 #include "kill_tracker.h"
 #include "skill.h"
 #include "stats_tracker.h"
@@ -16,6 +14,7 @@
 
 enum class time_accuracy;
 class JsonValue;
+struct trait_and_var;
 
 /// <summary>
 /// diary page, to save current character progression

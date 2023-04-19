@@ -14,8 +14,8 @@
 #include <vector>
 
 #include "calendar.h"
-#include "character.h"
 #include "damage.h"
+#include "enums.h"
 #include "hash_utils.h"
 #include "memory_fast.h"
 #include "point.h"
@@ -23,6 +23,7 @@
 #include "type_id.h"
 #include "value_ptr.h"
 
+class Character;
 class JsonArray;
 class JsonObject;
 class Trait_group;
