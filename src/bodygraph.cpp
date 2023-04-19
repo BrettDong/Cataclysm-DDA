@@ -3,6 +3,7 @@
 #include "bodypart.h"
 #include "cursesdef.h"
 #include "damage.h"
+#include "effect.h"
 #include "generic_factory.h"
 #include "input.h"
 #include "make_static.h"

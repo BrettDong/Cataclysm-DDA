@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 
+#include "item.h"
 #include "itype.h"
 #include "mapdata.h"
 #include "mtype.h"

@@ -1,5 +1,6 @@
 #include "character.h"
 #include "creature_tracker.h"
+#include "effect.h"
 #include "flag.h"
 #include "map.h"
 #include "map_iterator.h"

@@ -1,6 +1,7 @@
 #include "avatar.h"
 #include "character.h"
 #include "display.h"
+#include "effect.h"
 #include "flag.h"
 #include "game.h"
 #include "make_static.h"

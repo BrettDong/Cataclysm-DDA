@@ -1,4 +1,5 @@
 #include "character.h"
+#include "effect.h"
 #include "messages.h"
 #include "morale.h"
 #include "map_iterator.h"

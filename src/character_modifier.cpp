@@ -1,5 +1,6 @@
 #include "character.h"
 #include "character_modifier.h"
+#include "effect.h"
 #include "enum_conversions.h"
 #include "flag.h"
 #include "generic_factory.h"

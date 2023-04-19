@@ -21,7 +21,6 @@
 #include "enums.h"
 #include "pimpl.h"
 #include "string_formatter.h"
-#include "talker.h"
 #include "type_id.h"
 #include "units_fwd.h"
 #include "viewer.h"
@@ -49,6 +48,7 @@ class avatar;
 class field;
 class field_entry;
 class npc;
+class talker;
 class time_duration;
 struct point;
 struct tripoint;

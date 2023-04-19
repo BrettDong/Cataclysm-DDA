@@ -3,6 +3,7 @@
 #include "bodygraph.h"
 #include "character.h"
 #include "display.h"
+#include "effect.h"
 #include "event.h"
 #include "event_bus.h"
 #include "flag.h"
