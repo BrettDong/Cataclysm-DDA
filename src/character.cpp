@@ -36,6 +36,7 @@
 #include "construction.h"
 #include "coordinate_conversions.h"
 #include "coordinates.h"
+#include "craft_command.h"
 #include "creature_tracker.h"
 #include "cursesdef.h"
 #include "disease.h"

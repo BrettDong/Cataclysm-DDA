@@ -16,6 +16,7 @@
 #include "character.h"
 #include "color.h"
 #include "condition.h"
+#include "craft_command.h"
 #include "creature.h"
 #include "creature_tracker.h"
 #include "cursesdef.h"

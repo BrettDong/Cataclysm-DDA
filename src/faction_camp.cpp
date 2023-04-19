@@ -26,6 +26,7 @@
 #include "color.h"
 #include "coordinate_conversions.h"
 #include "coordinates.h"
+#include "craft_command.h"
 #include "cursesdef.h"
 #include "debug.h"
 #include "enums.h"

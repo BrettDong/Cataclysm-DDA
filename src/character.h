@@ -31,7 +31,6 @@
 #include "character_id.h"
 #include "city.h"
 #include "coordinates.h"
-#include "craft_command.h"
 #include "creature.h"
 #include "damage.h"
 #include "debug.h"
@@ -46,7 +45,6 @@
 #include "player_activity.h"
 #include "point.h"
 #include "ranged.h"
-#include "recipe.h"
 #include "ret_val.h"
 #include "stomach.h"
 #include "string_formatter.h"
@@ -64,6 +62,7 @@ class SkillLevelMap;
 class basecamp;
 class bionic_collection;
 class character_martial_arts;
+class craft_command;
 class dispersion_sources;
 class enchant_cache;
 class effect;
@@ -78,6 +77,7 @@ class nc_color;
 class npc;
 class player_morale;
 class proficiency_set;
+class recipe;
 class recipe_subset;
 class spell;
 class ui_adaptor;
@@ -107,6 +107,7 @@ enum npc_attitude : int;
 enum action_id : int;
 enum class steed_type : int;
 enum class proficiency_bonus_type : int;
+enum class recipe_filter_flags : int;
 
 using drop_location = std::pair<item_location, int>;
 using drop_locations = std::list<drop_location>;

@@ -17,6 +17,7 @@
 #include "clzones.h"
 #include "colony.h"
 #include "color.h"
+#include "craft_command.h"
 #include "debug.h"
 #include "faction_camp.h"
 #include "game.h"

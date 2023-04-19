@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "coordinates.h"
-#include "craft_command.h"
 #include "game_inventory.h"
 #include "inventory.h"
 #include "memory_fast.h"
