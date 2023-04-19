@@ -5,7 +5,7 @@
 #include <cmath>
 
 #include "calendar.h"
-#include "cata_utility.h"
+#include "cata_math_utility.h"
 #include "debug.h"
 #include "units.h"
 

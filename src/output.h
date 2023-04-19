@@ -3,6 +3,7 @@
 #define CATA_SRC_OUTPUT_H
 
 #include <algorithm>
+#include <chrono>
 #include <clocale>
 #include <cstddef>
 #include <cstdint>

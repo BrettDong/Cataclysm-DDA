@@ -11,6 +11,7 @@
 #include "point.h"
 
 class JsonArray;
+class cata_path;
 class submap;
 
 /**

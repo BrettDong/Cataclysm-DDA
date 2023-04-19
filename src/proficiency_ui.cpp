@@ -1,3 +1,4 @@
+#include "cata_utility.h"
 #include "character.h"
 #include "input.h"
 #include "output.h"

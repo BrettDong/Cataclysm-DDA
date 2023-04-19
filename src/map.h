@@ -22,7 +22,7 @@
 #include "calendar.h"
 #include "cata_assert.h"
 #include "cata_type_traits.h"
-#include "cata_utility.h"
+#include "cata_predicates.h"
 #include "colony.h"
 #include "coordinate_conversions.h"
 #include "coordinates.h"

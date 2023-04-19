@@ -17,7 +17,7 @@
 #include <vector>
 
 #include "calendar.h"
-#include "cata_utility.h"
+#include "cata_predicates.h"
 #include "compatibility.h"
 #include "enums.h"
 #include "gun_mode.h"

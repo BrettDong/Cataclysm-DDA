@@ -17,7 +17,7 @@
 #include <utility>
 #include <vector>
 
-#include "cata_utility.h"
+#include "cata_predicates.h"
 #include "coordinates.h"
 #include "item.h"
 #include "magic_enchantment.h"

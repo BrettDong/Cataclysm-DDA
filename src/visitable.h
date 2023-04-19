@@ -7,7 +7,7 @@
 #include <list>
 #include <vector>
 
-#include "cata_utility.h"
+#include "cata_predicates.h"
 #include "type_id.h"
 
 class item;

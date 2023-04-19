@@ -11,7 +11,7 @@
 #include "avatar.h"
 #include "bionics.h"
 #include "calendar.h"
-#include "cata_utility.h"
+#include "cata_math_utility.h"
 #include "character.h"
 #include "color.h"
 #include "contents_change_handler.h"
