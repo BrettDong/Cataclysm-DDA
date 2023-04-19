@@ -7,7 +7,9 @@
 #include "flag.h"
 #include "game.h"
 #include "itype.h"
+#include "magic_enchantment.h"
 #include "output.h"
+#include "ui.h"
 #include "uistate.h"
 
 static const character_modifier_id character_modifier_reloading_move_mod( "reloading_move_mod" );

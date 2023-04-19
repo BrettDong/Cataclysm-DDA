@@ -10,6 +10,7 @@
 #include "item.h"
 #include "make_static.h"
 #include "recipe.h"
+#include "relic.h"
 #include "ret_val.h"
 #include "translations.h"
 

@@ -37,6 +37,7 @@
 #include "overmapbuffer.h"
 #include "pimpl.h"
 #include "player_activity.h"
+#include "relic.h"
 #include "rng.h"
 #include "text_snippets.h"
 #include "translations.h"

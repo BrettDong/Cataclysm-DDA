@@ -32,6 +32,7 @@
 #include "translations.h"
 #include "type_id.h"
 #include "ui_manager.h"
+#include "ui.h"
 
 using namespace auto_pickup;
 

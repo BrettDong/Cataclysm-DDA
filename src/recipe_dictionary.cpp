@@ -13,6 +13,7 @@
 #include "crafting_gui.h"
 #include "debug.h"
 #include "init.h"
+#include "input.h"
 #include "item.h"
 #include "item_factory.h"
 #include "itype.h"

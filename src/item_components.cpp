@@ -3,6 +3,7 @@
 #include "flag.h"
 #include "item.h"
 #include "itype.h"
+#include "json.h"
 #include "type_id.h"
 
 std::vector<item> item_components::operator[]( const itype_id it_id )

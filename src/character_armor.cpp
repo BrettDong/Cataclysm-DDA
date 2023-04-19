@@ -2,6 +2,7 @@
 #include "character.h"
 #include "flag.h"
 #include "itype.h"
+#include "magic_enchantment.h"
 #include "make_static.h"
 #include "map.h"
 #include "memorial_logger.h"

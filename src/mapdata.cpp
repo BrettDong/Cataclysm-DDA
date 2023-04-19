@@ -20,6 +20,7 @@
 #include "item_group.h"
 #include "json.h"
 #include "output.h"
+#include "relic.h"
 #include "rng.h"
 #include "string_formatter.h"
 #include "translations.h"

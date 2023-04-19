@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "bodypart.h"
+#include "body_part_set.h"
 #include "calendar.h"
 #include "color.h" // nc_color
 #include "damage.h"
@@ -23,7 +24,6 @@
 #include "item_pocket.h"
 #include "iuse.h" // use_function
 #include "proficiency.h"
-#include "relic.h"
 #include "stomach.h"
 #include "translations.h"
 #include "type_id.h"
@@ -33,6 +33,7 @@
 class Item_factory;
 class JsonObject;
 class item;
+class relic;
 struct tripoint;
 template <typename E> struct enum_traits;
 

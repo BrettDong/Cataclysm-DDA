@@ -14,6 +14,7 @@
 #include "messages.h"
 #include "mutation.h"
 #include "output.h"
+#include "relic.h"
 
 static const efftype_id effect_bleed( "bleed" );
 static const efftype_id effect_heating_bionic( "heating_bionic" );
