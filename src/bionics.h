@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "calendar.h"
-#include "effect_on_condition.h"
 #include "enums.h"
 #include "flat_set.h"
 #include "item.h"

@@ -32,6 +32,7 @@
 #include "craft_command.h"
 #include "crafting_gui.h"
 #include "debug.h"
+#include "effect_on_condition.h"
 #include "enum_traits.h"
 #include "enums.h"
 #include "faction.h"

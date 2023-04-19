@@ -10,7 +10,6 @@
 #include <vector>
 
 #include "bonuses.h"
-#include "effect_on_condition.h"
 #include "calendar.h"
 #include "flat_set.h"
 #include "translations.h"
@@ -25,6 +24,7 @@ class Character;
 class JsonObject;
 class effect;
 class item;
+class item_location;
 struct itype;
 
 class weapon_category
