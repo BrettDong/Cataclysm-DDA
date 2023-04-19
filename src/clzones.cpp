@@ -10,6 +10,7 @@
 #include <tuple>
 #include <type_traits>
 
+#include "avatar.h"
 #include "cata_utility.h"
 #include "character.h"
 #include "colony.h"

@@ -19,7 +19,6 @@
 #include "point.h"
 #include "translations.h"
 #include "type_id.h"
-#include "avatar.h"
 #include "map.h"
 
 class JsonObject;
