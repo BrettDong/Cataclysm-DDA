@@ -35,7 +35,6 @@
 #include "enums.h"
 #include "flat_set.h"
 #include "game_constants.h"
-#include "item.h"
 #include "item_location.h"
 #include "item_pocket.h"
 #include "memory_fast.h"
