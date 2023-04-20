@@ -20,6 +20,7 @@ class monster;
 class npc;
 struct npc_opinion;
 class recipe;
+class time_duration;
 struct tripoint;
 class vehicle;
 

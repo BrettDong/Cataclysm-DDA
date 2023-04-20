@@ -46,7 +46,7 @@
 #include "overmapbuffer.h"
 #include "point.h"
 #include "regional_settings.h"
-#include "rng.h"
+#include "rng_with_units.h"
 #include "sets_intersect.h"
 #include "string_formatter.h"
 #include "string_id.h"

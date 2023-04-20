@@ -99,6 +99,7 @@
 #include "string_formatter.h"
 #include "string_id.h"
 #include "string_id_utils.h"
+#include "temperature_constants.h"
 #include "text_snippets.h"
 #include "translations.h"
 #include "try_parse_integer.h"

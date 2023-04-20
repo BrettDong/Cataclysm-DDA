@@ -69,7 +69,7 @@
 #include "recipe.h"
 #include "recipe_groups.h"
 #include "ret_val.h"
-#include "rng.h"
+#include "rng_with_units.h"
 #include "skill.h"
 #include "sounds.h"
 #include "string_formatter.h"

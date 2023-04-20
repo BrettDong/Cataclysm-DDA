@@ -166,6 +166,7 @@
 #include "string_input_popup.h"
 #include "submap.h"
 #include "talker.h"
+#include "temperature_constants.h"
 #include "text_snippets.h"
 #include "tileray.h"
 #include "timed_event.h"

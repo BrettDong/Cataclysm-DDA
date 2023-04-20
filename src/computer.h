@@ -3,6 +3,7 @@
 #define CATA_SRC_COMPUTER_H
 
 #include <iosfwd>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>

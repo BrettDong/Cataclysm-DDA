@@ -30,7 +30,7 @@
 #include "messages.h"
 #include "monster.h"
 #include "options.h"
-#include "rng.h"
+#include "rng_with_units.h"
 #include "sounds.h"
 #include "translations.h"
 #include "trap.h"

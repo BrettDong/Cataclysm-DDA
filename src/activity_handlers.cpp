@@ -87,6 +87,7 @@
 #include "skill.h"
 #include "sounds.h"
 #include "string_formatter.h"
+#include "temperature_constants.h"
 #include "text_snippets.h"
 #include "translations.h"
 #include "type_id.h"

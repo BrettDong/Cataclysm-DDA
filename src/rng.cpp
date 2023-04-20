@@ -38,11 +38,6 @@ double rng_float( double lo, double hi )
     return 0;
 }
 
-units::angle random_direction()
-{
-    return rng_float( 0_pi_radians, 2_pi_radians );
-}
-
 double normal_roll( double mean, double stddev )
 {
     static std::normal_distribution<double> rng_normal_dist;

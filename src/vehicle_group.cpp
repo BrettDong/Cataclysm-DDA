@@ -12,6 +12,7 @@
 #include "map.h"
 #include "memory_fast.h"
 #include "point.h"
+#include "rng_with_units.h"
 #include "translations.h"
 #include "units.h"
 #include "vehicle.h"

@@ -91,6 +91,7 @@
 #include "sounds.h"
 #include "string_formatter.h"
 #include "submap.h"
+#include "temperature_constants.h"
 #include "tileray.h"
 #include "timed_event.h"
 #include "translations.h"
