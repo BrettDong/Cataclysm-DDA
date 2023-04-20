@@ -25,7 +25,7 @@
 #include "clzones.h"
 #include "colony.h"
 #include "coordinates.h"
-#include "damage.h"
+#include "damage_type.h"
 #include "game_constants.h"
 #include "item.h"
 #include "item_group.h"

@@ -19,6 +19,7 @@
 #include "coordinates.h"
 #include "creature_tracker.h"
 #include "cursesdef.h"
+#include "damage.h"
 #include "debug.h"
 #include "effect.h"
 #include "effect_source.h"

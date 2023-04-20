@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-#include "damage.h"
+#include "damage_type.h"
 #include "translation.h"
 #include "type_id.h"
 
@@ -18,6 +18,10 @@ class Creature;
 class JsonArray;
 class JsonObject;
 class JsonValue;
+class item;
+class time_duration;
+struct damage_instance;
+struct resistances;
 
 // Information about an attack on a weak point.
 struct weakpoint_attack {

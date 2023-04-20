@@ -19,7 +19,6 @@
 #include "color.h"
 #include "compatibility.h"
 #include "creature.h"
-#include "damage.h"
 #include "enums.h"
 #include "point.h"
 #include "type_id.h"
@@ -33,6 +32,7 @@ class JsonOut;
 class effect;
 class effect_source;
 class item;
+struct damage_unit;
 struct monster_plan;
 namespace catacurses
 {
@@ -42,6 +42,7 @@ struct dealt_projectile_attack;
 struct pathfinding_settings;
 struct trap;
 
+enum class damage_type : int;
 enum class mon_trigger : int;
 
 class mon_special_attack

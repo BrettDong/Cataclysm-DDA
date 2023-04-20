@@ -14,8 +14,8 @@
 #include <queue>
 
 #include "bodypart.h"
+#include "calendar.h"
 #include "compatibility.h"
-#include "damage.h"
 #include "debug.h"
 #include "effect_source.h"
 #include "enums.h"
@@ -45,11 +45,14 @@ class JsonObject;
 class JsonOut;
 class anatomy;
 class avatar;
+class damage_over_time_data;
 class field;
 class field_entry;
 class npc;
 class talker;
 class time_duration;
+struct damage_instance;
+struct dealt_damage_instance;
 struct point;
 struct tripoint;
 

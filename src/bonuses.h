@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 
-#include "damage.h"
+#include "damage_type.h"
 
 class Character;
 class JsonArray;

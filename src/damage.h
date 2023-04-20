@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "calendar.h"
+#include "damage_type.h"
 #include "units.h"
 #include "type_id.h"
 
@@ -18,22 +19,6 @@ class JsonValue;
 class item;
 class monster;
 template<typename T> struct enum_traits;
-
-enum class damage_type : int {
-    NONE = 0, // null damage, doesn't exist
-    PURE, // typeless damage, should always go through
-    BIOLOGICAL, // internal damage, like from smoke or poison
-    COLD, // e.g. heatdrain, cryogrenades
-    ELECTRIC, // e.g. electrical discharge
-    ACID, // corrosive damage, e.g. acid
-    // Damage types above are not intended to damage items
-    BASH,  // bash damage
-    CUT, // cut damage
-    STAB, // stabbing/piercing damage
-    HEAT, // e.g. fire, plasma
-    BULLET, // bullets and other fast moving projectiles
-    NUM
-};
 
 template<>
 struct enum_traits<damage_type> {

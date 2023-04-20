@@ -7,26 +7,32 @@
 #include <cstddef>
 #include <initializer_list>
 #include <iosfwd>
+#include <map>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "damage.h"
+#include "damage_type.h"
 #include "enums.h"
 #include "flat_set.h"
 #include "int_id.h"
 #include "mod_tracker.h"
+#include "pimpl.h"
 #include "string_id.h"
 #include "translations.h"
 #include "subbodypart.h"
 #include "localized_comparator.h"
 #include "type_id.h"
+#include "units_fwd.h"
 
 class JsonObject;
 class JsonOut;
 class JsonValue;
 struct body_part_type;
+struct damage_instance;
+struct damage_unit;
+struct resistances;
 template <typename E> struct enum_traits;
 
 using bodypart_str_id = string_id<body_part_type>;
@@ -173,6 +179,9 @@ struct bp_onhit_effect {
 
 struct body_part_type {
     public:
+        body_part_type();
+        ~body_part_type();
+
         /**
          * the different types of body parts there are.
          * this allows for the ability to group limbs or determine a limb of a certain type
@@ -217,7 +226,7 @@ struct body_part_type {
     private:
         // limb score values
         std::map<limb_score_id, bp_limb_score> limb_scores;
-        damage_instance damage;
+        pimpl<damage_instance> damage;
 
     public:
         bodypart_str_id id;
@@ -316,7 +325,7 @@ struct body_part_type {
         int bionic_slots_ = 0;
         body_part_type::type _primary_limb_type = body_part_type::type::num_types;
         // Protection from various damage types
-        resistances armor;
+        pimpl<resistances> armor;
 
     public:
         stat_hp_mods hp_mods;

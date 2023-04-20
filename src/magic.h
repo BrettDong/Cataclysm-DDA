@@ -14,7 +14,7 @@
 
 #include "body_part_set.h"
 #include "bodypart.h"
-#include "damage.h"
+#include "damage_type.h"
 #include "dialogue_helpers.h"
 #include "enum_bitset.h"
 #include "event_subscriber.h"
@@ -28,10 +28,12 @@ class Character;
 class Creature;
 class JsonObject;
 class JsonOut;
+class damage_over_time_data;
 class nc_color;
 class spell;
 class time_duration;
 
+struct dealt_damage_instance;
 struct dealt_projectile_attack;
 struct requirement_data;
 

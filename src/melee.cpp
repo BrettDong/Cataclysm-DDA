@@ -61,6 +61,7 @@
 #include "projectile.h"
 #include "rng.h"
 #include "sounds.h"
+#include "special_attack.h"
 #include "string_formatter.h"
 #include "translations.h"
 #include "type_id.h"

@@ -13,7 +13,6 @@
 #include "calendar.h"
 #include "catacharset.h"
 #include "color.h"
-#include "damage.h"
 #include "translations.h"
 #include "type_id.h"
 

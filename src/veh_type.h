@@ -18,7 +18,7 @@
 #include "calendar.h"
 #include "color.h"
 #include "compatibility.h"
-#include "damage.h"
+#include "damage_type.h"
 #include "point.h"
 #include "requirements.h"
 #include "translations.h"

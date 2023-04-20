@@ -103,6 +103,7 @@
 #include "skill.h"
 #include "skill_boost.h"
 #include "sounds.h"
+#include "special_attack.h"
 #include "stomach.h"
 #include "string_formatter.h"
 #include "submap.h"

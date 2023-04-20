@@ -16,7 +16,6 @@
 #include "calendar.h"
 #include "color.h"
 #include "coordinates.h"
-#include "damage.h"
 #include "enums.h"
 #include "explosion.h"
 #include "iuse.h"
@@ -27,6 +26,7 @@
 
 class Character;
 class JsonObject;
+class damage_over_time_data;
 class item;
 class item_location;
 class npc_template;

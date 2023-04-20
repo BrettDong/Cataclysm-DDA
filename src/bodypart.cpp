@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "body_part_set.h"
+#include "damage.h"
 #include "debug.h"
 #include "enum_conversions.h"
 #include "generic_factory.h"
@@ -161,6 +162,9 @@ void limb_score::load( const JsonObject &jo, const std::string & )
     optional( jo, was_loaded, "affected_by_wounds", wound_affect, true );
     optional( jo, was_loaded, "affected_by_encumb", encumb_affect, true );
 }
+
+body_part_type::body_part_type() = default;
+body_part_type::~body_part_type() = default;
 
 /**@relates string_id*/
 template<>
@@ -440,13 +444,13 @@ void body_part_type::load( const JsonObject &jo, const std::string & )
 
     if( jo.has_array( "unarmed_damage" ) ) {
         unarmed_bonus = true;
-        damage = damage_instance();
-        damage = load_damage_instance( jo.get_array( "unarmed_damage" ) );
+        *damage = damage_instance();
+        *damage = load_damage_instance( jo.get_array( "unarmed_damage" ) );
     }
 
     if( jo.has_object( "armor" ) ) {
-        armor = resistances();
-        armor = load_resistances_instance( jo.get_object( "armor" ) );
+        *armor = resistances();
+        *armor = load_resistances_instance( jo.get_object( "armor" ) );
     }
 
     mandatory( jo, was_loaded, "side", part_side );
@@ -579,22 +583,22 @@ bool body_part_type::has_limb_score( const limb_score_id &id ) const
 
 float body_part_type::unarmed_damage( const damage_type &dt ) const
 {
-    return damage.type_damage( dt );
+    return damage->type_damage( dt );
 }
 
 float body_part_type::unarmed_arpen( const damage_type &dt ) const
 {
-    return damage.type_arpen( dt );
+    return damage->type_arpen( dt );
 }
 
 float body_part_type::damage_resistance( const damage_type &dt ) const
 {
-    return armor.type_resist( dt );
+    return armor->type_resist( dt );
 }
 
 float body_part_type::damage_resistance( const damage_unit &du ) const
 {
-    return armor.get_effective_resist( du );
+    return armor->get_effective_resist( du );
 }
 
 std::set<translation, localized_comparator> body_part_type::consolidate(

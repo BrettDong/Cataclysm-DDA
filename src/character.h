@@ -30,7 +30,6 @@
 #include "city.h"
 #include "coordinates.h"
 #include "creature.h"
-#include "damage.h"
 #include "debug.h"
 #include "enums.h"
 #include "flat_set.h"
@@ -84,6 +83,7 @@ class vpart_reference;
 class vehicle;
 struct bionic;
 struct construction;
+struct damage_instance;
 struct dealt_projectile_attack;
 struct display_proficiency;
 /// @brief Item slot used to apply modifications from food and meds
@@ -96,12 +96,14 @@ struct needs_rates;
 struct pathfinding_settings;
 struct points_left;
 struct requirement_data;
+struct special_attack;
 struct tool_comp;
 struct trait_and_var;
 struct trap;
 struct w_point;
 template <typename E> struct enum_traits;
 
+enum class damage_type : int;
 enum npc_attitude : int;
 enum action_id : int;
 enum class steed_type : int;
@@ -298,11 +300,6 @@ struct aim_type {
                action == other.action &&
                help == other.help;
     }
-};
-
-struct special_attack {
-    std::string text;
-    damage_instance damage;
 };
 
 struct consumption_event {
