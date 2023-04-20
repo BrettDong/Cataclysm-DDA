@@ -24,7 +24,6 @@
 
 #include "activity_tracker.h"
 #include "activity_type.h"
-#include "addiction.h"
 #include "bodypart.h"
 #include "calendar.h"
 #include "character_attire.h"
@@ -60,6 +59,7 @@ class JsonObject;
 class JsonOut;
 class SkillLevel;
 class SkillLevelMap;
+class addiction;
 class basecamp;
 class bionic_collection;
 class character_martial_arts;

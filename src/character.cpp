@@ -20,6 +20,7 @@
 #include "action.h"
 #include "activity_actor_definitions.h"
 #include "activity_handlers.h"
+#include "addiction.h"
 #include "ammo.h"
 #include "anatomy.h"
 #include "avatar.h"

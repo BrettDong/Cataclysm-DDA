@@ -1,5 +1,6 @@
 #include <memory>
 
+#include "addiction.h"
 #include "character_id.h"
 #include "character_martial_arts.h"
 #include "effect.h"
