@@ -23,7 +23,6 @@
 #include <vector>
 
 #include "activity_tracker.h"
-#include "activity_type.h"
 #include "bodypart.h"
 #include "calendar.h"
 #include "character_attire.h"
