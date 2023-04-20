@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "dialogue_win.h"
+#include "flat_set.h"
 #include "global_vars.h"
 #include "npc_opinion.h"
 #include "talker.h"
