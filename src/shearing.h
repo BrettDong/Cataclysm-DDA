@@ -1,5 +1,5 @@
 #pragma once
-#include "damage.h"
+
 #ifndef CATA_SRC_SHEARING_H
 #define CATA_SRC_SHEARING_H
 
