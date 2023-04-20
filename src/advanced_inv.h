@@ -5,7 +5,6 @@
 #include <array>
 #include <iosfwd>
 
-#include "activity_actor_definitions.h"
 #include "advanced_inv_area.h"
 #include "advanced_inv_pane.h"
 #include "cursesdef.h"
@@ -13,6 +12,7 @@
 #include "ui_manager.h"
 
 class advanced_inv_listitem;
+class drop_or_stash_item_info;
 class input_context;
 class item;
 struct advanced_inv_save_state;
