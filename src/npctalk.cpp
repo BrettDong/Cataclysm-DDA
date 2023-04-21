@@ -88,6 +88,7 @@
 #include "vehicle.h"
 #include "vpart_position.h"
 #include "vpart_range.h"
+#include "weather.h"
 
 static const activity_id ACT_AIM( "ACT_AIM" );
 static const activity_id ACT_SOCIALIZE( "ACT_SOCIALIZE" );

@@ -17,6 +17,7 @@
 #include "options_helpers.h"
 #include "pathfinding.h"
 #include "player_helpers.h"
+#include "weather.h"
 
 static const activity_id ACT_MULTIPLE_CONSTRUCTION( "ACT_MULTIPLE_CONSTRUCTION" );
 static const faction_id faction_free_merchants( "free_merchants" );

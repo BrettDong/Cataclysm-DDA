@@ -21,6 +21,7 @@
 #include "skill.h"
 #include "string_formatter.h"
 #include "type_id.h"
+#include "weather.h"
 
 diary_page::diary_page() = default;
 

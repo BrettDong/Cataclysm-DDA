@@ -739,10 +739,10 @@ void game::setup()
     calendar::set_eternal_night( ::get_option<std::string>( "ETERNAL_TIME_OF_DAY" ) == "night" );
     calendar::set_eternal_day( ::get_option<std::string>( "ETERNAL_TIME_OF_DAY" ) == "day" );
 
-    weather.weather_id = WEATHER_CLEAR;
+    weather->weather_id = WEATHER_CLEAR;
     // Weather shift in 30
-    weather.nextweather = calendar::start_of_cataclysm + time_duration::from_hours(
-                              get_option<int>( "INITIAL_TIME" ) ) + 30_minutes;
+    weather->nextweather = calendar::start_of_cataclysm + time_duration::from_hours(
+                               get_option<int>( "INITIAL_TIME" ) ) + 30_minutes;
 
     turnssincelastmon = 0_turns; //Auto safe mode init
 
@@ -800,7 +800,7 @@ bool game::start_game()
     seed = rng_bits();
     new_game = true;
     start_calendar();
-    weather.nextweather = calendar::turn;
+    weather->nextweather = calendar::turn;
     safe_mode = ( get_option<bool>( "SAFEMODE" ) ? SAFE_MODE_ON : SAFE_MODE_OFF );
     mostseen = 0; // ...and mostseen is 0, we haven't seen any monsters yet.
     get_safemode().load_global();
@@ -876,8 +876,8 @@ bool game::start_game()
     u.moves = 0;
     u.process_turn(); // process_turn adds the initial move points
     u.set_stamina( u.get_stamina_max() );
-    weather.temperature = SPRING_TEMPERATURE;
-    weather.update_weather();
+    weather->temperature = SPRING_TEMPERATURE;
+    weather->update_weather();
     u.next_climate_control_check = calendar::before_time_starts; // Force recheck at startup
     u.last_climate_control_ret = false;
 
@@ -10806,7 +10806,7 @@ void game::place_player_overmap( const tripoint_abs_omt &om_dest, bool move_play
     m.spawn_monsters( true ); // Static monsters
     update_overmap_seen();
     // update weather now as it could be different on the new location
-    weather.nextweather = calendar::turn;
+    weather->nextweather = calendar::turn;
     if( move_player ) {
         place_player( player_pos );
     }
@@ -13017,7 +13017,7 @@ timed_event_manager &get_timed_events()
 
 weather_manager &get_weather()
 {
-    return g->weather;
+    return *g->weather;
 }
 
 global_variables &get_globals()

@@ -40,6 +40,7 @@
 #include "scent_map.h"
 #include "stats_tracker.h"
 #include "timed_event.h"
+#include "weather.h"
 
 class overmap_connection;
 

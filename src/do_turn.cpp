@@ -35,6 +35,7 @@
 #include "vehicle.h"
 #include "vpart_position.h"
 #include "wcwidth.h"
+#include "weather.h"
 #include "worldfactory.h"
 
 static const activity_id ACT_AUTODRIVE( "ACT_AUTODRIVE" );

@@ -26,6 +26,7 @@
 #include "uistate.h"
 #include "units.h"
 #include "value_ptr.h"
+#include "weather.h"
 
 static const activity_id ACT_ADV_INVENTORY( "ACT_ADV_INVENTORY" );
 static const activity_id ACT_AIM( "ACT_AIM" );

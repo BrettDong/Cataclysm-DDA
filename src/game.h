@@ -33,7 +33,6 @@
 #include "queued_eoc.h"
 #include "type_id.h"
 #include "units_fwd.h"
-#include "weather.h"
 
 class Character;
 class creature_tracker;
@@ -43,6 +42,8 @@ class location;
 class eoc_events;
 class spell_events;
 class viewer;
+class weather_manager;
+struct weather_printable;
 
 constexpr int DEFAULT_TILESET_ZOOM = 16;
 
@@ -1121,7 +1122,7 @@ class game
         // reactivating safe mode.
         time_duration turnssincelastmon = 0_turns;
     private:
-        weather_manager weather; // NOLINT(cata-serialize)
+        pimpl<weather_manager> weather; // NOLINT(cata-serialize)
 
     public:
         // # of mons seen last turn; if this increases, set safe_mode to SAFE_MODE_STOP

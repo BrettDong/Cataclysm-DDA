@@ -49,6 +49,7 @@
 #include "units_serde.h"
 #include "vehicle.h"
 #include "vpart_position.h"
+#include "weather.h"
 #include "widget.h"
 #include "worldfactory.h"
 

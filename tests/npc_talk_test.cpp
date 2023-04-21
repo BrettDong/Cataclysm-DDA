@@ -38,6 +38,7 @@
 #include "point.h"
 #include "talker.h"
 #include "type_id.h"
+#include "weather.h"
 
 static const bionic_id bio_ads( "bio_ads" );
 static const bionic_id bio_power_storage( "bio_power_storage" );

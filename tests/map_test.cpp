@@ -14,6 +14,7 @@
 #include "point.h"
 #include "submap.h"
 #include "type_id.h"
+#include "weather.h"
 
 TEST_CASE( "map_coordinate_conversion_functions" )
 {
