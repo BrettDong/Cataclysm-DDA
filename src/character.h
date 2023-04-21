@@ -26,7 +26,6 @@
 #include "bodypart.h"
 #include "calendar.h"
 #include "character_id.h"
-#include "city.h"
 #include "coordinates.h"
 #include "creature.h"
 #include "debug.h"
@@ -84,6 +83,7 @@ class ui_adaptor;
 class vpart_reference;
 class vehicle;
 struct bionic;
+struct city;
 template<typename CompType> struct comp_selection;
 struct construction;
 struct damage_instance;
@@ -477,7 +477,7 @@ class Character : public Creature, public visitable
         // Relative direction of a grab, add to posx, posy to get the coordinates of the grabbed thing.
         tripoint grab_point;
 
-        std::optional<city> starting_city;
+        std::unique_ptr<city> starting_city;
         std::optional<point_abs_om> world_origin;
         bool random_start_location = true;
         start_location_id start_location;

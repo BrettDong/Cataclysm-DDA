@@ -443,7 +443,7 @@ void avatar::randomize( const bool random_scenario, bool play_now )
 
     prof = get_scenario()->weighted_random_profession();
     randomize_hobbies();
-    starting_city = std::nullopt;
+    starting_city = nullptr;
     world_origin = std::nullopt;
     random_start_location = true;
 
@@ -3954,7 +3954,7 @@ void set_description( tab_manager &tabs, avatar &you, const bool allow_reroll,
             ui::omap::setup_cities_menu( cities_menu, cities );
             std::optional<city> c = ui::omap::select_city( cities_menu, cities, false );
             if( c.has_value() ) {
-                you.starting_city = c;
+                you.starting_city = std::make_unique<city>( *c );
                 you.world_origin = c->pos_om;
             }
         } else if( action == "CHOOSE_LOCATION" ) {

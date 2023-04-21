@@ -827,11 +827,11 @@ bool game::start_game()
     const bool select_starting_city = get_option<bool>( "SELECT_STARTING_CITY" );
     do {
         if( select_starting_city ) {
-            if( !u.starting_city.has_value() ) {
-                u.starting_city = random_entry( city::get_all() );
+            if( !u.starting_city ) {
+                u.starting_city = std::make_unique<city>( random_entry( city::get_all() ) );
                 u.world_origin = u.starting_city->pos_om;
             }
-            omtstart = start_loc.find_player_initial_location( u.starting_city.value() );
+            omtstart = start_loc.find_player_initial_location( *u.starting_city );
         } else {
             omtstart = start_loc.find_player_initial_location( u.world_origin.value_or( point_abs_om() ) );
         }
