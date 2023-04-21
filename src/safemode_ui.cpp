@@ -15,6 +15,7 @@
 #include "debug.h"
 #include "filesystem.h"
 #include "input.h"
+#include "item.h"
 #include "json.h"
 #include "json_loader.h"
 #include "monstergenerator.h"

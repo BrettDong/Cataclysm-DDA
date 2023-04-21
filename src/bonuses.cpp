@@ -6,6 +6,7 @@
 
 #include "character.h"
 #include "damage.h"
+#include "item.h"
 #include "json.h"
 #include "string_formatter.h"
 #include "translations.h"

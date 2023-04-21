@@ -4,6 +4,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "item.h"
 #include "options.h"
 #include "type_id.h"
 

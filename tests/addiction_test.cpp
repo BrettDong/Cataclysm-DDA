@@ -1,6 +1,7 @@
 #include "addiction.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "item.h"
 #include "player_helpers.h"
 
 static const addiction_id addiction_alcohol( "alcohol" );

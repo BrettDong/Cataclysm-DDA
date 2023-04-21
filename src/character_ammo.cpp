@@ -6,6 +6,7 @@
 #include "character_modifier.h"
 #include "flag.h"
 #include "game.h"
+#include "item.h"
 #include "itype.h"
 #include "magic_enchantment.h"
 #include "output.h"
@@ -73,7 +74,7 @@ bool Character::can_reload( const item &it, const item *ammo ) const
     return true;
 }
 
-bool Character::list_ammo( const item_location &base, std::vector<item::reload_option> &ammo_list,
+bool Character::list_ammo( const item_location &base, std::vector<item_reload_option> &ammo_list,
                            bool empty ) const
 {
     // Associate the destination with "parent"
@@ -114,12 +115,12 @@ bool Character::list_ammo( const item_location &base, std::vector<item::reload_o
     return ammo_match_found;
 }
 
-item::reload_option Character::select_ammo( const item_location &base,
-        std::vector<item::reload_option> opts, const std::string &name_override ) const
+item_reload_option Character::select_ammo( const item_location &base,
+        std::vector<item_reload_option> opts, const std::string &name_override ) const
 {
     if( opts.empty() ) {
         add_msg_if_player( m_info, _( "Never mind." ) );
-        return item::reload_option();
+        return item_reload_option();
     }
 
     std::string name = name_override.empty() ? base->tname() : name_override;
@@ -131,7 +132,7 @@ item::reload_option Character::select_ammo( const item_location &base,
     // Construct item names
     std::vector<std::string> names;
     std::transform( opts.begin(), opts.end(),
-    std::back_inserter( names ), [&]( const item::reload_option & e ) {
+    std::back_inserter( names ), [&]( const item_reload_option & e ) {
         if( e.ammo->is_magazine() && e.ammo->ammo_data() ) {
             if( e.ammo->ammo_current() == itype_battery ) {
                 // This battery ammo is not a real object that can be recovered but pseudo-object that represents charge
@@ -156,7 +157,7 @@ item::reload_option Character::select_ammo( const item_location &base,
     // Get location descriptions
     std::vector<std::string> where;
     std::transform( opts.begin(), opts.end(),
-    std::back_inserter( where ), [this]( const item::reload_option & e ) {
+    std::back_inserter( where ), [this]( const item_reload_option & e ) {
         bool is_ammo_container = e.ammo->is_ammo_container();
         Character &player_character = get_player_character();
         if( is_ammo_container || e.ammo->is_container() ) {
@@ -170,7 +171,7 @@ item::reload_option Character::select_ammo( const item_location &base,
     // Get destination names
     std::vector<std::string> destination;
     std::transform( opts.begin(), opts.end(),
-    std::back_inserter( destination ), [&]( const item::reload_option & e ) {
+    std::back_inserter( destination ), [&]( const item_reload_option & e ) {
         name = name_override.empty() ? e.target->tname( 1, false, 0, false ) :
                name_override;
         if( ( e.target->is_gunmod() || e.target->is_magazine() ) && e.target.has_parent() ) {
@@ -216,7 +217,7 @@ item::reload_option Character::select_ammo( const item_location &base,
     }
 
     auto draw_row = [&]( int idx ) {
-        const item::reload_option &sel = opts[ idx ];
+        const item_reload_option &sel = opts[ idx ];
         std::string row = string_format( "%s| %s | %s |", names[ idx ], where[ idx ], destination[ idx ] );
         row += string_format( ( sel.ammo->is_ammo() ||
                                 sel.ammo->is_ammo_container() ) ? " %-7d |" : "         |", sel.qty() );
@@ -293,13 +294,13 @@ item::reload_option Character::select_ammo( const item_location &base,
 
     struct reload_callback : public uilist_callback {
         public:
-            std::vector<item::reload_option> &opts;
+            std::vector<item_reload_option> &opts;
             const std::function<std::string( int )> draw_row;
             int last_key;
             const int default_to;
             const bool can_partial_reload;
 
-            reload_callback( std::vector<item::reload_option> &_opts,
+            reload_callback( std::vector<item_reload_option> &_opts,
                              std::function<std::string( int )> _draw_row,
                              int _last_key, int _default_to, bool _can_partial_reload ) :
                 opts( _opts ), draw_row( std::move( _draw_row ) ),
@@ -341,7 +342,7 @@ item::reload_option Character::select_ammo( const item_location &base,
     menu.query();
     if( menu.ret < 0 || static_cast<size_t>( menu.ret ) >= opts.size() ) {
         add_msg_if_player( m_info, _( "Never mind." ) );
-        return item::reload_option();
+        return item_reload_option();
     }
 
     const item_location &sel = opts[ menu.ret ].ammo;
@@ -352,14 +353,14 @@ item::reload_option Character::select_ammo( const item_location &base,
     return opts[ menu.ret ];
 }
 
-item::reload_option Character::select_ammo( const item_location &base, bool prompt,
+item_reload_option Character::select_ammo( const item_location &base, bool prompt,
         bool empty ) const
 {
     if( !base ) {
-        return item::reload_option();
+        return item_reload_option();
     }
 
-    std::vector<item::reload_option> ammo_list;
+    std::vector<item_reload_option> ammo_list;
     bool ammo_match_found = list_ammo( base, ammo_list, empty );
 
     if( ammo_list.empty() ) {
@@ -392,20 +393,20 @@ item::reload_option Character::select_ammo( const item_location &base, bool prom
                 }
             }
         }
-        return item::reload_option();
+        return item_reload_option();
     }
 
     // sort in order of move cost (ascending), then remaining ammo (descending) with empty magazines always last
-    std::stable_sort( ammo_list.begin(), ammo_list.end(), []( const item::reload_option & lhs,
-    const item::reload_option & rhs ) {
+    std::stable_sort( ammo_list.begin(), ammo_list.end(), []( const item_reload_option & lhs,
+    const item_reload_option & rhs ) {
         return lhs.ammo->ammo_remaining() > rhs.ammo->ammo_remaining();
     } );
-    std::stable_sort( ammo_list.begin(), ammo_list.end(), []( const item::reload_option & lhs,
-    const item::reload_option & rhs ) {
+    std::stable_sort( ammo_list.begin(), ammo_list.end(), []( const item_reload_option & lhs,
+    const item_reload_option & rhs ) {
         return lhs.moves() < rhs.moves();
     } );
-    std::stable_sort( ammo_list.begin(), ammo_list.end(), []( const item::reload_option & lhs,
-    const item::reload_option & rhs ) {
+    std::stable_sort( ammo_list.begin(), ammo_list.end(), []( const item_reload_option & lhs,
+    const item_reload_option & rhs ) {
         return ( lhs.ammo->ammo_remaining() != 0 ) > ( rhs.ammo->ammo_remaining() != 0 );
     } );
 
@@ -413,7 +414,7 @@ item::reload_option Character::select_ammo( const item_location &base, bool prom
         if( ammo_list[0].ammo.get_item()->ammo_remaining() > 0 ) {
             return ammo_list[0];
         } else {
-            return item::reload_option();
+            return item_reload_option();
         }
     }
 

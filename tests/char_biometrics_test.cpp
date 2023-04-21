@@ -10,6 +10,7 @@
 #include "creature.h"
 #include "display.h"
 #include "game_constants.h"
+#include "item.h"
 #include "monster.h"
 #include "options.h"
 #include "output.h"

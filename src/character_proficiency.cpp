@@ -1,5 +1,6 @@
 #include "cached_options.h"
 #include "character.h"
+#include "item.h"
 #include "proficiency.h"
 
 bool Character::has_proficiency( const proficiency_id &prof ) const

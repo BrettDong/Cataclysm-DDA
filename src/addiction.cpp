@@ -12,6 +12,7 @@
 #include "effect_on_condition.h"
 #include "enums.h"
 #include "generic_factory.h"
+#include "item.h"
 #include "morale_types.h"
 #include "rng.h"
 #include "text_snippets.h"

@@ -18,6 +18,7 @@
 #include "flag.h"
 #include "game.h"
 #include "input.h"
+#include "item.h"
 #include "output.h"
 #include "ui_manager.h"
 #include "vitamin.h"

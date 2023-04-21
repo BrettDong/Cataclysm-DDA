@@ -2567,7 +2567,7 @@ std::optional<int> ammobelt_actor::use( Character &p, item &, bool, const tripoi
     }
 
     item_location loc = p.i_add( mag );
-    item::reload_option opt = p.select_ammo( loc, true );
+    item_reload_option opt = p.select_ammo( loc, true );
     if( opt ) {
         p.assign_activity( player_activity( reload_activity_actor( std::move( opt ) ) ) );
     } else {

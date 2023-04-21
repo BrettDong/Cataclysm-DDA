@@ -138,21 +138,21 @@ int Character::count_softwares( const itype_id &id )
 
 units::length Character::max_single_item_length() const
 {
-    return std::max( weapon.max_containable_length(), worn->max_single_item_length() );
+    return std::max( weapon->max_containable_length(), worn->max_single_item_length() );
 }
 
 units::volume Character::max_single_item_volume() const
 {
-    return std::max( weapon.max_containable_volume(), worn->max_single_item_volume() );
+    return std::max( weapon->max_containable_volume(), worn->max_single_item_volume() );
 }
 
 std::pair<item_location, item_pocket *> Character::best_pocket( const item &it, const item *avoid,
         bool ignore_settings )
 {
-    item_location weapon_loc( *this, &weapon );
+    item_location weapon_loc( *this, &*weapon );
     std::pair<item_location, item_pocket *> ret = std::make_pair( item_location(), nullptr );
-    if( &weapon != &it && &weapon != avoid ) {
-        ret = weapon.best_pocket( it, weapon_loc, avoid, false, ignore_settings );
+    if( &*weapon != &it && &*weapon != avoid ) {
+        ret = weapon->best_pocket( it, weapon_loc, avoid, false, ignore_settings );
     }
     worn->best_pocket( *this, it, avoid, ret, ignore_settings );
     return ret;
@@ -179,7 +179,7 @@ item_location Character::try_add( item it, const item *avoid, const item *origin
     item_location ret = item_location::nowhere;
     if( pocket.second == nullptr ) {
         if( !has_weapon() && allow_wield && wield( it ) ) {
-            ret = item_location( *this, &weapon );
+            ret = item_location( *this, &*weapon );
         } else {
             return ret;
         }
@@ -218,7 +218,7 @@ item_location Character::i_add( item it, bool /* should_stack */, const item *av
                 return added;
             }
         } else {
-            return item_location( *this, &weapon );
+            return item_location( *this, &*weapon );
         }
     } else {
         return added;
@@ -248,7 +248,7 @@ ret_val<item_location> Character::i_add_or_fill( item &it, bool should_stack, co
                     loc = item_location( map_cursor( pos() ), &get_map().add_item_or_charges( pos(), it ) );
                 }
             } else {
-                loc = item_location( *this, &weapon );
+                loc = item_location( *this, &*weapon );
             }
         }
         if( success ) {
@@ -267,7 +267,7 @@ ret_val<item_location> Character::i_add_or_fill( item &it, bool should_stack, co
 const item &Character::i_at( int position ) const
 {
     if( position == -1 ) {
-        return weapon;
+        return *weapon;
     }
     if( position < -1 ) {
         return worn->i_at( worn_position_to_index( position ) );
@@ -354,7 +354,7 @@ std::vector<item_location> outfit::all_items_loc( Character &guy )
 std::vector<item_location> Character::all_items_loc()
 {
     std::vector<item_location> ret;
-    item_location weap_loc( *this, &weapon );
+    item_location weap_loc( *this, &*weapon );
     std::vector<item_location> weapon_internal_items;
     recur_internal_locations( weap_loc, weapon_internal_items );
     ret.insert( ret.end(), weapon_internal_items.begin(), weapon_internal_items.end() );
@@ -405,7 +405,7 @@ item *Character::invlet_to_item( const int linvlet ) const
 
 int Character::get_item_position( const item *it ) const
 {
-    if( weapon.has_item( *it ) ) {
+    if( weapon->has_item( *it ) ) {
         return -1;
     }
 
@@ -522,7 +522,7 @@ void Character::drop_invalid_inventory()
         add_msg_if_player( m_bad, _( "Liquid from your inventory has leaked onto the ground." ) );
     }
 
-    weapon.overflow( pos() );
+    weapon->overflow( pos() );
     worn->overflow( pos() );
 
     cache_inventory_is_valid = true;

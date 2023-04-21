@@ -567,6 +567,12 @@ void Character::trait_data::deserialize( const JsonObject &data )
     }
 }
 
+consumption_event::consumption_event( const item &food ) : time( calendar::turn )
+{
+    type_id = food.typeId();
+    component_hash = food.make_component_hash();
+}
+
 void consumption_event::serialize( JsonOut &json ) const
 {
     json.start_object();
@@ -1011,9 +1017,9 @@ void Character::load( const JsonObject &data )
     }
 
     set_wielded_item( item() );
-    data.read( "weapon", weapon );
-    if( !weapon.is_null() && weapon.relic_data && weapon.type->relic_data ) {
-        weapon.relic_data = weapon.type->relic_data;
+    data.read( "weapon", *weapon );
+    if( !weapon->is_null() && weapon->relic_data && weapon->type->relic_data ) {
+        weapon->relic_data = weapon->type->relic_data;
     }
     data.read( "move_mode", move_mode );
 
@@ -1299,8 +1305,8 @@ void Character::store( JsonOut &json ) const
 {
     Creature::store( json );
 
-    if( !weapon.is_null() ) {
-        json.member( "weapon", weapon ); // also saves contents
+    if( !weapon->is_null() ) {
+        json.member( "weapon", *weapon ); // also saves contents
     }
 
     // stat

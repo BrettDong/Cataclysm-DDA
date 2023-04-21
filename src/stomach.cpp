@@ -6,6 +6,7 @@
 
 #include "cata_utility.h"
 #include "character.h"
+#include "item.h"
 #include "json.h"
 #include "stomach.h"
 #include "units.h"

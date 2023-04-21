@@ -9517,7 +9517,7 @@ void game::reload( item_location &loc, bool prompt, bool empty )
 {
     // bows etc. do not need to reload. select favorite ammo for them instead
     if( loc->has_flag( flag_RELOAD_AND_SHOOT ) ) {
-        item::reload_option opt = u.select_ammo( loc, prompt );
+        item_reload_option opt = u.select_ammo( loc, prompt );
         if( !opt ) {
             return;
         } else if( u.ammo_location && opt.ammo == u.ammo_location ) {
@@ -9571,10 +9571,10 @@ void game::reload( item_location &loc, bool prompt, bool empty )
         loc = item_location( loc, &loc->only_item() );
     }
 
-    item::reload_option opt = u.ammo_location &&
-                              loc->can_reload_with( *u.ammo_location.get_item(), false ) ?
-                              item::reload_option( &u, loc, u.ammo_location ) :
-                              u.select_ammo( loc, prompt, empty );
+    item_reload_option opt = u.ammo_location &&
+                             loc->can_reload_with( *u.ammo_location.get_item(), false ) ?
+                             item_reload_option( &u, loc, u.ammo_location ) :
+                             u.select_ammo( loc, prompt, empty );
 
     if( opt.ammo.get_item() == nullptr || ( opt.ammo.get_item()->is_frozen_liquid() &&
                                             !u.crush_frozen_liquid( opt.ammo ) ) ) {
@@ -9659,7 +9659,7 @@ void game::reload_weapon( bool try_everything )
         if( !candidate->is_magazine() && !candidate->is_gun() ) {
             continue;
         }
-        std::vector<item::reload_option> ammo_list;
+        std::vector<item_reload_option> ammo_list;
         u.list_ammo( candidate, ammo_list, false );
         if( !ammo_list.empty() ) {
             reload( candidate, false, false );
@@ -9675,7 +9675,7 @@ void game::reload_weapon( bool try_everything )
     if( ovp ) {
         const turret_data turret = ovp->vehicle().turret_query( ovp->pos() );
         if( turret.can_reload() ) {
-            item::reload_option opt = u.select_ammo( turret.base(), true );
+            item_reload_option opt = u.select_ammo( turret.base(), true );
             if( opt ) {
                 u.assign_activity( player_activity( reload_activity_actor( std::move( opt ) ) ) );
             }

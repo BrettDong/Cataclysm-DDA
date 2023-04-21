@@ -5,6 +5,7 @@
 #include "cata_catch.h"
 #include "damage.h"
 #include "game_constants.h"
+#include "item.h"
 #include "monster.h"
 #include "mtype.h"
 #include "player_helpers.h"

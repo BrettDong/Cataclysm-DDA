@@ -4,6 +4,7 @@
 #include "character.h"
 #include "color.h"
 #include "enums.h"
+#include "item.h"
 #include "json.h"
 #include "martialarts.h"
 #include "messages.h"

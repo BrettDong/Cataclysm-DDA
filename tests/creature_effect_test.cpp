@@ -1,6 +1,7 @@
 #include "avatar.h"
 #include "calendar.h"
 #include "cata_catch.h"
+#include "item.h"
 #include "monster.h"
 #include "mtype.h"
 #include "type_id.h"

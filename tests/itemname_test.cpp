@@ -5,6 +5,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "color.h"
 #include "flag.h"
 #include "item.h"
 #include "item_pocket.h"

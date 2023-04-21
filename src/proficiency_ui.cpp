@@ -1,6 +1,7 @@
 #include "cata_utility.h"
 #include "character.h"
 #include "input.h"
+#include "item.h"
 #include "output.h"
 #include "proficiency.h"
 #include "string_input_popup.h"

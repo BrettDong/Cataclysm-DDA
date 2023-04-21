@@ -3,6 +3,7 @@
 #include "avatar.h"
 #include "debug.h"
 #include "generic_factory.h"
+#include "item.h"
 #include "json.h"
 #include "mutation.h"
 #include "options.h"

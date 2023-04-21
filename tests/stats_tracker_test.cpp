@@ -20,6 +20,7 @@
 #include "event_statistics.h"
 #include "event_subscriber.h"
 #include "game_constants.h"
+#include "item.h"
 #include "json.h"
 #include "json_loader.h"
 #include "options_helpers.h"

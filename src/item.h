@@ -180,9 +180,40 @@ iteminfo weight_to_info( const std::string &type, const std::string &left,
 
 inline bool is_crafting_component( const item &component );
 
+class item_reload_option
+{
+    public:
+        item_reload_option() = default;
+
+        item_reload_option( const item_reload_option & );
+        item_reload_option &operator=( const item_reload_option & );
+
+        item_reload_option( const Character *who, const item_location &target, const item_location &ammo );
+
+        const Character *who = nullptr;
+        item_location target;
+        item_location ammo;
+
+        int qty() const {
+            return qty_;
+        }
+        void qty( int val );
+
+        int moves() const;
+
+        explicit operator bool() const {
+            return who && target && ammo && qty_ > 0;
+        }
+    private:
+        int qty_ = 0;
+        int max_qty = INT_MAX;
+};
+
 class item : public visitable
 {
     public:
+        friend class item_reload_option;
+
         using FlagsSetType = std::set<flag_id>;
 
         item();
@@ -521,35 +552,6 @@ class item : public visitable
         // "can of meat" would be food, instead of container.
         // If there are multiple items/stacks or none then it defaults to category of this item.
         const item_category &get_category_of_contents() const;
-
-        class reload_option
-        {
-            public:
-                reload_option() = default;
-
-                reload_option( const reload_option & );
-                reload_option &operator=( const reload_option & );
-
-                reload_option( const Character *who, const item_location &target, const item_location &ammo );
-
-                const Character *who = nullptr;
-                item_location target;
-                item_location ammo;
-
-                int qty() const {
-                    return qty_;
-                }
-                void qty( int val );
-
-                int moves() const;
-
-                explicit operator bool() const {
-                    return who && target && ammo && qty_ > 0;
-                }
-            private:
-                int qty_ = 0;
-                int max_qty = INT_MAX;
-        };
 
         /**
          * Reload item using ammo from location returning true if successful
@@ -2997,7 +2999,7 @@ bool item_ptr_compare_by_charges( const item *left, const item *right );
  * Hint value used for item examination screen and filtering items by action.
  * Represents whether an item permits given action (reload, wear, read, etc.).
  */
-enum class hint_rating {
+enum class hint_rating : int {
     /** Item permits this action */
     good,
     /** Item permits this action, but circumstances don't */

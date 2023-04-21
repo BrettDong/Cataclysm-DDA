@@ -33,7 +33,6 @@
 #include "enums.h"
 #include "flat_set.h"
 #include "game_constants.h"
-#include "item.h"
 #include "item_location.h"
 #include "item_pocket.h"
 #include "memory_fast.h"
@@ -67,6 +66,8 @@ class effect;
 class effect_source;
 class faction;
 class inventory;
+class item;
+class item_reload_option;
 class known_magic;
 class ma_technique;
 class map;
@@ -83,6 +84,7 @@ class ui_adaptor;
 class vpart_reference;
 class vehicle;
 struct bionic;
+template<typename CompType> struct comp_selection;
 struct construction;
 struct damage_instance;
 struct dealt_projectile_attack;
@@ -107,9 +109,15 @@ template <typename E> struct enum_traits;
 enum class damage_type : int;
 enum npc_attitude : int;
 enum action_id : int;
+enum class hint_rating : int;
 enum class steed_type : int;
 enum class proficiency_bonus_type : int;
 enum class recipe_filter_flags : int;
+
+namespace enchant_vals
+{
+enum class mod : int;
+}
 
 using drop_location = std::pair<item_location, int>;
 using drop_locations = std::list<drop_location>;
@@ -309,10 +317,7 @@ struct consumption_event {
     uint64_t component_hash;
 
     consumption_event() = default;
-    explicit consumption_event( const item &food ) : time( calendar::turn ) {
-        type_id = food.typeId();
-        component_hash = food.make_component_hash();
-    }
+    explicit consumption_event( const item &food );
     void serialize( JsonOut &json ) const;
     void deserialize( const JsonObject &jo );
 };
@@ -1651,7 +1656,7 @@ class Character : public Creature, public visitable
          */
         void mend_item( item_location &&obj, bool interactive = true );
 
-        bool list_ammo( const item_location &base, std::vector<item::reload_option> &ammo_list,
+        bool list_ammo( const item_location &base, std::vector<item_reload_option> &ammo_list,
                         bool empty = true ) const;
         /**
          * Select suitable ammo with which to reload the item
@@ -1659,12 +1664,12 @@ class Character : public Creature, public visitable
          * @param prompt force display of the menu even if only one choice
          * @param empty allow selection of empty magazines
          */
-        item::reload_option select_ammo( const item_location &base, bool prompt = false,
-                                         bool empty = true ) const;
+        item_reload_option select_ammo( const item_location &base, bool prompt = false,
+                                        bool empty = true ) const;
 
         /** Select ammo from the provided options */
-        item::reload_option select_ammo( const item_location &base, std::vector<item::reload_option> opts,
-                                         const std::string &name_override = std::string() ) const;
+        item_reload_option select_ammo( const item_location &base, std::vector<item_reload_option> opts,
+                                        const std::string &name_override = std::string() ) const;
 
         void process_items();
         void leak_items();
@@ -1691,15 +1696,6 @@ class Character : public Creature, public visitable
         void disp_info( bool customize_character = false );
         void conduct_blood_analysis();
         // --------------- Generic Item Stuff ---------------
-
-        struct has_mission_item_filter {
-            int mission_id;
-            bool operator()( const item &it ) const {
-                return it.mission_id == mission_id || it.has_any_with( [&]( const item & it ) {
-                    return it.mission_id == mission_id;
-                }, item_pocket::pocket_type::SOFTWARE );
-            }
-        };
 
         // -2 position is 0 worn index, -3 position is 1 worn index, etc
         static int worn_position_to_index( int position ) {
@@ -2095,7 +2091,8 @@ class Character : public Creature, public visitable
          * @param it Item we are checking
          * @param context optionally override effective item when checking contextual skills
          */
-        bool can_use( const item &it, const item &context = item() ) const;
+        bool can_use( const item &it ) const;
+        bool can_use( const item &it, const item &context ) const;
         /**
          * Check character capable of wearing an item.
          * @param it Thing to be worn
@@ -2191,16 +2188,19 @@ class Character : public Creature, public visitable
         void set_knowledge_level( const skill_id &ident, int level );
         void mod_knowledge_level( const skill_id &ident, int delta );
         /** Checks whether the character's skills meet the required */
+        bool meets_skill_requirements( const std::map<skill_id, int> &req ) const;
         bool meets_skill_requirements( const std::map<skill_id, int> &req,
-                                       const item &context = item() ) const;
+                                       const item &context ) const;
         /** Checks whether the character's skills meet the required */
         bool meets_skill_requirements( const construction &con ) const;
         /** Checks whether the character's stats meets the stats required by the item */
         bool meets_stat_requirements( const item &it ) const;
         /** Checks whether the character meets overall requirements to be able to use the item */
-        bool meets_requirements( const item &it, const item &context = item() ) const;
+        bool meets_requirements( const item &it ) const;
+        bool meets_requirements( const item &it, const item &context ) const;
         /** Returns a string of missed requirements (both stats and skills) */
-        std::string enumerate_unmet_requirements( const item &it, const item &context = item() ) const;
+        std::string enumerate_unmet_requirements( const item &it ) const;
+        std::string enumerate_unmet_requirements( const item &it, const item &context ) const;
 
         // Mental skills and stats
         /** Returns the player's reading speed as a percentage*/
@@ -2448,7 +2448,7 @@ class Character : public Creature, public visitable
         pimpl<inventory> inv;
         itype_id last_item;
     private:
-        item weapon;
+        pimpl<item> weapon;
     public:
         item_location get_wielded_item() const;
         item_location get_wielded_item();

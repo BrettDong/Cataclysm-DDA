@@ -13,6 +13,7 @@
 #include "condition.h"
 #include "dialogue.h"
 #include "game_constants.h"
+#include "item.h"
 #include "json.h"
 #include "math_defines.h"
 #include "point.h"

@@ -1061,7 +1061,7 @@ class harvest_activity_actor : public activity_actor
 class reload_activity_actor : public activity_actor
 {
     public:
-        explicit reload_activity_actor( item::reload_option &&opt, int extra_moves = 0 );
+        explicit reload_activity_actor( item_reload_option &&opt, int extra_moves = 0 );
 
         activity_id get_type() const override {
             return activity_id( "ACT_RELOAD" );

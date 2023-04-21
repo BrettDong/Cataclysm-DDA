@@ -16,6 +16,7 @@
 #include "game.h"
 #include "gamemode_defense.h"
 #include "input.h"
+#include "item.h"
 #include "memory_fast.h"
 #include "output.h"
 #include "sdltiles.h"

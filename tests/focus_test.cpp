@@ -2,6 +2,7 @@
 
 #include "avatar.h"
 #include "cata_catch.h"
+#include "item.h"
 #include "player_helpers.h"
 #include "skill.h"
 #include "type_id.h"

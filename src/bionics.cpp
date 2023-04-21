@@ -792,7 +792,7 @@ bool Character::activate_bionic( bionic &bio, bool eff_only, bool *close_bionics
             return false;
         }
 
-        if( weapon.has_flag( flag_NO_UNWIELD ) ) {
+        if( weapon->has_flag( flag_NO_UNWIELD ) ) {
             if( get_weapon_bionic_uid() ) {
                 if( std::optional<bionic *> bio_opt = find_bionic_by_uid( get_weapon_bionic_uid() ) ) {
                     if( deactivate_bionic( **bio_opt, eff_only ) ) {
@@ -812,15 +812,15 @@ bool Character::activate_bionic( bionic &bio, bool eff_only, bool *close_bionics
                 }
             }
 
-            add_msg_if_player( m_info, _( "Deactivate your %s first!" ), weapon.tname() );
+            add_msg_if_player( m_info, _( "Deactivate your %s first!" ), weapon->tname() );
             refund_power();
             bio.powered = false;
             return false;
         }
 
-        if( !weapon.is_null() ) {
-            const std::string query = string_format( _( "Stop wielding %s?" ), weapon.tname() );
-            if( !dispose_item( item_location( *this, &weapon ), query ) ) {
+        if( !weapon->is_null() ) {
+            const std::string query = string_format( _( "Stop wielding %s?" ), weapon->tname() );
+            if( !dispose_item( item_location( *this, &*weapon ), query ) ) {
                 refund_power();
                 bio.powered = false;
                 return false;
@@ -1284,12 +1284,12 @@ bool Character::deactivate_bionic( bionic &bio, bool eff_only )
     if( bio.info().has_flag( json_flag_BIONIC_WEAPON ) ) {
         if( bio.get_uid() == get_weapon_bionic_uid() ) {
             bio.set_weapon( *get_wielded_item() );
-            add_msg_if_player( _( "You withdraw your %s." ), weapon.tname() );
+            add_msg_if_player( _( "You withdraw your %s." ), weapon->tname() );
             if( get_player_view().sees( pos() ) ) {
                 if( male ) {
-                    add_msg_if_npc( m_info, _( "<npcname> withdraws his %s." ), weapon.tname() );
+                    add_msg_if_npc( m_info, _( "<npcname> withdraws his %s." ), weapon->tname() );
                 } else {
-                    add_msg_if_npc( m_info, _( "<npcname> withdraws her %s." ), weapon.tname() );
+                    add_msg_if_npc( m_info, _( "<npcname> withdraws her %s." ), weapon->tname() );
                 }
             }
             set_wielded_item( item() );
@@ -1608,8 +1608,8 @@ void Character::process_bionic( bionic &bio )
     }
 
     if( bio.get_uid() == get_weapon_bionic_uid() ) {
-        const bool wrong_weapon_wielded = weapon.typeId() != bio.get_weapon().typeId() ||
-                                          !weapon.has_flag( flag_NO_UNWIELD );
+        const bool wrong_weapon_wielded = weapon->typeId() != bio.get_weapon().typeId() ||
+                                          !weapon->has_flag( flag_NO_UNWIELD );
 
         if( wrong_weapon_wielded ) {
             // Wielded weapon replaced in an unexpected way
@@ -1617,7 +1617,7 @@ void Character::process_bionic( bionic &bio )
             weapon_bionic_uid = 0;
         }
 
-        if( weapon.is_null() || wrong_weapon_wielded ) {
+        if( weapon->is_null() || wrong_weapon_wielded ) {
             // Force deactivation because the weapon is gone
             force_bionic_deactivation( bio );
             return;
@@ -3356,9 +3356,9 @@ std::vector<item *> Character::get_cable_ups()
         }
     }
 
-    if( n > 0 && weapon.has_flag( flag_IS_UPS ) && weapon.get_var( "cable" ) == "plugged_in" &&
-        weapon.ammo_remaining() ) {
-        stored_fuels.emplace_back( &weapon.first_ammo() );
+    if( n > 0 && weapon->has_flag( flag_IS_UPS ) && weapon->get_var( "cable" ) == "plugged_in" &&
+        weapon->ammo_remaining() ) {
+        stored_fuels.emplace_back( &weapon->first_ammo() );
     }
 
     return stored_fuels;
@@ -3388,8 +3388,8 @@ std::vector<item *> Character::get_cable_solar()
         }
     }
 
-    if( n > 0 && weapon.has_flag( flag_SOLARPACK_ON ) && weapon.get_var( "cable" ) == "plugged_in" ) {
-        solar_sources.emplace_back( &weapon );
+    if( n > 0 && weapon->has_flag( flag_SOLARPACK_ON ) && weapon->get_var( "cable" ) == "plugged_in" ) {
+        solar_sources.emplace_back( &*weapon );
     }
 
     return solar_sources;

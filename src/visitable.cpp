@@ -449,8 +449,8 @@ const
 VisitResponse Character::visit_items( const std::function<VisitResponse( item *, item * )> &func )
 const
 {
-    if( !weapon.is_null() &&
-        visit_internal( func, &weapon ) == VisitResponse::ABORT ) {
+    if( !weapon->is_null() &&
+        visit_internal( func, &*weapon ) == VisitResponse::ABORT ) {
         return VisitResponse::ABORT;
     }
 
@@ -661,11 +661,11 @@ std::list<item> Character::remove_items_with( const
 
     if( count > 0 ) {
         // finally try the currently wielded item (if any)
-        if( filter( weapon ) ) {
+        if( filter( *weapon ) ) {
             res.push_back( remove_weapon() );
             count--;
         } else {
-            weapon.remove_internal( filter, count, res );
+            weapon->remove_internal( filter, count, res );
         }
     }
 

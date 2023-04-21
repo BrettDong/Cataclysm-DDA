@@ -1,5 +1,6 @@
 #include "character.h"
 #include "contents_change_handler.h"
+#include "item.h"
 #include "json.h"
 
 void contents_change_handler::add_unsealed( const item_location &loc )

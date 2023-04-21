@@ -1720,7 +1720,7 @@ static const std::vector<std::function<player_activity()>> test_activities {
         dummy->wear_item( item( itype_test_backpack, calendar::turn ), false );
         item_location target = dummy->i_add( item( itype_test_oxytorch, calendar::turn ) );
         item_location ammo = dummy->i_add( item( itype_test_weldtank, calendar::turn ) );
-        item::reload_option opt( dummy, target, ammo );
+        item_reload_option opt( dummy, target, ammo );
         return player_activity( reload_activity_actor( std::move( opt ) ) );
     },
     [] { return player_activity( safecracking_activity_actor( get_avatar().pos() + tripoint_north ) ); },

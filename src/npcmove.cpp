@@ -4547,7 +4547,7 @@ void npc::do_reload( const item_location &it )
         return;
     }
 
-    item::reload_option reload_opt = select_ammo( it );
+    item_reload_option reload_opt = select_ammo( it );
 
     if( !reload_opt ) {
         debugmsg( "do_reload failed: no usable ammo for %s", it->tname() );

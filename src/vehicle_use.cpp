@@ -1920,7 +1920,7 @@ void vehicle::build_interact_menu( veh_menu &menu, const tripoint &p, bool with_
         .skip_locked_check()
         .on_submit( [this, vppos] {
             item_location loc = turret_query( vppos ).base();
-            item::reload_option opt = get_player_character().select_ammo( loc, true );
+            item_reload_option opt = get_player_character().select_ammo( loc, true );
             if( opt )
             {
                 reload_activity_actor reload_act( std::move( opt ) );

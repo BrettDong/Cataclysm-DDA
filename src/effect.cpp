@@ -15,6 +15,7 @@
 #include "event.h"
 #include "flag.h"
 #include "generic_factory.h"
+#include "item.h"
 #include "json.h"
 #include "magic_enchantment.h"
 #include "messages.h"

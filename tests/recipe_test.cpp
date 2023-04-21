@@ -4,6 +4,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "item.h"
 #include "json.h"
 #include "recipe.h"
 #include "requirements.h"

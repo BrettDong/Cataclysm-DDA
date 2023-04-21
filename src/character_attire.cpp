@@ -170,7 +170,7 @@ ret_val<void> Character::can_wear( const item &it, bool with_equip_change ) cons
 
     // Check if we don't have both hands available before wearing a briefcase, shield, etc. Also occurs if we're already wearing one.
     if( it.has_flag( flag_RESTRICT_HANDS ) && ( worn_with_flag( flag_RESTRICT_HANDS ) ||
-            weapon.is_two_handed( *this ) ) ) {
+            weapon->is_two_handed( *this ) ) ) {
         return ret_val<void>::make_failure( ( is_avatar() ? _( "You don't have a hand free to wear that." )
                                               : string_format( _( "%s doesn't have a hand free to wear that." ), get_name() ) ) );
     }
@@ -228,8 +228,8 @@ Character::wear( item_location item_wear, bool interactive )
 
     bool was_weapon;
     item to_wear_copy( to_wear );
-    if( &to_wear == &weapon ) {
-        weapon = item();
+    if( &to_wear == &*weapon ) {
+        *weapon = item();
         was_weapon = true;
     } else if( has_item( to_wear ) ) {
         remove_item( to_wear );
@@ -248,7 +248,7 @@ Character::wear( item_location item_wear, bool interactive )
         // set it to no longer be sided
         to_wear_copy.set_side( side::BOTH );
         if( was_weapon ) {
-            weapon = to_wear_copy;
+            *weapon = to_wear_copy;
         } else {
             i_add( to_wear_copy );
         }
@@ -256,7 +256,7 @@ Character::wear( item_location item_wear, bool interactive )
     }
 
     if( was_weapon ) {
-        get_event_bus().send<event_type::character_wields_item>( getID(), weapon.typeId() );
+        get_event_bus().send<event_type::character_wields_item>( getID(), weapon->typeId() );
     }
 
     return result;

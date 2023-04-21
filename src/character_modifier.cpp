@@ -4,6 +4,7 @@
 #include "enum_conversions.h"
 #include "flag.h"
 #include "generic_factory.h"
+#include "item.h"
 #include "messages.h"
 #include "move_mode.h"
 
