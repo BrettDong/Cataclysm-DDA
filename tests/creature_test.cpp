@@ -9,6 +9,7 @@
 #include "enum_traits.h"
 #include "monster.h"
 #include "mtype.h"
+#include "npc.h"
 #include "player_helpers.h"
 #include "rng.h"
 #include "test_statistics.h"

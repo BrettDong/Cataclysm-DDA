@@ -5,6 +5,8 @@
 #include <iosfwd>
 #include <vector>
 
+#include "type_id.h"
+
 class item;
 class Character;
 class npc;

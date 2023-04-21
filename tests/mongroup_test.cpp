@@ -3,6 +3,7 @@
 
 #include "cata_catch.h"
 #include "cata_utility.h"
+#include "character.h"
 #include "coordinates.h"
 #include "game.h"
 #include "item.h"

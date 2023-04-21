@@ -7,6 +7,7 @@
 #include "item.h"
 #include "map.h"
 #include "point.h"
+#include "temperature_constants.h"
 #include "weather.h"
 
 static void set_map_temperature( units::temperature new_temperature )

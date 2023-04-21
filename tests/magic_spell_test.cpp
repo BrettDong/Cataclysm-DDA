@@ -9,6 +9,7 @@
 #include "magic.h"
 #include "map_helpers.h"
 #include "monster.h"
+#include "npc.h"
 #include "pimpl.h"
 #include "player_helpers.h"
 #include "point.h"

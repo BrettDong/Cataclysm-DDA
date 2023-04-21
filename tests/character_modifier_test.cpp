@@ -5,6 +5,7 @@
 #include "damage.h"
 #include "magic_enchantment.h"
 #include "mutation.h"
+#include "npc.h"
 #include "player_helpers.h"
 
 static const bodypart_str_id body_part_test_bird_foot_l( "test_bird_foot_l" );

@@ -10,6 +10,7 @@
 #include "character.h"
 #include "flag.h"
 #include "game.h"
+#include "inventory.h"
 #include "itype.h"
 #include "iuse_actor.h"
 #include "map.h"

@@ -4,9 +4,12 @@
 
 #include "avatar.h"
 #include "dialogue.h"
+#include "dialogue_helpers.h"
 #include "global_vars.h"
+#include "magic.h"
 #include "math_parser.h"
 #include "math_parser_func.h"
+#include "npc.h"
 
 static const spell_id spell_test_spell_pew( "test_spell_pew" );
 

@@ -3,6 +3,7 @@
 #include "character.h"
 #include "game.h"
 #include "player_helpers.h"
+#include "map.h"
 #include "map_helpers.h"
 #include "mission.h"
 #include "morale_types.h"

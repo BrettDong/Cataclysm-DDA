@@ -1,3 +1,4 @@
+#include "auto_pickup.h"
 #include "avatar.h"
 #include "cata_catch.h"
 #include "item.h"

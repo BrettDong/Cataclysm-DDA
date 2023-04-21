@@ -1,13 +1,14 @@
 #include "avatar.h"
 #include "calendar.h"
 #include "cata_catch.h"
+#include "coordinates.h"
 #include "effect_on_condition.h"
 #include "game.h"
 #include "map_helpers.h"
-#include "timed_event.h"
+#include "npc.h"
 #include "player_helpers.h"
 #include "point.h"
-
+#include "timed_event.h"
 
 static const activity_id ACT_ADD_VARIABLE_COMPLETE( "ACT_ADD_VARIABLE_COMPLETE" );
 static const activity_id ACT_ADD_VARIABLE_DURING( "ACT_ADD_VARIABLE_DURING" );

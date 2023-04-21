@@ -1,4 +1,5 @@
 #include "catch/catch.hpp"
+#include "item.h"
 #include "monster.h"
 #include "mtype.h"
 #include "player_helpers.h"

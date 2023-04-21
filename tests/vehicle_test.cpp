@@ -6,6 +6,7 @@
 #include "character.h"
 #include "damage.h"
 #include "enums.h"
+#include "inventory.h"
 #include "item.h"
 #include "itype.h"
 #include "map.h"

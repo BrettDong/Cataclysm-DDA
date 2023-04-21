@@ -1,5 +1,6 @@
 #include "activity_handlers.h"
 #include "cata_catch.h"
+#include "character.h"
 #include "harvest.h"
 #include "item_group.h"
 #include "itype.h"

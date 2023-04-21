@@ -16,6 +16,7 @@
 #include "overmap.h"
 #include "overmap_types.h"
 #include "overmapbuffer.h"
+#include "recipe.h"
 #include "type_id.h"
 
 static const oter_str_id oter_cabin( "cabin" );

@@ -1,9 +1,13 @@
 #include "catch/catch.hpp"
 
+#include "avatar.h"
+#include "body_part_set.h"
 #include "cata_utility.h"
+#include "effect.h"
 #include "game.h"
 #include "game_constants.h"
 #include "player_helpers.h"
+#include "magic.h"
 #include "map.h"
 #include "map_helpers.h"
 #include "mission.h"

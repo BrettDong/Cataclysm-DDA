@@ -7,12 +7,14 @@
 #include <string>
 #include <vector>
 
+#include "avatar.h"
 #include "cached_options.h"
 #include "calendar.h"
 #include "cata_catch.h"
 #include "cata_scope_helpers.h"
 #include "character.h"
 #include "game.h"
+#include "inventory.h"
 #include "item.h"
 #include "map.h"
 #include "map_helpers.h"
