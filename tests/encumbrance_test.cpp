@@ -7,6 +7,7 @@
 #include "bodypart.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "item.h"
 #include "npc.h"
 #include "type_id.h"
@@ -24,12 +25,12 @@ static void test_encumbrance_on(
     CAPTURE( body_part );
     p.set_body();
     p.clear_mutations();
-    p.worn.clear();
+    p.worn->clear();
     if( tweak_player ) {
         tweak_player( p );
     }
     for( const item &i : clothing ) {
-        p.worn.wear_item( p, i, false, false, false );
+        p.worn->wear_item( p, i, false, false, false );
     }
     //if the character is made TINY their stored kcal means they are now obese and have penalties
     p.set_stored_kcal( p.get_healthy_kcal() );

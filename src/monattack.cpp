@@ -24,6 +24,7 @@
 #include "calendar.h"
 #include "cata_assert.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_id.h"
 #include "character_martial_arts.h"
 #include "colony.h"
@@ -6062,7 +6063,7 @@ bool mattack::dsa_drone_scan( monster *z )
                 weapons_count += 1;
             }
         } else {
-            weapons_count += target->worn.worn_guns();
+            weapons_count += target->worn->worn_guns();
         }
         summon_reinforcements = weapons_count >= 3;
     }

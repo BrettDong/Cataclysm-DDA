@@ -8,6 +8,7 @@
 #include "avatar.h"
 #include "calendar.h"
 #include "character.h"
+#include "character_attire.h"
 #include "flag.h"
 #include "game.h"
 #include "inventory.h"
@@ -213,7 +214,7 @@ TEST_CASE( "safecracking", "[activity][safecracking]" )
         }
 
         GIVEN( "player has a stethoscope" ) {
-            dummy.worn.clear();
+            dummy.worn->clear();
             dummy.remove_weapon();
             dummy.add_bionic( bio_ears );
             mp.furn_set( safe, f_safe_l );
@@ -246,7 +247,7 @@ TEST_CASE( "safecracking", "[activity][safecracking]" )
                 }
 
                 THEN( "player loses their stethoscope" ) {
-                    dummy.worn.clear();
+                    dummy.worn->clear();
                     dummy.remove_weapon();
                     REQUIRE( !dummy.has_item_with_flag( flag_SAFECRACK ) );
 

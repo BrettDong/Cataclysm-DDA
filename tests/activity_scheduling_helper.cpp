@@ -6,6 +6,7 @@
 
 #include "avatar.h"
 #include "cata_catch.h"
+#include "character_attire.h"
 #include "debug.h"
 #include "item.h"
 #include "make_static.h"
@@ -92,7 +93,7 @@ weariness_events do_activity( tasklist tasks, bool do_clear_avatar )
     // Ensure we have enough light to see
     item bag( "duffelbag" );
     item light( "atomic_lamp" );
-    guy.worn.wear_item( guy, bag, false, false );
+    guy.worn->wear_item( guy, bag, false, false );
     guy.i_add( light );
     // How long we've been doing activities for
     time_duration spent = 0_seconds;

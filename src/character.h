@@ -25,7 +25,6 @@
 #include "activity_tracker.h"
 #include "bodypart.h"
 #include "calendar.h"
-#include "character_attire.h"
 #include "character_id.h"
 #include "city.h"
 #include "coordinates.h"
@@ -34,6 +33,7 @@
 #include "enums.h"
 #include "flat_set.h"
 #include "game_constants.h"
+#include "item.h"
 #include "item_location.h"
 #include "item_pocket.h"
 #include "memory_fast.h"
@@ -73,6 +73,7 @@ class map;
 class monster;
 class nc_color;
 class npc;
+class outfit;
 class player_morale;
 class proficiency_set;
 class recipe;
@@ -1706,9 +1707,7 @@ class Character : public Creature, public visitable
         }
 
         // checks to see if an item is worn
-        bool is_worn( const item &thing ) const {
-            return worn.is_worn( thing );
-        }
+        bool is_worn( const item &thing ) const;
 
         /**
          * Asks how to use the item (if it has more than one use_method) and uses it.
@@ -2433,7 +2432,7 @@ class Character : public Creature, public visitable
         bool male = false;
 
         std::vector<effect_on_condition_id> death_eocs;
-        outfit worn;
+        pimpl<outfit> worn;
         bool nv_cached = false;
         // Means player sit inside vehicle on the tile he is now
         bool in_vehicle = false;

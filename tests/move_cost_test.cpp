@@ -1,6 +1,7 @@
 #include "avatar.h"
 #include "avatar_action.h"
 #include "cata_catch.h"
+#include "character_attire.h"
 #include "flag.h"
 #include "map.h"
 #include "map_helpers.h"
@@ -72,14 +73,14 @@ TEST_CASE( "footwear may affect movement cost", "[move_cost][shoes]" )
     REQUIRE( ava.get_modifier( character_modifier_limb_footing_movecost_mod ) == 1 );
 
     SECTION( "without shoes" ) {
-        ava.worn.clear();
+        ava.worn->clear();
         REQUIRE_FALSE( ava.is_wearing_shoes() );
         // Having no shoes adds +8 per foot to base run cost
         CHECK( ava.run_cost( 100 ) == 116 );
     }
 
     SECTION( "wearing sneakers" ) {
-        ava.worn.clear();
+        ava.worn->clear();
         ava.wear_item( item( "sneakers" ) );
         REQUIRE( ava.is_wearing_shoes() );
         REQUIRE( ava.get_modifier( character_modifier_limb_run_cost_mod ) == Approx( 1.0 ) );
@@ -88,7 +89,7 @@ TEST_CASE( "footwear may affect movement cost", "[move_cost][shoes]" )
     }
 
     SECTION( "wearing swim fins" ) {
-        ava.worn.clear();
+        ava.worn->clear();
         ava.wear_item( item( "swim_fins" ) );
         REQUIRE( ava.is_wearing_shoes() );
         REQUIRE( ava.get_modifier( character_modifier_limb_run_cost_mod ) == Approx( 1.11696 ) );
@@ -97,7 +98,7 @@ TEST_CASE( "footwear may affect movement cost", "[move_cost][shoes]" )
     }
 
     GIVEN( "wearing rollerblades (ROLLER_INLINE)" ) {
-        ava.worn.clear();
+        ava.worn->clear();
         ava.wear_item( item( "roller_blades" ) );
         REQUIRE( ava.worn_with_flag( flag_ROLLER_INLINE ) );
         REQUIRE( ava.get_modifier( character_modifier_limb_run_cost_mod ) == Approx( 1.11696 ) );
@@ -117,7 +118,7 @@ TEST_CASE( "footwear may affect movement cost", "[move_cost][shoes]" )
     }
 
     GIVEN( "wearing roller skates (ROLLER_QUAD)" ) {
-        ava.worn.clear();
+        ava.worn->clear();
         ava.wear_item( item( "rollerskates" ) );
         REQUIRE( ava.worn_with_flag( flag_ROLLER_QUAD ) );
         REQUIRE( ava.get_modifier( character_modifier_limb_run_cost_mod ) == Approx( 1.11696 ) );
@@ -137,7 +138,7 @@ TEST_CASE( "footwear may affect movement cost", "[move_cost][shoes]" )
     }
 
     GIVEN( "wearing heelys (ROLLER_ONE)" ) {
-        ava.worn.clear();
+        ava.worn->clear();
         ava.wear_item( item( "roller_shoes_on" ) );
         REQUIRE( ava.worn_with_flag( flag_ROLLER_ONE ) );
         REQUIRE( ava.get_modifier( character_modifier_limb_run_cost_mod ) == Approx( 1.0 ) );
@@ -168,12 +169,12 @@ TEST_CASE( "mutations may affect movement cost", "[move_cost][mutation]" )
 
     GIVEN( "no mutations" ) {
         THEN( "wearing sneakers gives baseline 100 movement speed" ) {
-            ava.worn.clear();
+            ava.worn->clear();
             ava.wear_item( item( "sneakers" ) );
             CHECK( ava.run_cost( 100 ) == Approx( base_cost ) );
         }
         THEN( "being barefoot gives a +16 movement cost penalty" ) {
-            ava.worn.clear();
+            ava.worn->clear();
             CHECK( ava.run_cost( 100 ) == Approx( base_cost + 16 ) );
         }
     }
@@ -181,7 +182,7 @@ TEST_CASE( "mutations may affect movement cost", "[move_cost][mutation]" )
     GIVEN( "LEG_TENTACLES" ) {
         ava.toggle_trait( trait_LEG_TENTACLES );
         THEN( "barefoot penalty does not apply, but movement is slower" ) {
-            ava.worn.clear();
+            ava.worn->clear();
             CHECK( ava.run_cost( 100 ) == Approx( 1.2 * base_cost ) );
         }
     }
@@ -189,7 +190,7 @@ TEST_CASE( "mutations may affect movement cost", "[move_cost][mutation]" )
     GIVEN( "HOOVES" ) {
         ava.toggle_trait( trait_HOOVES );
         THEN( "barefoot penalty does not apply" ) {
-            ava.worn.clear();
+            ava.worn->clear();
             CHECK( ava.run_cost( 100 ) == Approx( base_cost ) );
         }
     }
@@ -197,7 +198,7 @@ TEST_CASE( "mutations may affect movement cost", "[move_cost][mutation]" )
     GIVEN( "TOUGH_FEET" ) {
         ava.toggle_trait( trait_TOUGH_FEET );
         THEN( "barefoot penalty does not apply" ) {
-            ava.worn.clear();
+            ava.worn->clear();
             CHECK( ava.run_cost( 100 ) == Approx( base_cost ) );
         }
     }
@@ -205,12 +206,12 @@ TEST_CASE( "mutations may affect movement cost", "[move_cost][mutation]" )
     GIVEN( "PADDED_FEET" ) {
         ava.toggle_trait( trait_PADDED_FEET );
         THEN( "wearing sneakers gives baseline 100 movement speed" ) {
-            ava.worn.clear();
+            ava.worn->clear();
             ava.wear_item( item( "sneakers" ) );
             CHECK( ava.run_cost( 100 ) == Approx( base_cost ) );
         }
         THEN( "being barefoot is faster than wearing sneakers" ) {
-            ava.worn.clear();
+            ava.worn->clear();
             CHECK( ava.run_cost( 100 ) == Approx( 0.9 * base_cost ) );
         }
     }

@@ -6,6 +6,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "item.h"
 #include "player_helpers.h"
 #include "type_id.h"
@@ -162,19 +163,19 @@ TEST_CASE( "sweating", "[char][suffer][.bodytemp]" )
 
     GIVEN( "avatar wears outfit and sweats for an hour" ) {
         WHEN( "wearing fur" ) {
-            dummy.worn.clear();
+            dummy.worn->clear();
             dummy.wear_item( fur_jumper, false );
 
             temperature_and_sweat_check( &dummy, 100, 8100 );
         }
         WHEN( "wearing cotton" ) {
-            dummy.worn.clear();
+            dummy.worn->clear();
             dummy.wear_item( cotton_jumper, false );
 
             temperature_and_sweat_check( &dummy, 100, 7900 );
         }
         WHEN( "wearing lycra" ) {
-            dummy.worn.clear();
+            dummy.worn->clear();
             dummy.wear_item( lycra_jumper, false );
 
             temperature_and_sweat_check( &dummy, 100, 7000 );

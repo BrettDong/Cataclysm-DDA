@@ -10,6 +10,7 @@
 #include "calendar.h"
 #include "cata_assert.h"
 #include "character.h"
+#include "character_attire.h"
 #include "clzones.h"
 #include "faction.h"
 #include "field.h"
@@ -176,14 +177,14 @@ void player_add_headlamp()
     battery.ammo_set( battery.ammo_default(), -1 );
     headlamp.put_in( battery, item_pocket::pocket_type::MAGAZINE_WELL );
     Character &you = get_player_character();
-    you.worn.wear_item( you, headlamp, false, true );
+    you.worn->wear_item( you, headlamp, false, true );
 }
 
 void player_wear_blindfold()
 {
     item blindfold( "blindfold" );
     Character &you = get_player_character();
-    you.worn.wear_item( you, blindfold, false, true );
+    you.worn->wear_item( you, blindfold, false, true );
 }
 
 void set_time_to_day()

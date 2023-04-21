@@ -9,6 +9,7 @@
 #include "advanced_inv_pane.h"
 #include "avatar.h"
 #include "cata_assert.h"
+#include "character_attire.h"
 #include "flag.h"
 #include "item.h"
 #include "item_pocket.h"
@@ -153,7 +154,7 @@ std::vector<advanced_inv_listitem> avatar::get_AIM_inventory( const advanced_inv
 {
     size_t item_index = 0;
 
-    std::vector<advanced_inv_listitem> items = worn.get_AIM_inventory( item_index, *this, pane,
+    std::vector<advanced_inv_listitem> items = worn->get_AIM_inventory( item_index, *this, pane,
             square );
 
     item_location weapon = get_wielded_item();
@@ -215,7 +216,7 @@ void advanced_inventory_pane::add_items_from_area( advanced_inv_area &square,
             }
         }
 
-        u.worn.add_AIM_items_from_area( u, square, *this );
+        u.worn->add_AIM_items_from_area( u, square, *this );
     } else if( square.id == AIM_CONTAINER ) {
         square.volume = 0_ml;
         square.weight = 0_gram;

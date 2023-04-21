@@ -7,6 +7,7 @@
 #include "avatar.h"
 #include "calendar.h"
 #include "cata_catch.h"
+#include "character_attire.h"
 #include "game.h"
 #include "item.h"
 #include "item_location.h"
@@ -954,8 +955,8 @@ TEST_CASE( "automatic_reloading_action", "[reload],[gun]" )
     }
 
     GIVEN( "a player wielding an unloaded gun, carrying an unloaded magazine, and carrying ammo for the magazine" ) {
-        dummy.worn.clear();
-        dummy.worn.wear_item( dummy, item( "backpack" ), false, false );
+        dummy.worn->clear();
+        dummy.worn->wear_item( dummy, item( "backpack" ), false, false );
         item_location ammo = dummy.i_add( item( "9mm", calendar::turn_zero, 50 ) );
         const cata::value_ptr<islot_ammo> &ammo_type = ammo->type->ammo;
         REQUIRE( ammo_type );

@@ -162,7 +162,7 @@ ret_val<void> Character::can_wear( const item &it, bool with_equip_change ) cons
     }
 
     {
-        ret_val<void> power_armor_conflicts = worn.power_armor_conflicts( it );
+        ret_val<void> power_armor_conflicts = worn->power_armor_conflicts( it );
         if( !power_armor_conflicts.success() ) {
             return power_armor_conflicts;
         }
@@ -176,7 +176,7 @@ ret_val<void> Character::can_wear( const item &it, bool with_equip_change ) cons
     }
 
     {
-        ret_val<void> conflict = worn.only_one_conflicts( it );
+        ret_val<void> conflict = worn->only_one_conflicts( it );
         if( !conflict.success() ) {
             return conflict;
         }
@@ -184,7 +184,7 @@ ret_val<void> Character::can_wear( const item &it, bool with_equip_change ) cons
 
     // if the item is rigid make sure other rigid items aren't already equipped
     if( it.is_rigid() ) {
-        ret_val<void> conflict = worn.check_rigid_conflicts( it );
+        ret_val<void> conflict = worn->check_rigid_conflicts( it );
         if( !conflict.success() ) {
             return conflict;
         }
@@ -240,8 +240,8 @@ Character::wear( item_location item_wear, bool interactive )
         was_weapon = false;
     }
 
-    worn.check_rigid_sidedness( to_wear_copy );
-    worn.one_per_layer_sidedness( to_wear_copy );
+    worn->check_rigid_sidedness( to_wear_copy );
+    worn->one_per_layer_sidedness( to_wear_copy );
 
     auto result = wear_item( to_wear_copy, interactive );
     if( !result ) {
@@ -345,12 +345,12 @@ std::optional<std::list<item>::iterator> Character::wear_item( const item &to_we
         return std::nullopt;
     }
 
-    return worn.wear_item( *this, to_wear, interactive, do_calc_encumbrance );
+    return worn->wear_item( *this, to_wear, interactive, do_calc_encumbrance );
 }
 
 int Character::amount_worn( const itype_id &id ) const
 {
-    return worn.amount_worn( id );
+    return worn->amount_worn( id );
 }
 
 int Character::item_wear_cost( const item &it ) const
@@ -388,7 +388,7 @@ int Character::item_wear_cost( const item &it ) const
 
 ret_val<void> Character::can_takeoff( const item &it, const std::list<item> *res )
 {
-    if( !worn.is_worn( it ) ) {
+    if( !worn->is_worn( it ) ) {
         return ret_val<void>::make_failure( !is_npc() ? _( "You are not wearing that item." ) :
                                             _( "<npcname> is not wearing that item." ) );
     }
@@ -414,7 +414,7 @@ ret_val<void> Character::can_takeoff( const item &it, const std::list<item> *res
 bool Character::takeoff( item_location loc, std::list<item> *res )
 {
     const std::string name = loc->tname();
-    const bool success = worn.takeoff( loc, res, *this );
+    const bool success = worn->takeoff( loc, res, *this );
 
     if( success ) {
         add_msg_player_or_npc( _( "You take off your %s." ),
@@ -439,53 +439,53 @@ bool Character::takeoff( int pos )
 
 bool Character::is_wearing( const itype_id &it ) const
 {
-    return worn.is_worn( it );
+    return worn->is_worn( it );
 }
 
 bool Character::is_wearing_on_bp( const itype_id &it, const bodypart_id &bp ) const
 {
-    return worn.is_wearing_on_bp( it, bp );
+    return worn->is_wearing_on_bp( it, bp );
 }
 
 bool Character::worn_with_flag( const flag_id &f, const bodypart_id &bp ) const
 {
-    return worn.worn_with_flag( f, bp );
+    return worn->worn_with_flag( f, bp );
 }
 
 bool Character::worn_with_flag( const flag_id &f ) const
 {
-    return worn.worn_with_flag( f );
+    return worn->worn_with_flag( f );
 }
 
 item Character::item_worn_with_flag( const flag_id &f, const bodypart_id &bp ) const
 {
-    return worn.item_worn_with_flag( f, bp );
+    return worn->item_worn_with_flag( f, bp );
 }
 
 item Character::item_worn_with_flag( const flag_id &f ) const
 {
-    return worn.item_worn_with_flag( f );
+    return worn->item_worn_with_flag( f );
 }
 
 item *Character::item_worn_with_id( const itype_id &i )
 {
-    return worn.item_worn_with_id( i );
+    return worn->item_worn_with_id( i );
 }
 
 
 bool Character::wearing_something_on( const bodypart_id &bp ) const
 {
-    return worn.wearing_something_on( bp );
+    return worn->wearing_something_on( bp );
 }
 
 bool Character::wearing_fitting_on( const bodypart_id &bp ) const
 {
-    return worn.wearing_fitting_on( bp );
+    return worn->wearing_fitting_on( bp );
 }
 
 bool Character::is_barefoot() const
 {
-    return worn.is_barefoot();
+    return worn->is_barefoot();
 }
 
 std::optional<const item *> outfit::item_worn_with_inv_let( const char invlet ) const
@@ -548,7 +548,7 @@ bool Character::is_wearing_shoes( const side &check_side ) const
         if( !part->has_type( body_part_type::type::foot ) ) {
             continue;
         }
-        side_covered = worn.is_wearing_shoes( part );
+        side_covered = worn->is_wearing_shoes( part );
 
         // early return if we've found a match
         switch( side_covered ) {
@@ -585,12 +585,12 @@ bool Character::is_wearing_shoes( const side &check_side ) const
 bool Character::is_worn_item_visible( std::list<item>::const_iterator worn_item ) const
 {
     const body_part_set worn_item_body_parts = worn_item->get_covered_body_parts();
-    return worn.is_worn_item_visible( worn_item, worn_item_body_parts );
+    return worn->is_worn_item_visible( worn_item, worn_item_body_parts );
 }
 
 std::list<item> Character::get_visible_worn_items() const
 {
-    return worn.get_visible_worn_items( *this );
+    return worn->get_visible_worn_items( *this );
 }
 
 double Character::armwear_factor() const
@@ -670,11 +670,11 @@ bool Character::change_side( item &it, bool interactive )
         return false;
     }
 
-    if( !worn.one_per_layer_change_side( it, *this ) ) {
+    if( !worn->one_per_layer_change_side( it, *this ) ) {
         return false;
     }
 
-    if( !worn.check_rigid_change_side( it, *this ) ) {
+    if( !worn->check_rigid_change_side( it, *this ) ) {
         return false;
     }
 
@@ -710,17 +710,17 @@ bool Character::change_side( item_location &loc, bool interactive )
 
 bool Character::is_wearing_power_armor( bool *hasHelmet ) const
 {
-    return worn.is_wearing_power_armor( hasHelmet );
+    return worn->is_wearing_power_armor( hasHelmet );
 }
 
 bool Character::is_wearing_active_power_armor() const
 {
-    return worn.is_wearing_active_power_armor();
+    return worn->is_wearing_active_power_armor();
 }
 
 bool Character::is_wearing_active_optcloak() const
 {
-    return worn.is_wearing_active_optcloak();
+    return worn->is_wearing_active_optcloak();
 }
 
 static void layer_item( std::map<bodypart_id, encumbrance_data> &vals, const item &it,

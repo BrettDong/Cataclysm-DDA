@@ -13,6 +13,7 @@
 #include "cata_catch.h"
 #include "cata_scope_helpers.h"
 #include "character.h"
+#include "character_attire.h"
 #include "colony.h"
 #include "contents_change_handler.h"
 #include "item.h"
@@ -869,7 +870,7 @@ void test_scenario::run()
         REQUIRE( !vp.has_value() );
     }
     INFO( "checking worn items" );
-    match( guy, guy.worn.top_items_loc( guy ), worn_results );
+    match( guy, guy.worn->top_items_loc( guy ), worn_results );
     INFO( "checking wielded item" );
     if( wielded_results ) {
         match( guy.get_wielded_item(), *wielded_results );

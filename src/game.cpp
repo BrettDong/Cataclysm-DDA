@@ -54,6 +54,7 @@
 #include "cata_variant.h"
 #include "catacharset.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_martial_arts.h"
 #include "city.h"
 #include "clzones.h"
@@ -5822,7 +5823,7 @@ bool game::npc_menu( npc &who )
         if( who.is_hallucination() ) {
             who.say( SNIPPET.random_from_category( "<no>" ).value_or( translation() ).translated() );
         } else {
-            who.worn.sort_armor( who );
+            who.worn->sort_armor( who );
             u.mod_moves( -100 );
         }
     } else if( choice == attack ) {
@@ -9757,7 +9758,7 @@ void game::wield( item_location loc )
                 break;
             case item_location::type::character:
                 if( worn_index != INT_MIN ) {
-                    u.worn.insert_item_at_index( to_wield, worn_index );
+                    u.worn->insert_item_at_index( to_wield, worn_index );
                 } else {
                     u.i_add( to_wield, true, nullptr, loc.get_item() );
                 }

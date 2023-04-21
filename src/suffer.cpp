@@ -20,6 +20,7 @@
 #include "calendar.h"
 #include "cata_utility.h"
 #include "character.h"
+#include "character_attire.h"
 #include "creature.h"
 #include "creature_tracker.h"
 #include "debug.h"
@@ -905,7 +906,7 @@ std::map<bodypart_id, float> Character::bodypart_exposure()
         bp_exposure[bp] = 1.0f;
     }
     // For every item worn, for every body part, adjust coverage
-    worn.bodypart_exposure( bp_exposure, all_body_parts );
+    worn->bodypart_exposure( bp_exposure, all_body_parts );
     return bp_exposure;
 }
 

@@ -26,6 +26,7 @@
 #include "calendar.h"
 #include "cata_utility.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_martial_arts.h"
 #include "clzones.h"
 #include "colony.h"
@@ -2625,7 +2626,7 @@ void activity_handlers::travel_do_turn( player_activity *act, Character *you )
 void activity_handlers::armor_layers_do_turn( player_activity *, Character *you )
 {
     you->cancel_activity();
-    you->worn.sort_armor( *you );
+    you->worn->sort_armor( *you );
 }
 
 void activity_handlers::atm_do_turn( player_activity *, Character *you )

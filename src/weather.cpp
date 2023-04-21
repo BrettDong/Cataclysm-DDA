@@ -14,6 +14,7 @@
 #include "calendar.h"
 #include "cata_utility.h"
 #include "character.h"
+#include "character_attire.h"
 #include "city.h"
 #include "colony.h"
 #include "coordinate_conversions.h"
@@ -391,7 +392,7 @@ void wet_character( Character &target, int amount )
     for( const bodypart_id &bp : target.get_all_body_parts() ) {
         clothing_map.emplace( bp, std::vector<const item *>() );
     }
-    std::map<bodypart_id, int> warmth_bp = target.worn.warmth( target );
+    std::map<bodypart_id, int> warmth_bp = target.worn->warmth( target );
     const int warmth_delay = warmth_bp[body_part_torso] * 0.8 +
                              warmth_bp[body_part_head] * 0.2;
     if( rng( 0, 100 - amount + warmth_delay ) > 10 ) {

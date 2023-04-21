@@ -1,6 +1,7 @@
 #include "widget.h"
 
 #include "avatar.h"
+#include "character_attire.h"
 #include "character_martial_arts.h"
 #include "color.h"
 #include "condition.h"
@@ -1114,7 +1115,7 @@ std::string widget::color_text_function_string( const avatar &ava, unsigned int 
             apply_color = false; // Already colorized
             break;
         case widget_var::bp_armor_outer_text:
-            desc.first = ava.worn.get_armor_display( only_bp() );
+            desc.first = ava.worn->get_armor_display( only_bp() );
             apply_color = false; // Item name already colorized by tname
             break;
         case widget_var::carry_weight_text:

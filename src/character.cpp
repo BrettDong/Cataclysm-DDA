@@ -1298,7 +1298,7 @@ int Character::swim_speed() const
     }
     /** @EFFECT_SWIMMING increases swim speed */
     ret *= get_modifier( character_modifier_swim_mod );
-    ret += worn.swim_modifier( round( get_skill_level( skill_swimming ) ) );
+    ret += worn->swim_modifier( round( get_skill_level( skill_swimming ) ) );
     /** @EFFECT_STR increases swim speed */
 
     /** @EFFECT_DEX increases swim speed */
@@ -1972,7 +1972,7 @@ int Character::footstep_sound() const
 
 int Character::clatter_sound() const
 {
-    return worn.clatter_sound();
+    return worn->clatter_sound();
 }
 
 void Character::make_footstep_noise() const
@@ -2377,19 +2377,19 @@ void Character::flag_encumbrance()
 
 void Character::check_item_encumbrance_flag()
 {
-    if( worn.check_item_encumbrance_flag( check_encumbrance ) ) {
+    if( worn->check_item_encumbrance_flag( check_encumbrance ) ) {
         calc_encumbrance();
     }
 }
 
 bool Character::natural_attack_restricted_on( const bodypart_id &bp ) const
 {
-    return worn.natural_attack_restricted_on( bp );
+    return worn->natural_attack_restricted_on( bp );
 }
 
 bool Character::natural_attack_restricted_on( const sub_bodypart_id &bp ) const
 {
-    return worn.natural_attack_restricted_on( bp );
+    return worn->natural_attack_restricted_on( bp );
 }
 
 std::vector<const item *> Character::get_pseudo_items() const
@@ -2708,7 +2708,7 @@ std::vector<item_location> Character::nearby( const
 std::list<item> Character::remove_worn_items_with( const std::function<bool( item & )> &filter )
 {
     invalidate_inventory_validity_cache();
-    return worn.remove_worn_items_with( filter, *this );
+    return worn->remove_worn_items_with( filter, *this );
 }
 
 std::list<item *> Character::get_dependent_worn_items( const item &it )
@@ -2716,7 +2716,7 @@ std::list<item *> Character::get_dependent_worn_items( const item &it )
     std::list<item *> dependent;
 
     if( is_worn( it ) ) {
-        worn.add_dependent_item( dependent, it );
+        worn->add_dependent_item( dependent, it );
     }
 
     return dependent;
@@ -2798,7 +2798,7 @@ units::mass Character::weight_carried_with_tweaks( const item_tweaks &tweaks ) c
             empty;
 
     // Worn items
-    units::mass ret = worn.weight_carried_with_tweaks( without );
+    units::mass ret = worn->weight_carried_with_tweaks( without );
 
     // Wielded item
     units::mass weaponweight = 0_gram;
@@ -2842,7 +2842,7 @@ units::volume Character::volume_carried_with_tweaks( const item_tweaks &tweaks )
             empty;
 
     // Worn items
-    units::volume ret = worn.contents_volume_with_tweaks( without );
+    units::volume ret = worn->contents_volume_with_tweaks( without );
 
     // Wielded item
     if( !without.count( &weapon ) ) {
@@ -2862,8 +2862,8 @@ units::mass Character::weight_capacity() const
     ret *= mutation_value( "weight_capacity_modifier" );
 
     units::mass worn_weight_bonus = 0_gram;
-    ret *= worn.weight_capacity_modifier();
-    worn_weight_bonus += worn.weight_capacity_bonus();
+    ret *= worn->weight_capacity_modifier();
+    worn_weight_bonus += worn->weight_capacity_bonus();
 
     units::mass bio_weight_bonus = 0_gram;
     for( const bionic_id &bid : get_bionics() ) {
@@ -2895,7 +2895,7 @@ bool Character::can_pickVolume( const item &it, bool, const item *avoid,
         weapon.can_contain( it, false, false, ignore_pkt_settings ).success() ) {
         return true;
     }
-    if( worn.can_pickVolume( it, ignore_pkt_settings ) ) {
+    if( worn->can_pickVolume( it, ignore_pkt_settings ) ) {
         return true;
     }
     return false;
@@ -2914,7 +2914,7 @@ bool Character::can_pickVolume_partial( const item &it, bool, const item *avoid,
         return true;
     }
 
-    return worn.can_pickVolume( copy, ignore_pkt_settings );
+    return worn->can_pickVolume( copy, ignore_pkt_settings );
 }
 
 bool Character::can_pickWeight( const item &it, bool safe ) const
@@ -3028,7 +3028,7 @@ std::vector<std::pair<std::string, std::string>> Character::get_overlay_ids() co
     }
 
     // next clothing
-    worn.get_overlay_ids( rval );
+    worn->get_overlay_ids( rval );
 
     // last weapon
     // TODO: might there be clothing that covers the weapon?
@@ -3457,7 +3457,7 @@ void Character::calc_discomfort()
 {
     // clear all instances of discomfort
     remove_effect( effect_chafing );
-    for( const bodypart_id &bp : worn.where_discomfort( *this ) ) {
+    for( const bodypart_id &bp : worn->where_discomfort( *this ) ) {
         if( bp->feels_discomfort ) {
             add_effect( effect_chafing, 1_turns, bp, true, 1 );
         }
@@ -3473,7 +3473,7 @@ void Character::calc_encumbrance( const item &new_item )
 {
 
     std::map<bodypart_id, encumbrance_data> enc;
-    worn.item_encumb( enc, new_item, *this );
+    worn->item_encumb( enc, new_item, *this );
     mut_cbm_encumb( enc );
     calc_bmi_encumb( enc );
 
@@ -3486,7 +3486,7 @@ void Character::calc_encumbrance( const item &new_item )
 units::mass Character::get_weight() const
 {
     units::mass ret = 0_gram;
-    units::mass wornWeight = worn.weight();
+    units::mass wornWeight = worn->weight();
 
     ret += bodyweight();       // The base weight of the player's body
     ret += inv->weight();           // Weight of the stored inventory
@@ -3712,7 +3712,7 @@ body_part_set Character::exclusive_flag_coverage( const flag_id &flag ) const
 {
     body_part_set ret;
     ret.fill( get_all_body_parts() );
-    return worn.exclusive_flag_coverage( ret, flag );
+    return worn->exclusive_flag_coverage( ret, flag );
 }
 
 /*
@@ -5593,7 +5593,7 @@ float Character::active_light() const
     for( const trait_id &mut : get_mutations() ) {
         float curr_lum = 0.0f;
         for( const std::pair<const bodypart_str_id, float> &elem : mut->lumination ) {
-            const float lum_coverage = worn.coverage_with_flags_exclude( elem.first.id(),
+            const float lum_coverage = worn->coverage_with_flags_exclude( elem.first.id(),
             { flag_ALLOWS_NATURAL_ATTACKS, flag_SEMITANGIBLE, flag_PERSONAL } ) / 100.0f;
             curr_lum += elem.second * ( 1 - lum_coverage );
         }
@@ -6583,6 +6583,11 @@ void Character::reset_cardio_acc()
 int Character::get_cardio_acc_base() const
 {
     return base_cardio_acc;
+}
+
+bool Character::is_worn( const item &thing ) const
+{
+    return worn->is_worn( thing );
 }
 
 bool Character::invoke_item( item *used )
@@ -7735,7 +7740,7 @@ dealt_damage_instance Character::deal_damage( Creature *source, bodypart_id bp,
             dealt_melee = true;
         }
     }
-    sum_cover += worn.sum_filthy_cover( dealt_ranged, dealt_melee, bp );
+    sum_cover += worn->sum_filthy_cover( dealt_ranged, dealt_melee, bp );
 
     // Chance of infection is damage (with cut and stab x4) * sum of coverage on affected body part, in percent.
     // i.e. if the body part has a sum of 100 coverage from filthy clothing,
@@ -8046,7 +8051,7 @@ std::vector<item *> Character::inv_dump()
     if( is_armed() && can_drop( weapon ).success() ) {
         ret.push_back( &weapon );
     }
-    worn.inv_dump( ret );
+    worn->inv_dump( ret );
     inv->dump( ret );
     return ret;
 }
@@ -8057,7 +8062,7 @@ std::vector<const item *> Character::inv_dump() const
     if( is_armed() && can_drop( weapon ).success() ) {
         ret.push_back( &weapon );
     }
-    worn.inv_dump( ret );
+    worn->inv_dump( ret );
     inv->dump( ret );
     return ret;
 }
@@ -8068,7 +8073,7 @@ bool Character::covered_with_flag( const flag_id &f, const body_part_set &parts 
         return true;
     }
 
-    return worn.covered_with_flag( f, parts );
+    return worn->covered_with_flag( f, parts );
 }
 
 bool Character::is_waterproof( const body_part_set &parts ) const
@@ -8090,7 +8095,7 @@ units::volume Character::free_space() const
         }
     }
     volume_capacity += weapon.check_for_free_space();
-    volume_capacity += worn.free_space();
+    volume_capacity += worn->free_space();
     return volume_capacity;
 }
 
@@ -8100,7 +8105,7 @@ units::volume Character::holster_volume() const
     if( weapon.is_holster() ) {
         holster_volume += weapon.get_total_capacity();
     }
-    holster_volume += worn.holster_volume();
+    holster_volume += worn->holster_volume();
     return holster_volume;
 }
 
@@ -8110,7 +8115,7 @@ int Character::empty_holsters() const
     if( weapon.is_holster() ) {
         e_holsters += 1;
     }
-    e_holsters += worn.empty_holsters();
+    e_holsters += worn->empty_holsters();
     return e_holsters;
 }
 
@@ -8120,7 +8125,7 @@ int Character::used_holsters() const
     if( weapon.is_holster() ) {
         e_holsters += weapon.get_used_holsters();
     }
-    e_holsters += worn.used_holsters();
+    e_holsters += worn->used_holsters();
     return e_holsters;
 }
 
@@ -8130,7 +8135,7 @@ int Character::total_holsters() const
     if( weapon.is_holster() ) {
         e_holsters += weapon.get_total_holsters();
     }
-    e_holsters += worn.total_holsters();
+    e_holsters += worn->total_holsters();
     return e_holsters;
 }
 
@@ -8140,7 +8145,7 @@ units::volume Character::free_holster_volume() const
     if( weapon.is_holster() ) {
         holster_volume += weapon.get_total_holster_volume() - weapon.get_used_holster_volume();
     }
-    holster_volume += worn.free_holster_volume();
+    holster_volume += worn->free_holster_volume();
     return holster_volume;
 }
 
@@ -8150,7 +8155,7 @@ units::volume Character::small_pocket_volume( const units::volume &threshold ) c
     if( weapon.get_total_capacity() <= threshold ) {
         small_spaces += weapon.get_total_capacity();
     }
-    small_spaces += worn.small_pocket_volume( threshold );
+    small_spaces += worn->small_pocket_volume( threshold );
     return small_spaces;
 }
 
@@ -8158,7 +8163,7 @@ units::volume Character::volume_capacity() const
 {
     units::volume volume_capacity = 0_ml;
     volume_capacity += weapon.get_total_capacity();
-    volume_capacity += worn.volume_capacity();
+    volume_capacity += worn->volume_capacity();
     return volume_capacity;
 }
 
@@ -8185,7 +8190,7 @@ units::volume Character::volume_capacity_with_tweaks( const item_tweaks &tweaks 
         volume_capacity += weapon.get_total_capacity();
     }
 
-    volume_capacity += worn.volume_capacity_with_tweaks( without );
+    volume_capacity += worn->volume_capacity_with_tweaks( without );
 
     return volume_capacity;
 }
@@ -8475,9 +8480,9 @@ bool Character::can_use_collar() const
 
 std::map<bodypart_id, int> Character::bonus_item_warmth() const
 {
-    const int pocket_warmth = worn.pocket_warmth();
-    const int hood_warmth = worn.hood_warmth();
-    const int collar_warmth = worn.collar_warmth();
+    const int pocket_warmth = worn->pocket_warmth();
+    const int hood_warmth = worn->hood_warmth();
+    const int collar_warmth = worn->collar_warmth();
 
     std::map<bodypart_id, int> ret;
     for( const bodypart_id &bp : get_all_body_parts() ) {
@@ -8691,7 +8696,7 @@ std::list<item> Character::use_amount( const itype_id &it, int quantity,
     if( quantity > 0 && weapon.use_amount( it, quantity, ret ) ) {
         remove_weapon();
     }
-    ret = worn.use_amount( it, quantity, ret, filter, *this );
+    ret = worn->use_amount( it, quantity, ret, filter, *this );
 
     if( quantity <= 0 ) {
         return ret;
@@ -11126,7 +11131,7 @@ std::list<item *> Character::get_radio_items()
         }
     }
 
-    worn.append_radio_items( rc_items );
+    worn->append_radio_items( rc_items );
 
     if( is_armed() ) {
         if( weapon.has_flag( flag_RADIO_ACTIVATION ) ) {
@@ -11166,7 +11171,7 @@ bool Character::immune_to( const bodypart_id &bp, damage_unit dam ) const
 
     passive_absorb_hit( bp, dam );
 
-    worn.damage_mitigate( bp, dam );
+    worn->damage_mitigate( bp, dam );
 
     return dam.amount <= 0;
 }
@@ -11527,7 +11532,7 @@ void Character::process_items()
     }
 
     // Active item processing done, now we're recharging.
-    if( worn.check_item_encumbrance_flag( get_check_encumbrance() ) ) {
+    if( worn->check_item_encumbrance_flag( get_check_encumbrance() ) ) {
         calc_encumbrance();
         set_check_encumbrance( false );
     }

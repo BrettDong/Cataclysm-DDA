@@ -10,6 +10,7 @@
 #include "bodypart.h"
 #include "calendar.h"
 #include "character.h"
+#include "character_attire.h"
 #include "creature.h"
 #include "creature_tracker.h"
 #include "enums.h"
@@ -639,7 +640,7 @@ bool melee_actor::call( monster &z ) const
         // when you break out of a grab you have a chance to lose some things from your pockets
         // that are hanging off your character
         if( target->is_avatar() ) {
-            std::vector<item_pocket *> pd = target->as_character()->worn.grab_drop_pockets();
+            std::vector<item_pocket *> pd = target->as_character()->worn->grab_drop_pockets();
             // if we have items that can be pulled off
             if( !pd.empty() ) {
                 // choose an item to be ripped off
@@ -981,7 +982,7 @@ void gun_actor::shoot( monster &z, const tripoint &target, const gun_mode_id &mo
 
     standard_npc tmp( _( "The " ) + z.name(), z.pos(), {}, 8,
                       fake_str, fake_dex, fake_int, fake_per );
-    tmp.worn.wear_item( tmp, item( "backpack" ), false, false, true, true );
+    tmp.worn->wear_item( tmp, item( "backpack" ), false, false, true, true );
     tmp.set_fake( true );
     tmp.set_attitude( z.friendly ? NPCATT_FOLLOW : NPCATT_KILL );
 

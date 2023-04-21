@@ -24,6 +24,7 @@
 #include "calendar.h"
 #include "catacharset.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_martial_arts.h"
 #include "clzones.h"
 #include "colony.h"
@@ -808,7 +809,7 @@ static void smash()
         std::pair<bodypart_id, int> best_part_to_smash = {bp_null, 0};
         int tmp_bash_armor = 0;
         for( const bodypart_id &bp : player_character.get_all_body_parts() ) {
-            tmp_bash_armor += player_character.worn.damage_resist( damage_type::BASH, bp );
+            tmp_bash_armor += player_character.worn->damage_resist( damage_type::BASH, bp );
             for( const trait_id &mut : player_character.get_mutations() ) {
                 const resistances &res = mut->damage_resistance( bp );
                 tmp_bash_armor += std::floor( res.type_resist( damage_type::BASH ) );
@@ -1514,7 +1515,7 @@ static void fire()
         std::vector<std::string> options;
         std::vector<std::function<void()>> actions;
 
-        player_character.worn.fire_options( player_character, options, actions );
+        player_character.worn->fire_options( player_character, options, actions );
         if( !options.empty() ) {
             int sel = uilist( _( "Draw what?" ), options );
             if( sel >= 0 ) {
@@ -2391,7 +2392,7 @@ bool game::do_regular_action( action_id &act, avatar &player_character,
             break;
 
         case ACTION_SORT_ARMOR:
-            player_character.worn.sort_armor( player_character );
+            player_character.worn->sort_armor( player_character );
             break;
 
         case ACTION_WAIT:

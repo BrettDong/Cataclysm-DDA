@@ -4,6 +4,7 @@
 #include "avatar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "damage.h"
 #include "enums.h"
 #include "inventory.h"
@@ -164,7 +165,7 @@ static void unfold_and_check( const vehicle_preset &veh_preset, const damage_pre
     clear_map();
     clear_vehicles( &m );
 
-    u.worn.wear_item( u, item( "debug_backpack" ), false, false );
+    u.worn->wear_item( u, item( "debug_backpack" ), false, false );
 
     item veh_item( veh_preset.vehicle_itype_id );
 
@@ -300,7 +301,7 @@ static void check_folded_item_to_parts_damage_transfer( const folded_item_damage
     map &m = get_map();
     Character &u = get_player_character();
 
-    u.worn.wear_item( u, item( "debug_backpack" ), false, false );
+    u.worn->wear_item( u, item( "debug_backpack" ), false, false );
 
     item veh_item( preset.folded_vehicle_item );
 

@@ -1,6 +1,7 @@
 #include "avatar.h"
 #include "bodygraph.h"
 #include "bodypart.h"
+#include "character_attire.h"
 #include "cursesdef.h"
 #include "damage.h"
 #include "effect.h"
@@ -471,7 +472,7 @@ void bodygraph_display::prepare_infolist()
         }
     }
 
-    u->worn.prepare_bodymap_info( info, bp, sub_parts, *u );
+    u->worn->prepare_bodymap_info( info, bp, sub_parts, *u );
 
     // update info text cache
     prepare_infotext( true );

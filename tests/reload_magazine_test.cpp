@@ -8,6 +8,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "inventory.h"
 #include "item.h"
 #include "item_location.h"
@@ -49,7 +50,7 @@ TEST_CASE( "reload_magazine", "[magazine] [visitable] [item] [item_location] [re
     CHECK( mag_cap > 0 );
 
     avatar &player_character = get_avatar();
-    player_character.worn.clear();
+    player_character.worn->clear();
     player_character.inv->clear();
     player_character.remove_weapon();
     player_character.wear_item( item( "backpack" ) ); // so we don't drop anything
@@ -344,7 +345,7 @@ TEST_CASE( "reload_revolver", "[visitable] [item] [item_location] [reload]" )
     CHECK( alt_ammo != bad_ammo );
 
     Character &player_character = get_player_character();
-    player_character.worn.clear();
+    player_character.worn->clear();
     player_character.inv->clear();
     player_character.remove_weapon();
     player_character.wear_item( item( "backpack" ) ); // so we don't drop anything

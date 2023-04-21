@@ -12,6 +12,7 @@
 #include "bodypart.h"
 #include "catacharset.h" // used for utf8_width()
 #include "character.h"
+#include "character_attire.h"
 #include "color.h"
 #include "cursesdef.h"
 #include "debug.h"
@@ -97,7 +98,7 @@ mid_pane_status draw_mid_pane( const catacurses::window &w_sort_middle,
     // NOLINTNEXTLINE(cata-use-named-point-constants)
     status.header_lines = fold_and_print( w_sort_middle, point( 0, 0 ), win_width - 1, c_white,
                                           worn_item_it->type_name( 1 ) ) - 1;
-    const item_penalties penalties = c.worn.get_item_penalties( worn_item_it, c, bp );
+    const item_penalties penalties = c.worn->get_item_penalties( worn_item_it, c, bp );
     std::vector<std::string> mid_pane_text;
     mid_pane_text.reserve(
         40 ); //Assume 10 for properties, 15 for protection, 5 for layering, 10 for encumbrance
@@ -847,7 +848,7 @@ void outfit::sort_armor( Character &guy )
         const auto &combine_bp = [&guy]( const bodypart_id & cover ) -> bool {
             const bodypart_id opposite = cover.obj().opposite_part;
             return cover != opposite &&
-            guy.worn.items_cover_bp( guy, cover ) == guy.worn.items_cover_bp( guy, opposite );
+            guy.worn->items_cover_bp( guy, cover ) == guy.worn->items_cover_bp( guy, opposite );
         };
 
         cata::flat_set<bodypart_id> rl;

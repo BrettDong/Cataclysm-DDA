@@ -24,6 +24,7 @@
 #include "calendar.h"
 #include "cata_utility.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_martial_arts.h"
 #include "creature.h"
 #include "creature_tracker.h"
@@ -740,7 +741,7 @@ bool Character::melee_attack_abstract( Creature &t, bool allow_special,
         if( attack_vector != "WEAPON" ) {
             // todo: simplify this by using item_location everywhere
             // so only cur_weapon = worn.current_unarmed_weapon remains
-            item *worn_weap = worn.current_unarmed_weapon( attack_vector );
+            item *worn_weap = worn->current_unarmed_weapon( attack_vector );
             cur_weapon = worn_weap ? item_location( *this, worn_weap ) : item_location();
             cur_weap = cur_weapon ? *cur_weapon : null_item_reference();
         }
@@ -2134,7 +2135,7 @@ item_location Character::best_shield()
     // "BLOCK_WHILE_WORN" without a blocking tech need to be worn for the bonus
     best_value = best_value == 2 ? 0 : best_value;
     item_location best = best_value > 0 ? get_wielded_item() : item_location();
-    item *best_worn = worn.best_shield();
+    item *best_worn = worn->best_shield();
     if( best_worn && melee::blocking_ability( *best_worn ) >= best_value ) {
         best = item_location( *this, best_worn );
     }

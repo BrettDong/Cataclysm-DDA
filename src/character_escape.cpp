@@ -1,4 +1,5 @@
 #include "character.h"
+#include "character_attire.h"
 #include "creature_tracker.h"
 #include "effect.h"
 #include "flag.h"
@@ -224,7 +225,7 @@ bool Character::try_remove_grab()
                                    _( "<npcname> tries to break out of the grab, but fails!" ) );
             return false;
         } else {
-            std::vector<item_pocket *> pd = worn.grab_drop_pockets();
+            std::vector<item_pocket *> pd = worn->grab_drop_pockets();
             // if we have items that can be pulled off
             if( !pd.empty() ) {
                 // choose an item to be ripped off

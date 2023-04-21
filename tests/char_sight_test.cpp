@@ -4,6 +4,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "flag.h"
 #include "game.h"
 #include "item.h"
@@ -156,7 +157,7 @@ TEST_CASE( "character sight limits", "[character][sight][vision]" )
         REQUIRE( dummy.has_trait( trait_MYOPIC ) );
 
         WHEN( "without glasses" ) {
-            dummy.worn.clear();
+            dummy.worn->clear();
             REQUIRE_FALSE( dummy.worn_with_flag( flag_FIX_NEARSIGHT ) );
 
             THEN( "impaired sight, with 12 tiles of range" ) {
@@ -219,7 +220,7 @@ TEST_CASE( "ursine vision", "[character][ursine][vision]" )
         dummy.toggle_trait( trait_URSINE_EYE );
         REQUIRE( dummy.has_trait( trait_URSINE_EYE ) );
 
-        dummy.worn.clear();
+        dummy.worn->clear();
         REQUIRE_FALSE( dummy.worn_with_flag( flag_FIX_NEARSIGHT ) );
 
         WHEN( "under a new moon" ) {

@@ -8,6 +8,7 @@
 #include "bionics.h"
 #include "calendar.h"
 #include "cata_catch.h"
+#include "character_attire.h"
 #include "game.h"
 #include "item.h"
 #include "item_pocket.h"
@@ -485,7 +486,7 @@ TEST_CASE( "fueled bionics", "[bionics] [item]" )
         REQUIRE( !dummy.has_power() );
 
         // Connect to empty ups. Bionic shouldn't work
-        dummy.worn.wear_item( dummy, item( "backpack" ), false, false );
+        dummy.worn->wear_item( dummy, item( "backpack" ), false, false );
         item_location ups = dummy.i_add( item( "UPS_off" ) );
         item_location cable = dummy.i_add( item( "jumper_cable" ) );
         cable->set_var( "state", "UPS_link" );
@@ -541,8 +542,8 @@ TEST_CASE( "fueled bionics", "[bionics] [item]" )
         REQUIRE( g->is_in_sunlight( dummy.pos() ) );
 
         // Connect solar backpack
-        dummy.worn.wear_item( dummy, item( "pants_cargo" ), false, false );
-        dummy.worn.wear_item( dummy, item( itype_solarpack_on ), false, false );
+        dummy.worn->wear_item( dummy, item( "pants_cargo" ), false, false );
+        dummy.worn->wear_item( dummy, item( itype_solarpack_on ), false, false );
         // Unsafe way to get the worn solar backpack
         item_location solar_pack = dummy.top_items_loc()[1];
         REQUIRE( solar_pack->typeId() == itype_solarpack_on );

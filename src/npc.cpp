@@ -16,6 +16,7 @@
 #include "bodypart.h"
 #include "catacharset.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_id.h"
 #include "character_martial_arts.h"
 #include "clzones.h"
@@ -275,7 +276,7 @@ standard_npc::standard_npc( const std::string &name, const tripoint &pos,
         wear_item( item( e ), false );
     }
 
-    worn.set_fitted();
+    worn->set_fitted();
 }
 
 npc::npc( npc && ) noexcept( map_is_noexcept ) = default;
@@ -1017,15 +1018,15 @@ void starting_clothes( npc &who, const npc_class_id &type, bool male )
         ret.push_back( random_item_from( type, "extra" ) );
     }
 
-    who.worn.on_takeoff( who );
-    who.worn.clear();
+    who.worn->on_takeoff( who );
+    who.worn->clear();
     for( item &it : ret ) {
         if( it.has_flag( flag_VARSIZE ) ) {
             it.set_flag( flag_FIT );
         }
         if( who.can_wear( it ).success() ) {
             it.on_wear( who );
-            who.worn.wear_item( who, it, false, false );
+            who.worn->wear_item( who, it, false, false );
             it.set_owner( who );
         }
     }
@@ -1423,8 +1424,8 @@ bool npc::wear_if_wanted( const item &it, std::string &reason )
         }
     }
 
-    while( !worn.empty() ) {
-        size_t size_before = worn.size();
+    while( !worn->empty() ) {
+        size_t size_before = worn->size();
         // Strip until we can put the new item on
         // This is one of the reasons this command is not used by the AI
         if( can_wear( it ).success() ) {
@@ -1445,7 +1446,7 @@ bool npc::wear_if_wanted( const item &it, std::string &reason )
                 continue;
             }
             // Find an item that covers the same body part as the new item
-            item_location armor_covering = worn.first_item_covering_bp( *this, bp );
+            item_location armor_covering = worn->first_item_covering_bp( *this, bp );
             if( armor_covering && !( is_limb_broken( bp ) && armor_covering->has_flag( flag_SPLINT ) ) ) {
                 //create an item_location for player::takeoff to handle.
                 took_off = takeoff( armor_covering );
@@ -1453,14 +1454,14 @@ bool npc::wear_if_wanted( const item &it, std::string &reason )
             }
         }
 
-        if( !took_off || worn.size() >= size_before ) {
+        if( !took_off || worn->size() >= size_before ) {
             // Shouldn't happen, but does
             reason = _( "I tried but couldn't wear it." );
             return false;
         }
     }
     reason = _( chatbin.snip_wear );
-    return worn.empty() && wear_item( it, false );
+    return worn->empty() && wear_item( it, false );
 }
 
 void npc::stow_item( item &it )
@@ -1645,7 +1646,7 @@ npc_opinion npc::get_opinion_values( const Character &you ) const
             continue;
         }
         u_ugly += bp->ugliness_mandatory;
-        u_ugly += bp->ugliness - ( bp->ugliness * worn.get_coverage( bp ) / 100 );
+        u_ugly += bp->ugliness - ( bp->ugliness * worn->get_coverage( bp ) / 100 );
     }
     npc_values.fear += u_ugly / 2;
     npc_values.trust -= u_ugly / 3;

@@ -1,5 +1,6 @@
 #include "bionics.h"
 #include "character.h"
+#include "character_attire.h"
 #include "flag.h"
 #include "itype.h"
 #include "magic_enchantment.h"
@@ -77,7 +78,7 @@ int Character::get_armor_type( damage_type dt, bodypart_id bp ) const
         case damage_type::HEAT:
         case damage_type::COLD:
         case damage_type::ELECTRIC: {
-            return worn.damage_resist( dt, bp ) + mutation_armor( bp, dt ) + bp->damage_resistance( dt );
+            return worn->damage_resist( dt, bp ) + mutation_armor( bp, dt ) + bp->damage_resistance( dt );
         }
         case damage_type::NONE:
         case damage_type::NUM:
@@ -142,7 +143,7 @@ std::map<bodypart_id, int> Character::get_all_armor_type( damage_type dt,
 
 int Character::get_armor_bash_base( bodypart_id bp ) const
 {
-    float ret = worn.damage_resist( damage_type::BASH, bp );
+    float ret = worn->damage_resist( damage_type::BASH, bp );
     for( const bionic_id &bid : get_bionics() ) {
         const auto bash_prot = bid->bash_protec.find( bp.id() );
         if( bash_prot != bid->bash_protec.end() ) {
@@ -157,7 +158,7 @@ int Character::get_armor_bash_base( bodypart_id bp ) const
 
 int Character::get_armor_cut_base( bodypart_id bp ) const
 {
-    float ret = worn.damage_resist( damage_type::CUT, bp );
+    float ret = worn->damage_resist( damage_type::CUT, bp );
 
     for( const bionic_id &bid : get_bionics() ) {
         const auto cut_prot = bid->cut_protec.find( bp.id() );
@@ -173,7 +174,7 @@ int Character::get_armor_cut_base( bodypart_id bp ) const
 
 int Character::get_armor_bullet_base( bodypart_id bp ) const
 {
-    float ret = worn.damage_resist( damage_type::BULLET, bp );
+    float ret = worn->damage_resist( damage_type::BULLET, bp );
 
     for( const bionic_id &bid : get_bionics() ) {
         const auto bullet_prot = bid->bullet_protec.find( bp.id() );
@@ -194,7 +195,7 @@ int Character::get_armor_acid( bodypart_id bp ) const
 
 int Character::get_env_resist( bodypart_id bp ) const
 {
-    float ret = worn.get_env_resist( bp );
+    float ret = worn->get_env_resist( bp );
 
     for( const bionic_id &bid : get_bionics() ) {
         const auto EP = bid->env_protec.find( bp.id() );
@@ -349,7 +350,7 @@ const weakpoint *Character::absorb_hit( const weakpoint_attack &, const bodypart
 
         armor_enchantment_adjust( *this, elem );
 
-        worn.absorb_damage( *this, elem, bp, worn_remains, armor_destroyed );
+        worn->absorb_damage( *this, elem, bp, worn_remains, armor_destroyed );
 
         passive_absorb_hit( bp, elem );
 

@@ -1,4 +1,5 @@
 #include "character.h"
+#include "character_attire.h"
 #include "effect.h"
 #include "messages.h"
 #include "morale.h"
@@ -153,7 +154,7 @@ void Character::check_and_recover_morale()
 {
     player_morale test_morale;
 
-    worn.check_and_recover_morale( test_morale );
+    worn->check_and_recover_morale( test_morale );
 
     for( const trait_id &mut : get_mutations() ) {
         test_morale.on_mutation_gain( mut );

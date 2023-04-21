@@ -36,6 +36,7 @@
 #include "cata_utility.h"
 #include "catacharset.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_id.h"
 #include "character_martial_arts.h"
 #include "city.h"
@@ -1886,8 +1887,8 @@ static void character_edit_menu()
             if( !query_yn( _( "Delete all items from the target?" ) ) ) {
                 break;
             }
-            you.worn.on_takeoff( you );
-            you.worn.clear();
+            you.worn->on_takeoff( you );
+            you.worn->clear();
             you.inv->clear();
             you.remove_weapon();
             break;
@@ -1902,7 +1903,7 @@ static void character_edit_menu()
             item &to_wear = *loc;
             if( to_wear.is_armor() ) {
                 you.on_item_wear( to_wear );
-                you.worn.wear_item( you, to_wear, false, false );
+                you.worn->wear_item( you, to_wear, false, false );
             } else if( !to_wear.is_null() ) {
                 you.set_wielded_item( to_wear );
                 get_event_bus().send<event_type::character_wields_item>( you.getID(),

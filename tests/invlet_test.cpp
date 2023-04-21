@@ -11,6 +11,7 @@
 #include "activity_actor_definitions.h"
 #include "avatar.h"
 #include "cata_catch.h"
+#include "character_attire.h"
 #include "inventory.h"
 #include "item.h"
 #include "item_location.h"
@@ -407,9 +408,9 @@ static void move_item( Character &you, const std::string &id, const inventory_lo
             switch( to ) {
                 case GROUND:
                     drop_at_feet( you, id );
-                    if( !you.is_armed() && !you.worn.empty() ) {
+                    if( !you.is_armed() && !you.worn->empty() ) {
                         // wield the first worn item
-                        you.wield( you.worn.front() );
+                        you.wield( you.worn->front() );
                     }
                     break;
                 case INVENTORY:
@@ -418,9 +419,9 @@ static void move_item( Character &you, const std::string &id, const inventory_lo
                     } else {
                         you.takeoff( item_location( you, &item_at( you, id, from ) ) );
                     }
-                    if( !you.is_armed() && !you.worn.empty() ) {
+                    if( !you.is_armed() && !you.worn->empty() ) {
                         // wield the first worn item
-                        you.wield( you.worn.front() );
+                        you.wield( you.worn->front() );
                     }
                     break;
                 case WORN:
@@ -458,10 +459,10 @@ static void invlet_test( avatar &dummy, const inventory_location from, const inv
 
         // remove all items
         dummy.inv->clear();
-        dummy.worn.clear();
+        dummy.worn->clear();
         dummy.remove_weapon();
         get_map().i_clear( dummy.pos() );
-        dummy.worn.wear_item( dummy, item( "backpack" ), false, false );
+        dummy.worn->wear_item( dummy, item( "backpack" ), false, false );
 
         // some two items that can be wielded, worn, and picked up
         item tshirt( "tshirt" );
@@ -540,10 +541,10 @@ static void stack_invlet_test( avatar &dummy, inventory_location from, inventory
 
     // remove all items
     dummy.inv->clear();
-    dummy.worn.clear();
+    dummy.worn->clear();
     dummy.remove_weapon();
     get_map().i_clear( dummy.pos() );
-    dummy.worn.wear_item( dummy, item( "backpack" ), false, false );
+    dummy.worn->wear_item( dummy, item( "backpack" ), false, false );
 
     // some stackable item that can be wielded and worn
     item tshirt1( "tshirt" );
@@ -593,7 +594,7 @@ static void swap_invlet_test( avatar &dummy, inventory_location loc )
 
     // remove all items
     dummy.inv->clear();
-    dummy.worn.clear();
+    dummy.worn->clear();
     dummy.remove_weapon();
     get_map().i_clear( dummy.pos() );
 
@@ -678,10 +679,10 @@ static void merge_invlet_test( avatar &dummy, inventory_location from )
 
         // remove all items
         dummy.inv->clear();
-        dummy.worn.clear();
+        dummy.worn->clear();
         dummy.remove_weapon();
         get_map().i_clear( dummy.pos() );
-        dummy.worn.wear_item( dummy, item( "backpack" ), false, false );
+        dummy.worn->wear_item( dummy, item( "backpack" ), false, false );
 
         // some stackable item
         item tshirt1( "tshirt" );

@@ -13,6 +13,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "debug.h"
 #include "enums.h"
 #include "flag.h"
@@ -1792,7 +1793,7 @@ static void test_pickup_autoinsert_results( Character &u, bool wear, const item_
         } else {
             CHECK( nested->all_items_top().size() == in_nested );
         }
-        item *top_it = wear ? &u.worn.front() : &*u.get_wielded_item();
+        item *top_it = wear ? &u.worn->front() : &*u.get_wielded_item();
         // top-level container still contains nested container
         CHECK( !!top_it->contained_where( *nested.get_item() ) );
     }

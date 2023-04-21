@@ -18,6 +18,7 @@
 #include "calendar.h"
 #include "cata_assert.h"
 #include "character.h"
+#include "character_attire.h"
 #include "color.h"
 #include "creature_tracker.h"
 #include "cursesdef.h"
@@ -700,7 +701,7 @@ float Creature::get_crit_factor( const bodypart_id &bp ) const
     float crit_mod = 1.f;
     const Character *c = as_character();
     if( c != nullptr ) {
-        const int total_cover = clamp<int>( c->worn.get_coverage( bp, item::cover_type::COVER_VITALS ), 0,
+        const int total_cover = clamp<int>( c->worn->get_coverage( bp, item::cover_type::COVER_VITALS ), 0,
                                             100 );
         crit_mod = 1.f - total_cover / 100.f;
     }

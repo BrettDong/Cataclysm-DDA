@@ -1,4 +1,5 @@
 #include "avatar.h"
+#include "character_attire.h"
 #include "character_martial_arts.h"
 #include "martialarts.h"
 #include "mutation.h"
@@ -51,7 +52,7 @@ void player_difficulty::reset_npc( Character &dummy )
     dummy.normalize(); // In particular this clears martial arts style
 
     // delete all worn items.
-    dummy.worn.clear();
+    dummy.worn->clear();
     dummy.calc_encumbrance();
     dummy.inv->clear();
     dummy.remove_weapon();

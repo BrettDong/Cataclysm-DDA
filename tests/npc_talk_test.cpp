@@ -10,6 +10,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_id.h"
 #include "coordinate_conversions.h"
 #include "coordinates.h"
@@ -673,7 +674,7 @@ TEST_CASE( "npc_talk_items", "[npc_talk]" )
     };
     player_character.cash = 1000;
     player_character.int_cur = 8;
-    player_character.worn.wear_item( player_character, item( "backpack" ), false, false );
+    player_character.worn->wear_item( player_character, item( "backpack" ), false, false );
     d.add_topic( "TALK_TEST_EFFECTS" );
     gen_response_lines( d, 19 );
     // add and remove effect
@@ -1222,7 +1223,7 @@ TEST_CASE( "npc_compare_int", "[npc_talk]" )
     player_character.set_hunger( 26 );
     player_character.set_thirst( 27 );
     player_character.set_stored_kcal( 118169 );
-    player_character.worn.wear_item( player_character, item( "backpack" ), false, false );
+    player_character.worn->wear_item( player_character, item( "backpack" ), false, false );
     player_character.inv->add_item( item( itype_bottle_glass ) );
     player_character.inv->add_item( item( itype_bottle_glass ) );
     player_character.inv->add_item( item( itype_bottle_glass ) );

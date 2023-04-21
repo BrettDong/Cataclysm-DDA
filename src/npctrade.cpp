@@ -10,6 +10,7 @@
 
 #include "avatar.h"
 #include "character.h"
+#include "character_attire.h"
 #include "debug.h"
 #include "faction.h"
 #include "item.h"
@@ -341,7 +342,7 @@ bool npc_trading::npc_will_accept_trade( npc const &np, int your_balance )
 }
 bool npc_trading::npc_can_fit_items( npc const &np, trade_selector::select_t const &to_trade )
 {
-    std::vector<item> avail_pockets = np.worn.available_pockets();
+    std::vector<item> avail_pockets = np.worn->available_pockets();
 
     if( !to_trade.empty() && avail_pockets.empty() ) {
         return false;

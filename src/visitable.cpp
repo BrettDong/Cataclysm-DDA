@@ -13,6 +13,7 @@
 #include "active_item_cache.h"
 #include "bionics.h"
 #include "character.h"
+#include "character_attire.h"
 #include "colony.h"
 #include "debug.h"
 #include "flag.h"
@@ -453,7 +454,7 @@ const
         return VisitResponse::ABORT;
     }
 
-    if( worn.visit_items( func ) == VisitResponse::ABORT ) {
+    if( worn->visit_items( func ) == VisitResponse::ABORT ) {
         return VisitResponse::ABORT;
     }
 
@@ -655,7 +656,7 @@ std::list<item> Character::remove_items_with( const
     }
 
     // then try any worn items
-    std::list<item> worn_res = worn.remove_items_with( *this, filter, count );
+    std::list<item> worn_res = worn->remove_items_with( *this, filter, count );
     res.insert( res.end(), worn_res.begin(), worn_res.end() );
 
     if( count > 0 ) {

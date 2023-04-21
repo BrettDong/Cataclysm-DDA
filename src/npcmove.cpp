@@ -19,6 +19,7 @@
 #include "bodypart.h"
 #include "cata_algo.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_id.h"
 #include "clzones.h"
 #include "colony.h"
@@ -1745,7 +1746,7 @@ void outfit::activate_combat_items( npc &guy )
 
 void npc::activate_combat_items()
 {
-    worn.activate_combat_items( *this );
+    worn->activate_combat_items( *this );
 }
 
 void outfit::deactivate_combat_items( npc &guy )
@@ -1765,7 +1766,7 @@ void outfit::deactivate_combat_items( npc &guy )
 
 void npc::deactivate_combat_items()
 {
-    worn.deactivate_combat_items( *this );
+    worn->deactivate_combat_items( *this );
 }
 
 void npc::prepare_for_combat()
@@ -4596,7 +4597,7 @@ bool npc::adjust_worn()
         return false;
     }
 
-    return worn.adjust_worn( *this );
+    return worn->adjust_worn( *this );
 }
 
 bool outfit::adjust_worn( npc &guy )

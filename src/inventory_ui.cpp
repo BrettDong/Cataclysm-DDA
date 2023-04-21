@@ -8,6 +8,7 @@
 #include "cata_utility.h"
 #include "catacharset.h"
 #include "character.h"
+#include "character_attire.h"
 #include "colony.h"
 #include "cuboid_rectangle.h"
 #include "debug.h"
@@ -3215,7 +3216,7 @@ item_location inventory_pick_selector::execute()
                 on_input( input );
             }
         } else if( input.action == "ORGANIZE_MENU" ) {
-            u.worn.organize_items_menu();
+            u.worn->organize_items_menu();
             return item_location();
         } else if( input.action == "QUIT" ) {
             return item_location();

@@ -1,5 +1,6 @@
 #include "avatar.h"
 #include "character.h"
+#include "character_attire.h"
 #include "display.h"
 #include "effect.h"
 #include "flag.h"
@@ -133,7 +134,7 @@ void Character::update_body_wetness( const w_point &weather )
             }
 
             // Make clothing slow down drying
-            const float clothing_mult = worn.clothing_wetness_mult( bp );
+            const float clothing_mult = worn->clothing_wetness_mult( bp );
 
             const time_duration drying = bp->drying_increment * average_drying * trait_mult * weather_mult *
                                          temp_mult / clothing_mult;
@@ -487,7 +488,7 @@ void Character::update_bodytemp()
     // at 5 over healthy bmi (obese), it is ~5 warmth, at 20 over healthy bmi (morbid obesity) it is ~12 warmth
     // effects start to kick in halfway through overweightness
     int bmi_heat_bonus = std::floor( 50 * std::sqrt( std::max( 0.0f, ( get_bmi_fat() - 8.0f ) ) ) );
-    std::map<bodypart_id, int> warmth_per_bp = worn.warmth( *this );
+    std::map<bodypart_id, int> warmth_per_bp = worn->warmth( *this );
     std::map<bodypart_id, int> bonus_warmth_per_bp = bonus_item_warmth();
     std::map<bodypart_id, int> wind_res_per_bp = get_wind_resistance( clothing_map );
     // We might not use this at all, so leave it empty

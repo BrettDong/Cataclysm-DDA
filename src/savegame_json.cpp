@@ -47,6 +47,7 @@
 #include "cata_utility.h"
 #include "cata_variant.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_id.h"
 #include "character_martial_arts.h"
 #include "clone_ptr.h"
@@ -850,17 +851,17 @@ void Character::load( const JsonObject &data )
     invalidate_pseudo_items();
     update_bionic_power_capacity();
     data.read( "death_eocs", death_eocs );
-    worn.on_takeoff( *this );
-    worn.clear();
+    worn->on_takeoff( *this );
+    worn->clear();
     // deprecate after 0.G
     if( data.has_array( "worn" ) ) {
         std::list<item> items;
         data.read( "worn", items );
-        worn = outfit( items );
+        *worn = outfit( items );
     } else {
         data.read( "worn", worn );
     }
-    worn.on_item_wear( *this );
+    worn->on_item_wear( *this );
 
     // TEMPORARY until 0.F
     if( data.has_array( "hp_cur" ) ) {

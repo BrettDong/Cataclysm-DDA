@@ -13,6 +13,7 @@
 #include "cata_catch.h"
 #include "cata_scope_helpers.h"
 #include "character.h"
+#include "character_attire.h"
 #include "game.h"
 #include "inventory.h"
 #include "item.h"
@@ -152,7 +153,7 @@ struct vision_test_case {
     void test_all() const {
         Character &player_character = get_player_character();
         g->place_player( tripoint( 60, 60, 0 ) );
-        player_character.worn.clear(); // Remove any light-emitting clothing
+        player_character.worn->clear(); // Remove any light-emitting clothing
         player_character.clear_effects();
         player_character.clear_bionics();
         player_character.clear_mutations(); // remove mutations that potentially affect vision

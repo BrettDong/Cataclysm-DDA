@@ -4,6 +4,7 @@
 
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "item.h"
 #include "player_helpers.h"
 #include "type_id.h"
@@ -21,7 +22,7 @@ TEST_CASE( "character body part exposure", "[char][bodypart][exposure]" )
     std::map<bodypart_id, float> bp_exposure;
 
     GIVEN( "nothing is worn" ) {
-        dummy.worn.clear();
+        dummy.worn->clear();
 
         THEN( "exposure is 100% on all body parts" ) {
             bp_exposure = dummy.bodypart_exposure();

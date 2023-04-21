@@ -1,6 +1,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "item.h"
 #include "item_location.h"
 #include "map.h"
@@ -32,7 +33,7 @@ static Character &setup_uncraft_character()
     clear_map();
     set_time( midday );
     // Backpack for storage, and multi-tool for qualities
-    they.worn.wear_item( they, item( itype_debug_backpack ), false, false );
+    they.worn->wear_item( they, item( itype_debug_backpack ), false, false );
     they.i_add( item( itype_test_multitool ) );
     return they;
 }

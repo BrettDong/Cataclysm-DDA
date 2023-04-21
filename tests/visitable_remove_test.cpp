@@ -10,6 +10,7 @@
 #include "cata_utility.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "inventory.h"
 #include "item.h"
 #include "itype.h"
@@ -58,7 +59,7 @@ TEST_CASE( "visitable_remove", "[visitable]" )
 
     clear_avatar();
     Character &p = get_player_character();
-    p.worn.wear_item( p, item( "backpack" ), false, false );
+    p.worn->wear_item( p, item( "backpack" ), false, false );
     p.wear_item( item( "backpack" ) ); // so we don't drop anything
     map &here = get_map();
 
@@ -155,7 +156,7 @@ TEST_CASE( "visitable_remove", "[visitable]" )
         }
 
         WHEN( "one of the bottles is wielded" ) {
-            p.wield( p.worn.front().legacy_front() );
+            p.wield( p.worn->front().legacy_front() );
             REQUIRE( p.get_wielded_item()->typeId() == container_id );
             REQUIRE( count_items( p, container_id ) == count );
             REQUIRE( count_items( p, liquid_id ) == count );

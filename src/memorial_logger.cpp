@@ -16,6 +16,7 @@
 #include "calendar.h"
 #include "cata_variant.h"
 #include "character.h"
+#include "character_attire.h"
 #include "character_id.h"
 #include "coordinates.h"
 #include "debug.h"
@@ -365,7 +366,7 @@ void memorial_logger::write_text_memorial( std::ostream &file,
     file << eol;
 
     file << _( "Equipment:" ) << eol;
-    u.worn.write_text_memorial( file, indent, eol );
+    u.worn->write_text_memorial( file, indent, eol );
     file << eol;
 
     //Inventory

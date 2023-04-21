@@ -2,6 +2,7 @@
 #include "sdltiles.h" // IWYU pragma: associated
 
 #include "basecamp.h"
+#include "character_attire.h"
 #include "cuboid_rectangle.h"
 #include "point.h"
 #include "uistate.h"
@@ -2230,7 +2231,7 @@ void remove_stale_inventory_quick_shortcuts()
                 in_inventory = player_character.inv->invlet_to_position( key ) != INT_MIN;
                 if( !in_inventory ) {
                     // We couldn't find this item in the inventory, let's check worn items
-                    std::optional<const item *> item = player_character.worn.item_worn_with_inv_let( key );
+                    std::optional<const item *> item = player_character.worn->item_worn_with_inv_let( key );
                     if( item ) {
                         in_inventory = true;
                     }
@@ -2364,7 +2365,7 @@ void draw_quick_shortcuts()
                                 key ) ).display_name();
                 if( hint_text == "none" ) {
                     // We couldn't find this item in the inventory, let's check worn items
-                    std::optional<const item *> item = player_character.worn.item_worn_with_inv_let( key );
+                    std::optional<const item *> item = player_character.worn->item_worn_with_inv_let( key );
                     if( item ) {
                         hint_text = item.value()->display_name();
                     }

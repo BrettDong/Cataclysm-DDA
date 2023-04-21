@@ -3,6 +3,7 @@
 #include "activity_actor_definitions.h"
 #include "avatar.h"
 #include "calendar.h"
+#include "character_attire.h"
 #include "item.h"
 #include "map.h"
 #include "player_helpers.h"
@@ -20,7 +21,7 @@ static void check_reload_time( const std::string &weapon, const std::string &amm
     if( container.empty() ) {
         get_map().add_item( test_origin, item( ammo ) );
     } else {
-        shooter.worn.wear_item( shooter, item( container ), false, false );
+        shooter.worn->wear_item( shooter, item( container ), false, false );
         shooter.i_add( item( ammo, calendar::turn_zero, 1 ) );
     }
 

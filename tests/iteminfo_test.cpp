@@ -10,6 +10,7 @@
 #include "calendar.h"
 #include "cata_catch.h"
 #include "character.h"
+#include "character_attire.h"
 #include "flag.h"
 #include "item.h"
 #include "iteminfo_query.h"
@@ -2565,7 +2566,7 @@ TEST_CASE( "show available recipes with item as an ingredient", "[iteminfo][reci
     std::vector<iteminfo_parts> crafting = { iteminfo_parts::DESCRIPTION_APPLICABLE_RECIPES };
 
     GIVEN( "character has a potassium iodide tablet and no skill" ) {
-        player_character.worn.wear_item( player_character, item( "backpack" ), false, false );
+        player_character.worn->wear_item( player_character, item( "backpack" ), false, false );
         item_location iodine = player_character.i_add( item( "iodine" ) );
         player_character.empty_skills();
         REQUIRE( !player_character.knows_recipe( purtab ) );

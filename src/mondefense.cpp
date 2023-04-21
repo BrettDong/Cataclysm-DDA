@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "ballistics.h"
+#include "character_attire.h"
 #include "creature.h"
 #include "damage.h"
 #include "dispersion.h"
@@ -51,7 +52,7 @@ void mdefense::zapback( monster &m, Creature *const source,
 
     if( const Character *const foe = dynamic_cast<Character *>( source ) ) {
         // Players/NPCs can avoid the shock if they wear non-conductive gear on their hands
-        if( !foe->worn.hands_conductive() ) {
+        if( !foe->worn->hands_conductive() ) {
             return;
         }
         // Players/NPCs can avoid the shock by using non-conductive weapons

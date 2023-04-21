@@ -2,6 +2,7 @@
 #include "activity_handlers.h"
 #include "catacharset.h"
 #include "character.h"
+#include "character_attire.h"
 #include "flag.h"
 #include "inventory.h"
 #include "iuse_actor.h"
@@ -137,12 +138,12 @@ int Character::count_softwares( const itype_id &id )
 
 units::length Character::max_single_item_length() const
 {
-    return std::max( weapon.max_containable_length(), worn.max_single_item_length() );
+    return std::max( weapon.max_containable_length(), worn->max_single_item_length() );
 }
 
 units::volume Character::max_single_item_volume() const
 {
-    return std::max( weapon.max_containable_volume(), worn.max_single_item_volume() );
+    return std::max( weapon.max_containable_volume(), worn->max_single_item_volume() );
 }
 
 std::pair<item_location, item_pocket *> Character::best_pocket( const item &it, const item *avoid,
@@ -153,7 +154,7 @@ std::pair<item_location, item_pocket *> Character::best_pocket( const item &it, 
     if( &weapon != &it && &weapon != avoid ) {
         ret = weapon.best_pocket( it, weapon_loc, avoid, false, ignore_settings );
     }
-    worn.best_pocket( *this, it, avoid, ret, ignore_settings );
+    worn->best_pocket( *this, it, avoid, ret, ignore_settings );
     return ret;
 }
 
@@ -233,7 +234,7 @@ ret_val<item_location> Character::i_add_or_fill( item &it, bool should_stack, co
     if( it.count_by_charges() && it.charges >= 2 && !ignore_pkt_settings ) {
         const int last_charges = it.charges;
         int new_charge = last_charges;
-        this->worn.add_stash( *this, it, new_charge, false );
+        this->worn->add_stash( *this, it, new_charge, false );
 
         if( new_charge < last_charges ) {
             it.charges = new_charge;
@@ -269,7 +270,7 @@ const item &Character::i_at( int position ) const
         return weapon;
     }
     if( position < -1 ) {
-        return worn.i_at( worn_position_to_index( position ) );
+        return worn->i_at( worn_position_to_index( position ) );
     }
 
     return inv->find_item( position );
@@ -357,7 +358,7 @@ std::vector<item_location> Character::all_items_loc()
     std::vector<item_location> weapon_internal_items;
     recur_internal_locations( weap_loc, weapon_internal_items );
     ret.insert( ret.end(), weapon_internal_items.begin(), weapon_internal_items.end() );
-    std::vector<item_location> outfit_items = worn.all_items_loc( *this );
+    std::vector<item_location> outfit_items = worn->all_items_loc( *this );
     ret.insert( ret.end(), outfit_items.begin(), outfit_items.end() );
     return ret;
 }
@@ -374,7 +375,7 @@ std::vector<item_location> outfit::top_items_loc( Character &guy )
 
 std::vector<item_location> Character::top_items_loc()
 {
-    return worn.top_items_loc( *this );
+    return worn->top_items_loc( *this );
 }
 
 item *Character::invlet_to_item( const int linvlet ) const
@@ -408,7 +409,7 @@ int Character::get_item_position( const item *it ) const
         return -1;
     }
 
-    std::optional<int> pos = worn.get_item_position( *it );
+    std::optional<int> pos = worn->get_item_position( *it );
     if( pos ) {
         return worn_position_to_index( *pos );
     }
@@ -522,7 +523,7 @@ void Character::drop_invalid_inventory()
     }
 
     weapon.overflow( pos() );
-    worn.overflow( pos() );
+    worn->overflow( pos() );
 
     cache_inventory_is_valid = true;
 }
@@ -622,7 +623,7 @@ bool Character::dispose_item( item_location &&obj, const std::string &prompt )
         }
     } );
 
-    worn.holster_opts( opts, obj, *this );
+    worn->holster_opts( opts, obj, *this );
 
     int w = utf8_width( menu.text, true ) + 4;
     for( const dispose_option &e : opts ) {

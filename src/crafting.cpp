@@ -27,6 +27,7 @@
 #include "cata_assert.h"
 #include "cata_utility.h"
 #include "character.h"
+#include "character_attire.h"
 #include "colony.h"
 #include "color.h"
 #include "craft_command.h"
@@ -500,7 +501,7 @@ std::vector<const item *> Character::get_eligible_containers_for_crafting() cons
         conts = get_eligible_containers_recursive( *weapon, true );
     }
 
-    worn.get_eligible_containers_for_crafting( conts );
+    worn->get_eligible_containers_for_crafting( conts );
 
     map &here = get_map();
     // get all potential containers within PICKUP_RANGE tiles including vehicles
