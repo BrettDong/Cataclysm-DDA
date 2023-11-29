@@ -2028,10 +2028,10 @@ int game::inventory_item_menu( item_location locThisItem,
 
         bool exit = false;
         bool first_execution = true;
-        static int lang_version = detail::get_current_language_version();
+        static language_cache_invalidator lang_cache;
         do {
             //lang check here is needed to redraw the menu when using "Toggle language to English" option
-            if( first_execution || lang_version != detail::get_current_language_version() ) {
+            if( first_execution || lang_cache.invalidated() ) {
 
                 const hint_rating rate_drop_item = u.get_wielded_item() &&
                                                    u.get_wielded_item()->has_flag( flag_NO_UNWIELD ) ?
@@ -2136,7 +2136,6 @@ int game::inventory_item_menu( item_location locThisItem,
                     { "RIGHT", translation() }
                 };
 
-                lang_version = detail::get_current_language_version();
                 first_execution = false;
             }
 

@@ -74,9 +74,6 @@ void translation::make_plural()
         // just mark plural form as enabled
         raw_pl = cata::make_value<std::string>();
     }
-    // reset the cache
-    cached_language_version = INVALID_LANGUAGE_VERSION;
-    cached_translation = nullptr;
 }
 
 // return { true, suggested plural } if no irregular form is detected,
@@ -121,11 +118,6 @@ static std::pair<bool, std::string> possible_plural_of( const std::string &raw )
 
 void translation::deserialize( const JsonValue &jsin )
 {
-    // reset the cache
-    cached_language_version = INVALID_LANGUAGE_VERSION;
-    cached_num = 0;
-    cached_translation = nullptr;
-
     if( jsin.test_string() ) {
         ctxt = nullptr;
 #ifndef CATA_IN_TOOL
@@ -278,32 +270,19 @@ std::string translation::translated( const int num ) const
     if( !needs_translation || raw.empty() ) {
         return raw;
     }
-    // Note1: `raw`, `raw_pl` and `ctxt` are effectively immutable for caching purposes:
-    // in the places where they are changed, cache is explicitly invalidated
-    // Note2: if `raw_pl` is defined, `num` becomes part of the "cache key"
-    // otherwise `num` is ignored (for both translation and cache)
-    if( cached_language_version != detail::get_current_language_version() ||
-        ( raw_pl && cached_num != num ) || !cached_translation ) {
-        cached_language_version = detail::get_current_language_version();
-        cached_num = num;
-
-        if( !ctxt ) {
-            if( !raw_pl ) {
-                cached_translation = cata::make_value<std::string>( detail::_translate_internal( raw ) );
-            } else {
-                cached_translation = cata::make_value<std::string>(
-                                         n_gettext( raw.c_str(), raw_pl->c_str(), num ) );
-            }
+    if( ctxt ) {
+        if( raw_pl ) {
+            return npgettext( ctxt->c_str(), raw.c_str(), raw_pl->c_str(), num );
         } else {
-            if( !raw_pl ) {
-                cached_translation = cata::make_value<std::string>( pgettext( ctxt->c_str(), raw.c_str() ) );
-            } else {
-                cached_translation = cata::make_value<std::string>(
-                                         npgettext( ctxt->c_str(), raw.c_str(), raw_pl->c_str(), num ) );
-            }
+            return pgettext( ctxt->c_str(), raw.c_str() );
+        }
+    } else {
+        if( raw_pl ) {
+            return n_gettext( raw.c_str(), raw_pl->c_str(), num );
+        } else {
+            return _( raw.c_str() );
         }
     }
-    return *cached_translation;
 }
 
 bool translation::empty() const

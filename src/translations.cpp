@@ -17,13 +17,22 @@ static void reload_names()
     Name::load_from_file( PATH_INFO::names() );
 }
 
-// int version/generation that is incremented each time language is changed
-// used to invalidate translation cache
-static int current_language_version = INVALID_LANGUAGE_VERSION + 1;
+std::uint32_t language_cache_invalidator::global_counter = 1;
 
-int detail::get_current_language_version()
+language_cache_invalidator::language_cache_invalidator() : counter( 0 ) {}
+
+bool language_cache_invalidator::invalidated()
 {
-    return current_language_version;
+    if( counter < global_counter ) {
+        counter = global_counter;
+        return true;
+    }
+    return false;
+}
+
+void language_cache_invalidator::on_global_language_changed()
+{
+    ++global_counter;
 }
 
 #if defined(LOCALIZE)
@@ -99,10 +108,7 @@ void set_language( const std::string &lang )
 
     reset_sanity_check_genders();
 
-    // increment version to invalidate translation cache
-    do {
-        current_language_version++;
-    } while( current_language_version == INVALID_LANGUAGE_VERSION );
+    language_cache_invalidator::on_global_language_changed();
 
 #else
     // Silence unused var warning

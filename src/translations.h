@@ -7,6 +7,20 @@
 #include <locale> // IWYU pragma: keep
 
 #include "translation.h"
+#include "translation_manager.h"
+
+class language_cache_invalidator
+{
+    public:
+        language_cache_invalidator();
+
+        bool invalidated();
+
+        static void on_global_language_changed();
+    private:
+        std::uint32_t counter;
+        static std::uint32_t global_counter;
+};
 
 #if !defined(translate_marker)
 /**
@@ -27,8 +41,6 @@
 
 #if defined(LOCALIZE)
 
-#include "translation_cache.h"
-
 #if defined(__GNUC__)
 #  define ATTRIBUTE_FORMAT_ARG(a) __attribute__((format_arg(a)))
 #else
@@ -37,26 +49,7 @@
 
 void select_language();
 
-// For code analysis purposes in our clang-tidy plugin we need to be able to
-// detect when something is the argument to a translation function.  The _
-// macro makes this really tricky, so we add an otherwise unnecessary call to
-// this no-op function just so that there's something to detect.
-template<typename T>
-inline const T &translation_argument_identity( const T &t )
-{
-    return t;
-}
-
-// Note: in case of std::string argument, the result is copied, this is intended (for safety)
-// Note that _ triggers reserved identifier warnings, but we suppress all
-// three because it's a common use of _ and thus not likely to be a problem in
-// practice.
-// NOLINTNEXTLINE(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
-#define _( msg ) \
-    ( ( []( const auto & arg ) { \
-        static auto cache = detail::get_local_translation_cache( arg ); \
-        return cache( arg ); \
-    } )( translation_argument_identity( msg ) ) )
+#define _(msgid) (TranslationManager::GetInstance().Translate( msgid ))
 
 inline const char *n_gettext( const char *msgid, const char *msgid_plural,
                               std::size_t n ) ATTRIBUTE_FORMAT_ARG( 1 );

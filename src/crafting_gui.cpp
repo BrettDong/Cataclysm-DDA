@@ -617,7 +617,7 @@ class recipe_result_info_cache
         int last_terminal_width = 0;
         int panel_width;
         int cached_batch_size = 1;
-        int lang_version = 0;
+        language_cache_invalidator lang_cache;
 
         void get_byproducts_data( const recipe *rec, std::vector<iteminfo> &summary_info,
                                   std::vector<iteminfo> &details_info );
@@ -742,7 +742,7 @@ item_info_data recipe_result_info_cache::get_result_data( const recipe *rec, con
         int &scroll_pos, const catacurses::window &window )
 {
     //lang check here is needed to rebuild cache when using "Toggle language to English" option
-    if( lang_version == detail::get_current_language_version() ) {
+    if( lang_cache.invalidated() ) {
         /* If the recipe has not changed, return the cached version in info.
            Unfortunately, the separator lines are baked into info at a specific width, so if the terminal width
            has changed, the info needs to be regenerated */
@@ -754,8 +754,6 @@ item_info_data recipe_result_info_cache::get_result_data( const recipe *rec, con
             item_info_data data( "", "", info, {}, scroll_pos );
             return data;
         }
-    } else {
-        lang_version = detail::get_current_language_version();
     }
 
     cached_batch_size = batch_size;
@@ -875,14 +873,14 @@ static const std::vector<std::string> &cached_recipe_info( recipe_info_cache &in
         const int batch_size, const int fold_width, const nc_color &color,
         const std::vector<Character *> &crafting_group )
 {
-    static int lang_version = detail::get_current_language_version();
+    static language_cache_invalidator lang_cache;
 
     if( info_cache.recp != &recp ||
         info_cache.guy_id != guy.getID() ||
         info_cache.qry_comps != qry_comps ||
         info_cache.batch_size != batch_size ||
         info_cache.fold_width != fold_width ||
-        lang_version != detail::get_current_language_version()
+        lang_cache.invalidated()
       ) {
         info_cache.recp = &recp;
         info_cache.guy_id = guy.getID();
@@ -891,7 +889,6 @@ static const std::vector<std::string> &cached_recipe_info( recipe_info_cache &in
         info_cache.fold_width = fold_width;
         info_cache.text = recipe_info( recp, avail, guy, qry_comps, batch_size, fold_width, color,
                                        crafting_group );
-        lang_version = detail::get_current_language_version();
     }
     return info_cache.text;
 }
@@ -2320,8 +2317,8 @@ static std::map<size_t, inclusive_rectangle<point>> draw_recipe_tabs( const cata
             translated_cats.reserve( craft_cat_list.size() );
             for( const std::string &cat : craft_cat_list ) {
                 if( unread[ cat ] ) {
-                    translated_cats.emplace_back( _( get_cat_unprefixed(
-                                                         cat ) ).append( "<color_light_green>⁺</color>" ) );
+                    translated_cats.emplace_back( _( get_cat_unprefixed( cat ) ) +
+                                                  std::string( "<color_light_green>⁺</color>" ) );
                 } else {
                     translated_cats.emplace_back( _( get_cat_unprefixed( cat ) ) );
                 }

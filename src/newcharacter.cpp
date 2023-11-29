@@ -3195,7 +3195,8 @@ static std::string assemble_scenario_details( const avatar &u, const input_conte
                 assembled += "\n" + colorize( _( "Scenario Flags:" ), COL_HEADER ) + "\n";
                 flag_header_added = true;
             }
-            assembled += _( std::get<1>( flag_pair ) ) + "\n";
+            assembled += _( std::get<1>( flag_pair ) );
+            assembled += "\n";
         }
     }
 

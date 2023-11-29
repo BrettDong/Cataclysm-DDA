@@ -2293,10 +2293,10 @@ bool game_menus::inv::compare_items( const item &first, const item &second,
     int scroll_pos_first = 0;
     int scroll_pos_second = 0;
     bool first_execution = true;
-    static int lang_version = detail::get_current_language_version();
+    static language_cache_invalidator lang_cache;
     do {
         //lang check here is needed to redraw the menu when using "Toggle language to English" option
-        if( first_execution || lang_version != detail::get_current_language_version() ) {
+        if( first_execution || lang_cache.invalidated() ) {
             std::vector<iteminfo> v_item_first;
             std::vector<iteminfo> v_item_second;
 
@@ -2357,7 +2357,6 @@ bool game_menus::inv::compare_items( const item &first, const item &second,
                 draw_item_info( wnd_first, item_info_first );
                 draw_item_info( wnd_second, item_info_second );
             } );
-            lang_version = detail::get_current_language_version();
             first_execution = false;
         }
 

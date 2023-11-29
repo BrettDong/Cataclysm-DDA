@@ -743,12 +743,11 @@ construction_id construction_menu( const bool blueprint )
             }
         }
         isnew = false;
-        static int lang_version = detail::get_current_language_version();
+        static language_cache_invalidator lang_cache;
 
         //lang check here is needed to redraw the menu when using "Toggle language to English" option
-        if( update_info || lang_version != detail::get_current_language_version() ) {
+        if( update_info || lang_cache.invalidated() ) {
             update_info = false;
-            lang_version = detail::get_current_language_version();
 
             notes.clear();
             if( tabindex == tabcount - 1 && !filter.empty() ) {

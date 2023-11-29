@@ -988,7 +988,7 @@ void inventory_entry::make_entry_cell_cache(
     }
     entry_cell_cache.emplace( entry_cell_cache_t{
         preset.get_color( *this ),
-        { preset.get_cells_count(), std::string() } } );
+        { preset.get_cells_count(), std::string() }, {} } );
 
     for( size_t i = 0, n = preset.get_cells_count(); i < n; ++i ) {
         entry_cell_cache->text[i] = preset.get_cell_text( *this, i );
@@ -1004,12 +1004,10 @@ const inventory_entry::entry_cell_cache_t &inventory_entry::get_entry_cell_cache
     inventory_selector_preset const &preset ) const
 {
     //lang check here is needed to rebuild cache when using "Toggle language to English" option
-    if( !entry_cell_cache ||
-        entry_cell_cache->lang_version != detail::get_current_language_version() ) {
+    if( !entry_cell_cache || entry_cell_cache->lang_cache.invalidated() ) {
         make_entry_cell_cache( preset, false );
         cache_denial( preset );
         cata_assert( entry_cell_cache.has_value() );
-        entry_cell_cache->lang_version = detail::get_current_language_version();
     }
 
     return *entry_cell_cache;
