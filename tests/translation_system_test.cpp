@@ -86,28 +86,29 @@ TEST_CASE( "TranslationManager_loading_benchmark", "[.][benchmark][translations]
 TEST_CASE( "TranslationManager_translate_benchmark", "[.][benchmark][translations]" )
 {
     TranslationManager manager;
+    const std::string msg = "The maximum width of each on-screen keyboard shortcut in pixels.";
 
     // Russian
     REQUIRE( file_exist( fs::u8path( "./lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo" ) ) );
     manager.LoadDocuments( std::vector<std::string> {"./lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo"} );
-    REQUIRE( strcmp( manager.Translate( "battery" ), "battery" ) != 0 );
+    REQUIRE( strcmp( manager.Translate( msg ), msg.c_str() ) != 0 );
     BENCHMARK( "Russian" ) {
-        return manager.Translate( "battery" );
+        return manager.Translate( msg );
     };
 
     // Chinese
     REQUIRE( file_exist( fs::u8path( "./lang/mo/zh_CN/LC_MESSAGES/cataclysm-dda.mo" ) ) );
     manager.LoadDocuments( std::vector<std::string> {"./lang/mo/zh_CN/LC_MESSAGES/cataclysm-dda.mo"} );
-    REQUIRE( strcmp( manager.Translate( "battery" ), "battery" ) != 0 );
+    REQUIRE( strcmp( manager.Translate( msg ), msg.c_str() ) != 0 );
     BENCHMARK( "Chinese" ) {
-        return manager.Translate( "battery" );
+        return manager.Translate( msg );
     };
 
     // English
     manager.LoadDocuments( std::vector<std::string>() );
-    REQUIRE( strcmp( manager.Translate( "battery" ), "battery" ) == 0 );
+    REQUIRE( strcmp( manager.Translate( msg ), msg.c_str() ) == 0 );
     BENCHMARK( "English" ) {
-        return manager.Translate( "battery" );
+        return manager.Translate( msg );
     };
 }
 
