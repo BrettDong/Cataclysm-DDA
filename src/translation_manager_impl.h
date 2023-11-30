@@ -4,7 +4,6 @@
 
 #if defined(LOCALIZE)
 
-#include <optional>
 #include <unordered_map>
 
 #include "translation_document.h"
@@ -14,10 +13,19 @@ class TranslationManager::Impl
 {
     private:
         std::vector<TranslationDocument> documents;
+        std::vector<std::uint64_t> index;
+        std::size_t indexCapacityMask = 0;
 
-        std::unordered_map<std::uint32_t, std::vector<std::pair<std::size_t, std::size_t>>> strings;
         static std::uint32_t Hash( const char *str );
-        std::optional<std::pair<std::size_t, std::size_t>> LookupString( const char *query ) const;
+        static std::uint8_t MaskProbeSequenceLength( std::uint64_t index );
+        static std::uint16_t MaskPartialHash( std::uint64_t index );
+        static std::uint8_t MaskDocIndex( std::uint64_t index );
+        static std::uint32_t MaskLocalIndex( std::uint64_t index );
+        static std::uint64_t CreateIndexBytes( std::uint8_t docIndex, std::uint32_t localIndex,
+                                               std::uint16_t partialHash, std::uint8_t psb );
+        void AllocateIndex( std::size_t n );
+        void InsertIndex( std::uint8_t docIndex, std::uint32_t localIndex, std::size_t hash );
+        std::uint64_t Lookup( const char *query ) const;
 
         std::unordered_map<std::string, std::vector<std::string>> mo_files;
         static std::string LanguageCodeOfPath( std::string_view path );

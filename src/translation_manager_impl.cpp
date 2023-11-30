@@ -18,22 +18,96 @@ std::uint32_t TranslationManager::Impl::Hash( const char *str )
     return hash;
 }
 
-std::optional<std::pair<std::size_t, std::size_t>> TranslationManager::Impl::LookupString(
-            const char *query ) const
+std::uint64_t TranslationManager::Impl::CreateIndexBytes( const std::uint8_t docIndex,
+        const std::uint32_t localIndex, const std::uint16_t partialHash, const std::uint8_t psb )
 {
-    std::uint32_t hash = Hash( query );
-    auto it = strings.find( hash );
-    if( it == strings.end() ) {
-        return std::nullopt;
+    return ( static_cast<std::uint64_t>( psb ) << 56 ) | ( static_cast<std::uint64_t>
+            ( partialHash ) << 40 ) | ( static_cast<std::uint64_t>( docIndex ) << 32 ) | localIndex;
+}
+
+std::uint8_t TranslationManager::Impl::MaskProbeSequenceLength( const std::uint64_t index )
+{
+    return index >> 56;
+}
+
+std::uint16_t TranslationManager::Impl::MaskPartialHash( const std::uint64_t index )
+{
+    return ( index >> 40 ) & 0xFFFFU;
+}
+
+std::uint8_t TranslationManager::Impl::MaskDocIndex( const std::uint64_t index )
+{
+    return ( index >> 32 ) & 0xFFU;
+}
+
+std::uint32_t TranslationManager::Impl::MaskLocalIndex( const std::uint64_t index )
+{
+    return index & 0xFFFFFFFFU;
+}
+
+void TranslationManager::Impl::AllocateIndex( const std::size_t n )
+{
+    index.clear();
+    indexCapacityMask = 0;
+    if( n == 0 ) {
+        return;
     }
-    for( const std::pair<size_t, size_t> &entry : it->second ) {
-        const std::size_t document = entry.first;
-        const std::size_t index = entry.second;
-        if( strcmp( documents[document].GetOriginalString( index ), query ) == 0 ) {
-            return std::optional<std::pair<std::size_t, std::size_t>> { entry };
+    const std::size_t capacity = std::pow( 2.0, std::ceil( std::log( n * 1.5 ) / std::log( 2 ) ) );
+    index.resize( capacity );
+    indexCapacityMask = capacity - 1;
+}
+
+void TranslationManager::Impl::InsertIndex( std::uint8_t docIndex, std::uint32_t localIndex,
+        const std::size_t hash )
+{
+    std::uint8_t psb = 0;
+    std::uint16_t partialHash = hash & 0xFFFFU;
+    std::size_t bucket = hash & indexCapacityMask;
+    for( ; psb <= 100; bucket = ( bucket + 1 ) & indexCapacityMask, psb++ ) {
+        const std::uint64_t indexAtBucket = index[bucket];
+        if( indexAtBucket == 0 ) {
+            index[bucket] = CreateIndexBytes( docIndex, localIndex, partialHash, psb );
+            return;
+        }
+        if( MaskProbeSequenceLength( indexAtBucket ) > psb ) {
+            index[bucket] = CreateIndexBytes( docIndex, localIndex, partialHash, psb );
+            psb = MaskProbeSequenceLength( indexAtBucket );
+            partialHash = MaskPartialHash( indexAtBucket );
+            docIndex = MaskDocIndex( indexAtBucket );
+            localIndex = MaskLocalIndex( indexAtBucket );
         }
     }
-    return std::nullopt;
+    if( psb == 100 ) {
+        throw std::runtime_error( "cannot find available bucket" );
+    }
+}
+
+std::uint64_t TranslationManager::Impl::Lookup( const char *query ) const
+{
+    if( indexCapacityMask == 0 ) {
+        return 0;
+    }
+    const std::size_t hash = Hash( query );
+    const std::uint16_t partialHash = hash & 0xFFFFU;
+    for( std::size_t bucket = hash & indexCapacityMask, psb = 0; psb <= 100;
+         bucket = ( bucket + 1 ) & indexCapacityMask, psb++ ) {
+        const std::uint64_t indexAtBucket = index[bucket];
+        if( indexAtBucket == 0 ) {
+            return 0;
+        }
+        if( MaskProbeSequenceLength( indexAtBucket ) > psb ) {
+            return 0;
+        }
+        if( MaskPartialHash( indexAtBucket ) != partialHash ) {
+            continue;
+        }
+        const std::uint8_t docIndex = MaskDocIndex( indexAtBucket );
+        const std::uint32_t localIndex = MaskLocalIndex( indexAtBucket );
+        if( strcmp( query, documents[docIndex].GetOriginalString( localIndex ) ) == 0 ) {
+            return indexAtBucket;
+        }
+    }
+    throw std::runtime_error( "psb overflow" );
 }
 
 std::string TranslationManager::Impl::LanguageCodeOfPath( const std::string_view path )
@@ -81,9 +155,9 @@ void TranslationManager::Impl::ScanTranslationDocuments()
 
 void TranslationManager::Impl::Reset()
 {
+    index.clear();
+    indexCapacityMask = 0;
     documents.clear();
-    strings.clear();
-    strings.max_load_factor( 1.0f );
 }
 
 TranslationManager::Impl::Impl()
@@ -142,15 +216,16 @@ void TranslationManager::Impl::LoadDocuments( const std::vector<std::string> &fi
             DebugLog( D_ERROR, DC_ALL ) << e.what();
         }
     }
+    std::size_t numStrings = 0;
+    for( const TranslationDocument &document : documents ) {
+        numStrings += document.Count();
+    }
+    AllocateIndex( numStrings );
     for( std::size_t document = 0; document < documents.size(); document++ ) {
         for( std::size_t i = 0; i < documents[document].Count(); i++ ) {
             const char *message = documents[document].GetOriginalString( i );
             if( message[0] != '\0' ) {
-                const std::uint32_t hash = Hash( message );
-                if( strings.count( hash ) == 0 ) {
-                    strings[hash] = std::vector<std::pair<std::size_t, std::size_t>>( 1 );
-                }
-                strings[hash].emplace_back( document, i );
+                InsertIndex( document, i, Hash( message ) );
             }
         }
     }
@@ -163,29 +238,29 @@ const char *TranslationManager::Impl::Translate( const std::string &message ) co
 
 const char *TranslationManager::Impl::Translate( const char *message ) const
 {
-    std::optional<std::pair<std::size_t, std::size_t>> entry = LookupString( message );
-    if( entry ) {
-        const std::size_t document = entry->first;
-        const std::size_t string_index = entry->second;
-        return documents[document].GetTranslatedString( string_index );
+    const std::uint64_t index = Lookup( message );
+    if( index == 0 ) {
+        return message;
     }
-    return message;
+    const std::uint8_t docIndex = MaskDocIndex( index );
+    const std::uint32_t localIndex = MaskLocalIndex( index );
+    return documents[docIndex].GetTranslatedString( localIndex );
 }
 
 const char *TranslationManager::Impl::TranslatePlural( const char *singular, const char *plural,
         std::size_t n ) const
 {
-    std::optional<std::pair<std::size_t, std::size_t>> entry = LookupString( singular );
-    if( entry ) {
-        const std::size_t document = entry->first;
-        const std::size_t string_index = entry->second;
-        return documents[document].GetTranslatedStringPlural( string_index, n );
+    const std::uint64_t index = Lookup( singular );
+    if( index == 0 ) {
+        if( n == 1 ) {
+            return singular;
+        } else {
+            return plural;
+        }
     }
-    if( n == 1 ) {
-        return singular;
-    } else {
-        return plural;
-    }
+    const std::uint8_t docIndex = MaskDocIndex( index );
+    const std::uint32_t localIndex = MaskLocalIndex( index );
+    return documents[docIndex].GetTranslatedStringPlural( localIndex, n );
 }
 
 std::string TranslationManager::Impl::ConstructContextualQuery( const char *context,
@@ -202,14 +277,14 @@ std::string TranslationManager::Impl::ConstructContextualQuery( const char *cont
 const char *TranslationManager::Impl::TranslateWithContext( const char *context,
         const char *message ) const
 {
-    std::string query = ConstructContextualQuery( context, message );
-    std::optional<std::pair<std::size_t, std::size_t>> entry = LookupString( query.c_str() );
-    if( entry ) {
-        const std::size_t document = entry->first;
-        const std::size_t string_index = entry->second;
-        return documents[document].GetTranslatedString( string_index );
+    const std::string query = ConstructContextualQuery( context, message );
+    const std::uint64_t index = Lookup( query.c_str() );
+    if( index == 0 ) {
+        return message;
     }
-    return message;
+    const std::uint8_t docIndex = MaskDocIndex( index );
+    const std::uint32_t localIndex = MaskLocalIndex( index );
+    return documents[docIndex].GetTranslatedString( localIndex );
 }
 
 const char *TranslationManager::Impl::TranslatePluralWithContext( const char *context,
@@ -217,18 +292,18 @@ const char *TranslationManager::Impl::TranslatePluralWithContext( const char *co
         const char *plural,
         std::size_t n ) const
 {
-    std::string query = ConstructContextualQuery( context, singular );
-    std::optional<std::pair<std::size_t, std::size_t>> entry = LookupString( query.c_str() );
-    if( entry ) {
-        const std::size_t document = entry->first;
-        const std::size_t string_index = entry->second;
-        return documents[document].GetTranslatedStringPlural( string_index, n );
+    const std::string query = ConstructContextualQuery( context, singular );
+    const std::uint64_t index = Lookup( query.c_str() );
+    if( index == 0 ) {
+        if( n == 1 ) {
+            return singular;
+        } else {
+            return plural;
+        }
     }
-    if( n == 1 ) {
-        return singular;
-    } else {
-        return plural;
-    }
+    const std::uint8_t docIndex = MaskDocIndex( index );
+    const std::uint32_t localIndex = MaskLocalIndex( index );
+    return documents[docIndex].GetTranslatedStringPlural( localIndex, n );
 }
 
 #endif // defined(LOCALIZE)
