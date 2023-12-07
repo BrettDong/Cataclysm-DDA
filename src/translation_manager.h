@@ -16,14 +16,15 @@ class TranslationManager
         class Impl;
         pimpl<Impl> impl;
     public:
-        TranslationManager() = default;
+        TranslationManager();
+        ~TranslationManager();
         TranslationManager( const TranslationManager & ) = delete;
         TranslationManager( TranslationManager && ) = delete;
         static TranslationManager &GetInstance();
         std::unordered_set<std::string> GetAvailableLanguages();
         void SetLanguage( const std::string &language_code );
         std::string GetCurrentLanguage() const;
-        void LoadDocuments( const std::vector<std::string> &files );
+        void LoadTestDocument( const std::string &path );
 
         const char *Translate( const std::string &message ) const;
         const char *Translate( const char *message ) const;

@@ -4,18 +4,12 @@
 #include "filesystem.h"
 #include "string_formatter.h"
 #include "translation_document.h"
-#include "translation_plural_evaluator.h"
 
 InvalidTranslationDocumentException::InvalidTranslationDocumentException(
-    const std::string &path,
-    const std::string &message )
+    const std::string_view path,
+    const std::string_view message ) : std::runtime_error(
+            string_format( "Invalid MO document %1$s: %2$s", path, message ) )
 {
-    this->error_message = string_format( "Invalid MO document %1$s: %2$s", path, message );
-}
-
-const char *InvalidTranslationDocumentException::what() const noexcept
-{
-    return error_message.c_str();
 }
 
 std::uint8_t TranslationDocument::GetByte( const std::size_t byteIndex ) const
@@ -46,20 +40,6 @@ std::uint32_t TranslationDocument::GetUint32( const std::size_t byteIndex ) cons
     return ( this->*GetUint32FPtr )( byteIndex );
 }
 
-const char *TranslationDocument::GetString( const std::size_t byteIndex ) const
-{
-    return data + byteIndex;
-}
-
-std::size_t TranslationDocument::EvaluatePluralForm( std::size_t n ) const
-{
-    if( plural_rules ) {
-        return plural_rules->Evaluate( n );
-    } else {
-        return 0;
-    }
-}
-
 TranslationDocument::TranslationDocument( const std::string &path )
 {
     try {
@@ -74,7 +54,7 @@ TranslationDocument::TranslationDocument( const std::string &path )
         if( mmap_message_object->len != file_size ) {
             throw InvalidTranslationDocumentException( path, "unable to read the file in its entirety" );
         }
-    } catch( const std::exception &e ) {
+    } catch( const fs::filesystem_error &e ) {
         throw InvalidTranslationDocumentException( path, e.what() );
     }
 
@@ -103,6 +83,10 @@ TranslationDocument::TranslationDocument( const std::string &path )
                 string_format( "unsupported MO format revision %zu, expect %zu", version, supported_version ) );
     }
     number_of_strings = GetUint32( 8 );
+    if( number_of_strings < 1 ) {
+        throw InvalidTranslationDocumentException( path,
+                string_format( "Too few messages contained in MO" ) );
+    }
     original_strings_table_offset = GetUint32( 12 );
     translated_strings_table_offset = GetUint32( 16 );
     if( original_strings_table_offset + 8ULL * number_of_strings > data_size ) {
@@ -115,11 +99,9 @@ TranslationDocument::TranslationDocument( const std::string &path )
                 string_format( "translated strings table offset %zu with %zu entries exceeds buffer size %zu",
                                translated_strings_table_offset, number_of_strings, data_size ) );
     }
-    original_offsets.reserve( number_of_strings );
-    translated_offsets.reserve( number_of_strings );
     for( std::size_t i = 0; i < number_of_strings; i++ ) {
-        std::size_t length = GetUint32( original_strings_table_offset + 8 * i );
-        std::size_t offset = GetUint32( original_strings_table_offset + 8 * i + 4 );
+        const std::size_t length = GetUint32( original_strings_table_offset + 8 * i );
+        const std::size_t offset = GetUint32( original_strings_table_offset + 8 * i + 4 );
         if( offset >= data_size || length >= data_size || offset + length >= data_size ) {
             throw InvalidTranslationDocumentException( path,
                     string_format( "original string %zu offset %zu with length %zu exceeds buffer size %zu",
@@ -130,12 +112,10 @@ TranslationDocument::TranslationDocument( const std::string &path )
                     string_format( "original string %zu offset %zu with length %zu not terminated by '\\0'",
                                    i, offset, length ) );
         }
-        original_offsets.emplace_back( offset );
     }
     for( std::size_t i = 0; i < number_of_strings; i++ ) {
-        std::vector<std::size_t> offsets;
-        std::size_t length = GetUint32( translated_strings_table_offset + 8 * i );
-        std::size_t offset = GetUint32( translated_strings_table_offset + 8 * i + 4 );
+        const std::size_t length = GetUint32( translated_strings_table_offset + 8 * i );
+        const std::size_t offset = GetUint32( translated_strings_table_offset + 8 * i + 4 );
         if( offset >= data_size || length >= data_size || offset + length >= data_size ) {
             throw InvalidTranslationDocumentException( path,
                     string_format( "translated string %zu offset %zu with length %zu exceeds buffer size %zu",
@@ -146,45 +126,6 @@ TranslationDocument::TranslationDocument( const std::string &path )
                     string_format( "translated string %zu offset %zu with length %zu not terminated by '\\0'",
                                    i, offset, length ) );
         }
-        offsets.emplace_back( offset );
-        for( std::size_t idx = offset; idx + 1 < offset + length; idx++ ) {
-            if( data[idx] == '\0' ) {
-                offsets.emplace_back( idx + 1 );
-            }
-        }
-        translated_offsets.emplace_back( offsets );
-    }
-    const std::string metadata( GetTranslatedString( 0 ) );
-    const std::string plural_rules_header( "Plural-Forms:" );
-    std::size_t plural_rules_header_pos = metadata.find( plural_rules_header );
-    if( plural_rules_header_pos != std::string::npos ) {
-        plural_rules_header_pos += plural_rules_header.length();
-        std::size_t new_line_pos = metadata.find( '\n', plural_rules_header_pos );
-        std::string plural_rules_str;
-        if( new_line_pos != std::string::npos ) {
-            plural_rules_str = metadata.substr( plural_rules_header_pos,
-                                                new_line_pos - plural_rules_header_pos );
-        } else {
-            plural_rules_str = metadata.substr( plural_rules_header_pos );
-        }
-        try {
-            plural_rules = std::make_unique<TranslationPluralRulesEvaluator>( plural_rules_str );
-        } catch( TranslationPluralRulesEvaluator::HeaderError &e ) {
-            DebugLog( D_ERROR, DC_ALL ) << "Error reading plural forms rules header of " << path << " : " <<
-                                        e.what();
-            throw InvalidTranslationDocumentException( path, string_format( "Plural forms HeaderError: %s",
-                    e.what() ) );
-        } catch( TranslationPluralRulesEvaluator::LexicalError &e ) {
-            DebugLog( D_ERROR, DC_ALL ) << "Invalid plural forms rules expression in " << path << " : " <<
-                                        e.what();
-            throw InvalidTranslationDocumentException( path, string_format( "Plural forms LexicalError: %s",
-                    e.what() ) );
-        } catch( TranslationPluralRulesEvaluator::ParseError &e ) {
-            DebugLog( D_ERROR, DC_ALL ) << "Error parsing plural forms rules expression in " << path << " : "
-                                        << e.what();
-            throw InvalidTranslationDocumentException( path, string_format( "Plural forms ParseError: %s",
-                    e.what() ) );
-        }
     }
 }
 
@@ -193,26 +134,26 @@ std::size_t TranslationDocument::Count() const
     return number_of_strings;
 }
 
-const char *TranslationDocument::GetOriginalString( const std::size_t index ) const
+std::pair<const char *, std::size_t> TranslationDocument::GetSourceString(
+    const std::size_t index ) const
 {
-    return GetString( original_offsets[index] );
-}
-
-const char *TranslationDocument::GetTranslatedString( const std::size_t index ) const
-{
-    return GetString( translated_offsets[index][0] );
-}
-
-const char *TranslationDocument::GetTranslatedStringPlural( const std::size_t index,
-        std::size_t n ) const
-{
-    std::size_t plural_form = EvaluatePluralForm( n );
-    if( plural_form >= translated_offsets[index].size() ) {
-        DebugLog( D_ERROR, DC_ALL ) << "Plural forms expression evaluated out-of-bound at string entry " <<
-                                    index << " with n=" << n;
-        return GetString( translated_offsets[index][0] );
+    if( index > number_of_strings ) {
+        throw std::out_of_range{"TranslationDocument::GetSourceString"};
     }
-    return GetString( translated_offsets[index][plural_form] );
+    const std::size_t length = GetUint32( original_strings_table_offset + 8 * index );
+    const std::size_t offset = GetUint32( original_strings_table_offset + 8 * index + 4 );
+    return std::make_pair( &data[offset], length );
+}
+
+std::pair<const char *, std::size_t> TranslationDocument::GetTranslatedString(
+    const std::size_t index ) const
+{
+    if( index > number_of_strings ) {
+        throw std::out_of_range{"TranslationDocument::GetTranslatedString"};
+    }
+    const std::size_t length = GetUint32( translated_strings_table_offset + 8 * index );
+    const std::size_t offset = GetUint32( translated_strings_table_offset + 8 * index + 4 );
+    return std::make_pair( &data[offset], length );
 }
 
 #endif // defined(LOCALIZE)

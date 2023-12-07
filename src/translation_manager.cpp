@@ -2,6 +2,9 @@
 
 #include "translation_manager_impl.h"
 
+TranslationManager::TranslationManager() = default;
+TranslationManager::~TranslationManager() = default;
+
 TranslationManager &TranslationManager::GetInstance()
 {
     static TranslationManager singleton;
@@ -23,9 +26,9 @@ std::string TranslationManager::GetCurrentLanguage() const
     return impl->GetCurrentLanguage();
 }
 
-void TranslationManager::LoadDocuments( const std::vector<std::string> &files )
+void TranslationManager::LoadTestDocument( const std::string &path )
 {
-    impl->LoadDocuments( files );
+    impl->LoadDocuments( path );
 }
 
 const char *TranslationManager::Translate( const std::string &message ) const

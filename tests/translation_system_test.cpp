@@ -3,7 +3,7 @@
 #include "filesystem.h"
 #include "string_formatter.h"
 #include "translation_document.h"
-#include "translation_manager_impl.h"
+#include "translation_manager.h"
 
 #if defined(LOCALIZE)
 
@@ -40,33 +40,6 @@ TEST_CASE( "TranslationDocument_loads_all_core_MO", "[translations]" )
     }
 }
 
-TEST_CASE( "No_string_buffer_overlap_in_TranslationDocument", "[translations]" )
-{
-    const std::unordered_set<std::string> languages =
-        TranslationManager::GetInstance().GetAvailableLanguages();
-    for( const std::string &lang : languages ) {
-        const std::string path = string_format( "./lang/mo/%s/LC_MESSAGES/cataclysm-dda.mo", lang );
-        CAPTURE( path );
-        REQUIRE( file_exist( path ) );
-        TranslationDocument document( path );
-        // The following code walks through every string contained in the MO document
-        // So AddressSanitizer can also detect memory access violation if there is any
-        const std::size_t n = document.Count();
-        const char *last_ending = nullptr;
-        for( std::size_t i = 0; i < n; i++ ) {
-            const char *str = document.GetOriginalString( i );
-            CHECK( last_ending < str );
-            last_ending = str + std::strlen( str );
-        }
-        last_ending = nullptr;
-        for( std::size_t i = 0; i < n; i++ ) {
-            const char *str = document.GetTranslatedString( i );
-            CHECK( last_ending < str );
-            last_ending = str + std::strlen( str );
-        }
-    }
-}
-
 TEST_CASE( "TranslationDocument_loading_benchmark", "[.][benchmark][translations]" )
 {
     BENCHMARK( "Load Russian" ) {
@@ -78,7 +51,7 @@ TEST_CASE( "TranslationManager_loading_benchmark", "[.][benchmark][translations]
 {
     BENCHMARK( "Load Russian" ) {
         TranslationManager manager;
-        manager.LoadDocuments( std::vector<std::string> {"./lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo"} );
+        manager.LoadTestDocument( "./lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo" );
         return manager.Translate( "battery" );
     };
 }
@@ -86,45 +59,44 @@ TEST_CASE( "TranslationManager_loading_benchmark", "[.][benchmark][translations]
 TEST_CASE( "TranslationManager_translate_benchmark", "[.][benchmark][translations]" )
 {
     TranslationManager manager;
+    const std::string msg = "The maximum width of each on-screen keyboard shortcut in pixels.";
 
     // Russian
     REQUIRE( file_exist( fs::u8path( "./lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo" ) ) );
-    manager.LoadDocuments( std::vector<std::string> {"./lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo"} );
-    REQUIRE( strcmp( manager.Translate( "battery" ), "battery" ) != 0 );
+    manager.LoadTestDocument( "./lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo" );
+    REQUIRE( strcmp( manager.Translate( msg ), msg.c_str() ) != 0 );
     BENCHMARK( "Russian" ) {
-        return manager.Translate( "battery" );
+        return manager.Translate( msg );
     };
 
     // Chinese
     REQUIRE( file_exist( fs::u8path( "./lang/mo/zh_CN/LC_MESSAGES/cataclysm-dda.mo" ) ) );
-    manager.LoadDocuments( std::vector<std::string> {"./lang/mo/zh_CN/LC_MESSAGES/cataclysm-dda.mo"} );
-    REQUIRE( strcmp( manager.Translate( "battery" ), "battery" ) != 0 );
+    manager.LoadTestDocument( "./lang/mo/zh_CN/LC_MESSAGES/cataclysm-dda.mo" );
+    REQUIRE( strcmp( manager.Translate( msg ), msg.c_str() ) != 0 );
     BENCHMARK( "Chinese" ) {
-        return manager.Translate( "battery" );
+        return manager.Translate( msg );
     };
 
     // English
-    manager.LoadDocuments( std::vector<std::string>() );
-    REQUIRE( strcmp( manager.Translate( "battery" ), "battery" ) == 0 );
+    manager.LoadTestDocument( "" );
+    REQUIRE( strcmp( manager.Translate( msg ), msg.c_str() ) == 0 );
     BENCHMARK( "English" ) {
-        return manager.Translate( "battery" );
+        return manager.Translate( msg );
     };
 }
 
 TEST_CASE( "TranslationManager_translates_message", "[translations]" )
 {
-    std::vector<std::string> files{"./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo"};
     TranslationManager manager;
-    manager.LoadDocuments( files );
+    manager.LoadTestDocument( "./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo" );
     std::string translated = manager.Translate( "battery" );
     CHECK( translated == "батарейка" );
 }
 
 TEST_CASE( "TranslationManager_returns_untranslated_message_as_is", "[translations]" )
 {
-    std::vector<std::string> files{"./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo"};
     TranslationManager manager;
-    manager.LoadDocuments( files );
+    manager.LoadTestDocument( "./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo" );
     const char *message = "__UnTrAnSlAtEd!!!__#";
     std::string translated = manager.Translate( message );
     CHECK( translated == message );
@@ -132,18 +104,16 @@ TEST_CASE( "TranslationManager_returns_untranslated_message_as_is", "[translatio
 
 TEST_CASE( "TranslationManager_returns_empty_string_as_is", "[translations]" )
 {
-    std::vector<std::string> files{"./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo"};
     TranslationManager manager;
-    manager.LoadDocuments( files );
+    manager.LoadTestDocument( "./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo" );
     std::string translated = manager.Translate( "" );
     CHECK( translated.empty() );
 }
 
 TEST_CASE( "TranslationManager_translates_message_with_context", "[translations]" )
 {
-    std::vector<std::string> files{"./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo"};
     TranslationManager manager;
-    manager.LoadDocuments( files );
+    manager.LoadTestDocument( "./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo" );
     std::string translated_weapon_pike = manager.TranslateWithContext( "weapon", "pike" );
     CHECK( translated_weapon_pike == "пика" );
     std::string translated_fish_pike = manager.TranslateWithContext( "fish", "pike" );
@@ -208,9 +178,8 @@ TEST_CASE( "TranslationPluralRulesEvaluator", "[translations]" )
 TEST_CASE( "TranslationManager_translates_plural_messages", "[translations]" )
 {
     SECTION( "English" ) {
-        std::vector<std::string> files;
         TranslationManager manager;
-        manager.LoadDocuments( files );
+        manager.LoadTestDocument( "" );
         std::string translated_0_battery = manager.TranslatePlural( "battery", "batteries", 0 );
         CHECK( translated_0_battery == "batteries" );
         std::string translated_1_battery = manager.TranslatePlural( "battery", "batteries", 1 );
@@ -224,9 +193,8 @@ TEST_CASE( "TranslationManager_translates_plural_messages", "[translations]" )
     }
 
     SECTION( "Russian" ) {
-        std::vector<std::string> files{"./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo"};
         TranslationManager manager;
-        manager.LoadDocuments( files );
+        manager.LoadTestDocument( "./data/mods/TEST_DATA/lang/mo/ru/LC_MESSAGES/TEST_DATA.mo" );
         std::string translated_0_battery = manager.TranslatePlural( "battery", "batteries", 0 );
         CHECK( translated_0_battery == "батареек" );
         std::string translated_1_battery = manager.TranslatePlural( "battery", "batteries", 1 );
@@ -243,20 +211,20 @@ TEST_CASE( "TranslationManager_translates_plural_messages", "[translations]" )
 TEST_CASE( "TranslationPluralRulesEvaluatorPerformance", "[.][benchmark][translations]" )
 {
     TranslationManager manager;
-    manager.LoadDocuments( std::vector<std::string> {"./lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo"} );
+    manager.LoadTestDocument( "./lang/mo/ru/LC_MESSAGES/cataclysm-dda.mo" );
     REQUIRE( strcmp( manager.TranslatePlural( "battery", "batteries", 1 ),
                      "батарейка" ) == 0 );
     BENCHMARK( "Russian plural rules evaluation" ) {
         return manager.TranslatePlural( "battery", "batteries", 1 );
     };
-    manager.LoadDocuments( std::vector<std::string>() );
-    REQUIRE( strcmp( manager.TranslatePlural( "battery", "batteries", 1 ), "battery" ) == 0 );
-    BENCHMARK( "English plural rules evaluation" ) {
-        return manager.TranslatePlural( "battery", "batteries", 1 );
-    };
-    manager.LoadDocuments( std::vector<std::string> {"./lang/mo/zh_CN/LC_MESSAGES/cataclysm-dda.mo"} );
+    manager.LoadTestDocument( "./lang/mo/zh_CN/LC_MESSAGES/cataclysm-dda.mo" );
     REQUIRE( strcmp( manager.TranslatePlural( "battery", "batteries", 1 ), "电池" ) == 0 );
     BENCHMARK( "Chinese plural rules evaluation" ) {
+        return manager.TranslatePlural( "battery", "batteries", 1 );
+    };
+    manager.LoadTestDocument( "" );
+    REQUIRE( strcmp( manager.TranslatePlural( "battery", "batteries", 1 ), "battery" ) == 0 );
+    BENCHMARK( "English plural rules evaluation" ) {
         return manager.TranslatePlural( "battery", "batteries", 1 );
     };
 }
