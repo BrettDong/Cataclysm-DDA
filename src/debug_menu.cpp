@@ -2305,7 +2305,7 @@ static void faction_edit_larder_menu( faction *fac )
     switch( smenu.ret ) {
         case 0:
             if( query_int( value, _( "Change food from %d to: " ), fac->food_supply.kcal() ) ) {
-                fac->food_supply.calories = ( value * 1000 );
+                fac->food_supply.calories = units::from_kilocalories( value );
             }
             break;
         default:

@@ -117,7 +117,7 @@ int nutrients::get_vitamin( const vitamin_id &vit ) const
 
 int nutrients::kcal() const
 {
-    return calories / 1000;
+    return units::to_kilocalories( calories );
 }
 
 void nutrients::finalize_vitamins()
@@ -210,7 +210,9 @@ nutrients &nutrients::operator/=( int r )
     if( !finalized ) {
         debugmsg( "Nutrients not finalized when -= called!" );
     }
-    calories = divide_round_up( calories, r );
+    const std::int64_t cal = units::to_calories( calories );
+    const std::int64_t divided_cal = divide_round_up<std::int64_t>( cal, r );
+    calories = units::from_calories( divided_cal );
     for( const std::pair<const vitamin_id, std::variant<int, vitamin_units::mass>> &vit : vitamins_ ) {
         std::variant<int, vitamin_units::mass> &here = vitamins_[vit.first];
         here = divide_round_up( std::get<int>( here ), r );
@@ -221,14 +223,16 @@ nutrients &nutrients::operator/=( int r )
 void nutrients::serialize( JsonOut &jsout ) const
 {
     jsout.start_object();
-    jsout.member( "calories", calories );
+    jsout.member( "calories", units::to_calories( calories ) );
     jsout.member( "vitamins", vitamins() );
     jsout.end_object();
 }
 
 void nutrients::deserialize( const JsonObject &jo )
 {
-    jo.read( "calories", calories );
+    int cal = 0;
+    jo.read( "calories", cal );
+    calories = units::from_calories( cal );
     std::map<vitamin_id, int> vit_map;
     jo.read( "vitamins", vit_map );
     for( auto &vit : vit_map ) {
@@ -255,7 +259,7 @@ void stomach_contents::serialize( JsonOut &json ) const
 {
     json.start_object();
     json.member( "vitamins", nutr.vitamins() );
-    json.member( "calories", nutr.calories );
+    json.member( "calories", units::to_calories( nutr.calories ) );
     json.member( "water", ml_to_string( water ) );
     json.member( "max_volume", ml_to_string( max_volume ) );
     json.member( "contents", ml_to_string( contents ) );
@@ -275,7 +279,9 @@ void stomach_contents::deserialize( const JsonObject &jo )
     for( const std::pair<const vitamin_id, int> &vit : vitamins ) {
         nutr.set_vitamin( vit.first, vit.second );
     }
-    jo.read( "calories", nutr.calories );
+    std::int64_t calories = 0;
+    jo.read( "calories", calories );
+    nutr.calories = units::from_calories( calories );
     std::string str;
     jo.read( "water", str );
     water = string_to_ml( str );
@@ -347,8 +353,8 @@ food_summary stomach_contents::digest( const Character &owner, const needs_rates
     // Digest kCal -- use min_kcal by default, but no more than what's in stomach,
     // and no less than percentage_kcal of what's in stomach.
     int kcal_fraction = std::lround( nutr.kcal() * rates.percent_kcal );
-    digested.nutr.calories = half_hours * clamp( rates.min_calories, kcal_fraction * 1000,
-                             nutr.calories );
+    digested.nutr.calories = half_hours * clamp( units::from_calories( rates.min_calories ),
+                             units::from_kilocalories( kcal_fraction ), nutr.calories );
 
     // Digest vitamins just like we did kCal, but we need to do one at a time.
     for( const std::pair<const vitamin_id, int> &vit : nutr.vitamins() ) {
@@ -405,10 +411,10 @@ stomach_digest_rates stomach_contents::get_digest_rates( const needs_rates &meta
 void stomach_contents::mod_calories( int kcal )
 {
     if( -kcal >= nutr.kcal() ) {
-        nutr.calories = 0;
+        nutr.calories = 0_cal;
         return;
     }
-    nutr.calories += kcal * 1000;
+    nutr.calories += units::from_kilocalories( kcal );
 }
 
 void stomach_contents::mod_nutr( int nutr )

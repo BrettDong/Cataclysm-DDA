@@ -3671,8 +3671,9 @@ void faction::deserialize( const JsonObject &jo )
     jo.read( "power", power );
     if( jo.has_int( "food_supply" ) ) {
         // Legacy kcal value found, migrate to calories
-        jo.read( "food_supply", food_supply.calories );
-        food_supply.calories *= 1000;
+        int kcal = 0;
+        jo.read( "food_supply", kcal );
+        food_supply.calories = units::from_kilocalories( kcal );
     } else {
         jo.read( "fac_food_supply", food_supply );
     }

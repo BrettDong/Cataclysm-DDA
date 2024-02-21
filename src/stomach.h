@@ -34,8 +34,8 @@ const std::vector<std::pair<std::string, mass>> mass_units = { {
 // Separate struct for nutrients so that we can easily perform arithmetic on
 // them
 struct nutrients {
-        /** amount of calories (1/1000s of kcal) this food has */
-        int calories = 0;
+        /** amount of calories this food has */
+        units::energy calories = 0_cal;
 
         /** Replace the values here with the minimum (or maximum) of themselves and the corresponding
          * values taken from r. */

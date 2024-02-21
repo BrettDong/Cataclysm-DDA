@@ -178,30 +178,29 @@ static const std::array<flag_id, 2> herbivore_blacklist {{
     }};
 
 // TODO: Move pizza scraping here.
-static int compute_default_effective_kcal( const item &comest, const Character &you,
+static units::energy compute_default_effective_calories( const item &comest, const Character &you,
         const cata::flat_set<flag_id> &extra_flags = {} )
 {
     if( !comest.get_comestible() ) {
-        return 0;
+        return 0_cal;
     }
 
-    // As float to avoid rounding too many times
-    float kcal = comest.get_comestible()->default_nutrition.kcal();
+    double multiplier = 1.0;
 
     // Many raw foods give less calories, as your body has expends more energy digesting them.
     bool cooked = comest.has_flag( flag_COOKED ) || extra_flags.count( flag_COOKED );
     if( comest.has_flag( flag_RAW ) && !cooked ) {
-        kcal *= 0.75f;
+        multiplier *= 0.75;
     }
 
     if( you.has_trait( trait_GIZZARD ) ) {
-        kcal *= 0.6f;
+        multiplier *= 0.6;
     }
 
     if( you.has_trait( trait_CARNIVORE ) && comest.has_flag( flag_CARNIVORE_OK ) &&
         comest.has_any_flag( carnivore_blacklist ) ) {
         // TODO: Comment pizza scrapping
-        kcal *= 0.5f;
+        multiplier *= 0.5;
     }
 
     const float relative_rot = comest.get_relative_rot();
@@ -210,15 +209,15 @@ static int compute_default_effective_kcal( const item &comest, const Character &
         // everyone else only gets a portion of the nutrition
         // Scaling linearly from 100% at just-rotten to 0 at halfway-rotten-away
         const float rottedness = clamp( 2 * relative_rot - 2.0f, 0.1f, 1.0f );
-        kcal *= ( 1.0f - rottedness );
+        multiplier *= ( 1.0f - rottedness );
     }
 
     // Bionic digestion gives extra nutrition
     if( you.has_bionic( bio_digestion ) ) {
-        kcal *= 1.5f;
+        multiplier *= 1.5;
     }
 
-    return static_cast<int>( kcal );
+    return comest.get_comestible()->default_nutrition.calories * multiplier;
 }
 
 // Compute default effective vitamins for an item, taking into account player
@@ -274,8 +273,7 @@ static nutrients compute_default_effective_nutrients( const item &comest,
         const Character &you, const cata::flat_set<flag_id> &extra_flags = {} )
 {
     nutrients ret;
-    // Multiply by 1000 to get it in calories
-    ret.calories = compute_default_effective_kcal( comest, you, extra_flags ) * 1000;
+    ret.calories = compute_default_effective_calories( comest, you, extra_flags );
     for( const std::pair<const vitamin_id, int> &vit :  compute_default_effective_vitamins( comest,
             you ) ) {
         ret.set_vitamin( vit.first, vit.second );
@@ -1656,7 +1654,7 @@ bool Character::consume_effects( item &food )
 
     // update speculative values
     if( is_avatar() ) {
-        get_avatar().add_ingested_kcal( ingested.nutr.calories / 1000 );
+        get_avatar().add_ingested_kcal( units::to_kilocalories( ingested.nutr.calories ) );
     }
     for( const auto &v : ingested.nutr.vitamins() ) {
         // update the estimated values for daily vitamins

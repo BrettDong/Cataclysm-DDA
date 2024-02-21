@@ -580,6 +580,43 @@ inline constexpr value_type to_kilojoule( const quantity<value_type, energy_in_m
     return to_joule( v ) / 1000.0;
 }
 
+template<typename T, std::enable_if_t<std::is_integral_v<T>, bool> = true>
+inline constexpr energy from_calories( const T cal )
+{
+    return from_millijoule( static_cast<std::int64_t>( cal ) * 4184 );
+}
+
+template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool> = true>
+inline constexpr energy from_calories( const T cal )
+{
+    return from_millijoule( cal * 4184 );
+}
+
+template<typename T, std::enable_if_t<std::is_integral_v<T>, bool> = true>
+inline constexpr energy from_kilocalories( const T kcal )
+{
+    return from_calories( static_cast<std::int64_t>( kcal ) * 1000 );
+}
+
+template<typename T, std::enable_if_t<std::is_floating_point_v<T>, bool> = true>
+inline constexpr energy from_kilocalories( const T kcal )
+{
+    return from_calories( kcal * 1000 );
+}
+
+template<typename value_type>
+inline constexpr value_type to_calories( const quantity<value_type, energy_in_millijoule_tag> &v )
+{
+    return to_millijoule( v ) / 4184;
+}
+
+template<typename value_type>
+inline constexpr value_type to_kilocalories( const quantity<value_type, energy_in_millijoule_tag>
+        &v )
+{
+    return to_calories( v ) / 1000;
+}
+
 // Power (watts)
 
 const power power_min = units::power( std::numeric_limits<units::power::value_type>::min(),
@@ -962,6 +999,16 @@ inline constexpr units::quantity<double, units::energy_in_millijoule_tag> operat
     const long double v )
 {
     return units::from_kilojoule( v );
+}
+
+inline constexpr units::energy operator""_cal( const unsigned long long v )
+{
+    return units::from_calories( v );
+}
+
+inline constexpr units::energy operator""_kcal( const unsigned long long v )
+{
+    return units::from_kilocalories( v );
 }
 
 inline constexpr units::power operator""_mW( const unsigned long long v )

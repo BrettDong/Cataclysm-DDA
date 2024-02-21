@@ -77,7 +77,7 @@ TEST_CASE( "camp_calorie_counting", "[camp]" )
 
     WHEN( "a larder with stored calories and vitamins has food withdrawn" ) {
         food_supply *= 0;
-        food_supply.calories += 100000;
+        food_supply.calories += 100_kcal;
         food_supply.set_vitamin( vitamin_mutant_toxin, 100 );
         food_supply.set_vitamin( vitamin_mutagen, 200 );
         CHECK( food_supply.kcal() == 100 );

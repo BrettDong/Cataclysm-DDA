@@ -5488,16 +5488,16 @@ nutrients basecamp::camp_food_supply( nutrients &change )
 {
     nutrients consumed;
     faction *yours = get_player_character().get_faction();
-    if( change.calories < 0 && change.vitamins().empty() && yours->food_supply.calories > 0 ) {
+    if( change.calories < 0_cal && change.vitamins().empty() && yours->food_supply.calories > 0_cal ) {
         // We've been passed a raw kcal value, we should also consume a proportional amount of vitamins
         // Kcals are used as a proxy to consume vitamins.
         // e.g. if you have a larder with 10k kcal, 100 vitamin A, 200 vitamin B then consuming 1000 kcal will
         // consume 10 vitamin A and *20* vitamin B. In other words, we assume the vitamins are uniformly distributed with the kcals
         // This isn't a perfect assumption but it's a necessary one to abstract away the food items themselves
-        double percent_consumed = std::abs( static_cast<double>( change.calories ) ) /
-                                  yours->food_supply.calories;
+        double percent_consumed = std::abs( static_cast<double>( change.calories.value() ) ) /
+                                  yours->food_supply.calories.value();
         consumed = yours->food_supply;
-        if( std::abs( change.calories ) > yours->food_supply.calories ) {
+        if( std::abs( change.calories.value() ) > yours->food_supply.calories.value() ) {
             //Whoops, we don't have enough food. Empty the larder! No crumb shall go un-eaten!
             yours->food_supply.calories -= change.calories;
             yours->likes_u += yours->food_supply.kcal() / 1250;
@@ -5520,7 +5520,7 @@ nutrients basecamp::camp_food_supply( int change )
 {
     nutrients added;
     // Kcal to calories
-    added.calories = ( change * 1000 );
+    added.calories = units::from_kilocalories( change );
     return camp_food_supply( added );
 }
 

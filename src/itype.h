@@ -187,7 +187,7 @@ struct islot_comestible {
         static constexpr float kcal_per_nutr = base_metabolic_rate / ( 12 * 24 );
 
         bool has_calories() const {
-            return default_nutrition.calories > 0;
+            return default_nutrition.calories > 0_cal;
         }
 
         int get_default_nutr() const {

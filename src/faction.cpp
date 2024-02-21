@@ -53,7 +53,7 @@ faction_template::faction_template()
     respects_u = 0;
     trusts_u = 0;
     known_by_u = true;
-    food_supply.calories = 0;
+    food_supply.calories = 0_cal;
     wealth = 0;
     size = 0;
     power = 0;

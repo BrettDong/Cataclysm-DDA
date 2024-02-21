@@ -3294,12 +3294,12 @@ void Item_factory::load( islot_comestible &slot, const JsonObject &jo, const std
 
     if( jo.has_member( "calories" ) ) {
         // The value here is in kcal, but is stored as simply calories
-        slot.default_nutrition.calories = 1000 * jo.get_int( "calories" );
+        slot.default_nutrition.calories = units::from_kilocalories( jo.get_int( "calories" ) );
         got_calories = true;
 
     } else if( relative.has_member( "calories" ) ) {
         // The value here is in kcal, but is stored as simply calories
-        slot.default_nutrition.calories += 1000 * relative.get_int( "calories" );
+        slot.default_nutrition.calories += units::from_kilocalories( relative.get_int( "calories" ) );
         got_calories = true;
 
     } else if( proportional.has_member( "calories" ) ) {
@@ -3309,8 +3309,8 @@ void Item_factory::load( islot_comestible &slot, const JsonObject &jo, const std
 
     } else if( jo.has_member( "nutrition" ) ) {
         // The value here is in kcal, but is stored as simply calories
-        slot.default_nutrition.calories = jo.get_int( "nutrition" ) * islot_comestible::kcal_per_nutr *
-                                          1000;
+        slot.default_nutrition.calories = units::from_kilocalories( jo.get_int( "nutrition" ) *
+                                          islot_comestible::kcal_per_nutr );
     }
 
     for( JsonValue jv : jo.get_array( "consumption_effect_on_conditions" ) ) {
